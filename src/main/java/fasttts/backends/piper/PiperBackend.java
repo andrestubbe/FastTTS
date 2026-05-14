@@ -24,7 +24,7 @@ public final class PiperBackend implements FastTTSBackend {
     }
 
     @Override
-    public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+    public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
         if (!new File(piperPath).exists()) {
             throw new FileNotFoundException("piper.exe not found at: " + piperPath);
         }
@@ -53,14 +53,16 @@ public final class PiperBackend implements FastTTSBackend {
         
         byte[] data = Files.readAllBytes(tempOutput);
         Files.deleteIfExists(tempOutput);
-        return data;
+        
+        // Piper outputs WAV by default, but we treat it as 22050 if raw. 
+        // Actually Piper WAVs are usually 22050Hz.
+        return new FastTTSAudio(data, 22050);
     }
 
     @Override
     public void stream(String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> chunkConsumer) throws Exception {
-        // Piper supports streaming via stdout, but for this minimal version 
-        // we use the same synthesize logic.
-        chunkConsumer.accept(synthesize(text, voice, config));
+        FastTTSAudio audio = synthesize(text, voice, config);
+        chunkConsumer.accept(audio.getData());
     }
 
     @Override

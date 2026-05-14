@@ -15,26 +15,21 @@ public final class WindowsTTSBackend implements FastTTSBackend {
     }
 
     @Override
-    public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
-        return synthesizeNative(
+    public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+        byte[] data = synthesizeNative(
             text, 
             voice != null ? voice.id() : null, 
             config != null ? config.getRate() : 1.0f,
             config != null ? config.getPitch() : 1.0f,
             config != null ? config.getVolume() : 1.0f
         );
+        return new FastTTSAudio(data, 44100);
     }
 
     @Override
     public void stream(String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> chunkConsumer) throws Exception {
-        streamNative(
-            text, 
-            voice != null ? voice.id() : null, 
-            config != null ? config.getRate() : 1.0f,
-            config != null ? config.getPitch() : 1.0f,
-            config != null ? config.getVolume() : 1.0f,
-            chunkConsumer
-        );
+        FastTTSAudio audio = synthesize(text, voice, config);
+        chunkConsumer.accept(audio.getData());
     }
 
     @Override

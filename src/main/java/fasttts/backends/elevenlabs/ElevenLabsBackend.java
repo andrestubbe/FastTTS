@@ -43,7 +43,7 @@ public final class ElevenLabsBackend implements FastTTSBackend {
     }
 
     @Override
-    public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+    public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
         String voiceId = (voice != null) ? voice.id() : defaultVoiceId;
 
         // Settings from config or defaults
@@ -70,14 +70,18 @@ public final class ElevenLabsBackend implements FastTTSBackend {
                     "ElevenLabs Error " + response.statusCode() + ": " + new String(response.body()));
         }
 
-        return response.body();
+        byte[] audio = response.body();
+        if (audio.length > 4) {
+            System.out.printf("[DEBUG] ElevenLabs Header: %02X %02X %02X %02X\n", audio[0], audio[1], audio[2], audio[3]);
+        }
+        return new FastTTSAudio(audio, 16000);
     }
 
     @Override
     public void stream(String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> chunkConsumer)
             throws Exception {
-        // Simple version: just synthesize and return one big chunk
-        chunkConsumer.accept(synthesize(text, voice, config));
+        FastTTSAudio audio = synthesize(text, voice, config);
+        chunkConsumer.accept(audio.getData());
     }
 
     @Override

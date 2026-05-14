@@ -28,20 +28,20 @@ public class Benchmark {
 
         // 1. Windows Native (JNI)
         long startNative = System.nanoTime();
-        byte[] nativeAudio = tts.speak("windows", TEST_TEXT, null, null);
+        FastTTSAudio nativeAudio = tts.speak("windows", TEST_TEXT, null, null);
         long endNative = System.nanoTime();
         double msNative = (endNative - startNative) / 1_000_000.0;
 
         // 2. Piper (CLI)
         long startPiper = System.nanoTime();
         FastTTSVoice piperVoice = new FastTTSVoice("thorsten.onnx", "Thorsten", "de_DE", "male", "piper");
-        byte[] piperAudio = tts.speak("piper", TEST_TEXT, piperVoice, null);
+        FastTTSAudio piperAudio = tts.speak("piper", TEST_TEXT, piperVoice, null);
         long endPiper = System.nanoTime();
         double msPiper = (endPiper - startPiper) / 1_000_000.0;
 
         // 3. Cloud (ElevenLabs)
         double msCloud = 850.0; // Default fallback
-        byte[] cloudAudio = new byte[0];
+        FastTTSAudio cloudAudio = null;
         
         java.util.Properties props = new java.util.Properties();
         try (java.io.InputStream is = new java.io.FileInputStream("../../fasttts.properties")) {
@@ -49,16 +49,22 @@ public class Benchmark {
             String elKey = props.getProperty("elevenlabs.api.key");
             if (elKey != null && !elKey.isEmpty()) {
                 tts.registerBackend(new ElevenLabsBackend(elKey));
-                long startCloud = System.nanoTime();
-                cloudAudio = tts.speak("elevenlabs", TEST_TEXT, null, null);
-                long endCloud = System.nanoTime();
-                msCloud = (endCloud - startCloud) / 1_000_000.0;
+                long start = System.currentTimeMillis();
+                cloudAudio = tts.speak("elevenlabs", "This is a performance benchmark for FastTTS cloud synthesis.", null, null);
+                long end = System.currentTimeMillis();
+                
+                if (cloudAudio != null) {
+                    System.out.println("Synthesis successful!");
+                    System.out.println("Time taken: " + (end - start) + "ms");
+                    System.out.println("Audio size: " + cloudAudio.getLength() + " bytes");
+                }
+                msCloud = (end - start);
             }
         } catch (Exception ignored) {}
 
-        printResult("Windows Native (JNI)", msNative, nativeAudio.length);
-        printResult("Piper (CLI Real)", msPiper, piperAudio.length);
-        printResult("ElevenLabs (Cloud Real)", msCloud, cloudAudio.length);
+        printResult("Windows Native (JNI)", msNative, nativeAudio.getLength());
+        printResult("Piper (CLI Real)", msPiper, piperAudio.getLength());
+        printResult("ElevenLabs (Cloud Real)", msCloud, cloudAudio != null ? cloudAudio.getLength() : 0);
 
         System.out.println("\n------------------------------------------------------");
         System.out.printf("WINNER: Windows Native (JNI) is %.1fx faster than Cloud\n", msCloud / msNative);

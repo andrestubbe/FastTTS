@@ -25,13 +25,15 @@ public final class KokoroBackend implements FastTTSBackend {
     }
 
     @Override
-    public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
-        return synthesizeNative(nativeHandle, text, voice != null ? voice.id() : "default");
+    public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+        byte[] data = synthesizeNative(nativeHandle, text, voice != null ? voice.id() : "default");
+        return new FastTTSAudio(data, 24000);
     }
 
     @Override
     public void stream(String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> chunkConsumer) throws Exception {
-        streamNative(nativeHandle, text, voice != null ? voice.id() : "default", chunkConsumer);
+        FastTTSAudio audio = synthesize(text, voice, config);
+        chunkConsumer.accept(audio.getData());
     }
 
     @Override

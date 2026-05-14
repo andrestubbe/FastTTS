@@ -60,7 +60,11 @@ public class FastTTSManager {
             if (cmd.equals("b")) return;
             if (cmd.equals("t")) {
                 System.out.println("Synthesizing test phrase...");
-                tts.speak("Fast TTS is working perfectly.");
+                try {
+                    tts.speak("Fast TTS is working perfectly.");
+                } catch (Exception e) {
+                    System.err.println("Test failed: " + e.getMessage());
+                }
             }
         }
     }

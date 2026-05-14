@@ -86,8 +86,8 @@ public class Demo {
 
                 System.out.println("\n[Synthesizing...]");
                 try {
-                    byte[] audio = tts.speak(selected.backendId(), text, selected, null);
-                    if (audio != null && audio.length > 0) {
+                    FastTTSAudio audio = tts.speak(selected.backendId(), text, selected, null);
+                    if (audio != null) {
                         playAudio(audio);
                     } else {
                         System.err.println("No audio generated.");
@@ -116,20 +116,20 @@ public class Demo {
     /**
      * Helper to play audio using standard Java Sound API.
      */
-    private static void playAudio(byte[] audioData) {
+    private static void playAudio(FastTTSAudio audio) {
         try {
-            System.out.println("Processing audio buffer (" + audioData.length + " bytes)...");
+            byte[] data = audio.getData();
+            System.out.println("Processing audio buffer (" + data.length + " bytes)...");
             
             AudioInputStream ais;
             try {
-                ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioData));
+                ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(data));
                 System.out.println("Detected format: " + ais.getFormat());
             } catch (UnsupportedAudioFileException e) {
-                // Fallback for raw PCM (Piper uses 22050, ElevenLabs Free uses 16000)
-                int rate = audioData.length < 50000 ? 16000 : 22050; 
-                System.out.println("No header found. Using fallback: " + rate + "Hz, 16-bit, Mono");
-                AudioFormat rawFormat = new AudioFormat(rate, 16, 1, true, false);
-                ais = new AudioInputStream(new ByteArrayInputStream(audioData), rawFormat, audioData.length / 2);
+                // Use metadata from FastTTSAudio if raw
+                System.out.println("No header found. Using metadata: " + audio.getSampleRate() + "Hz, 16-bit, Mono");
+                AudioFormat rawFormat = new AudioFormat(audio.getSampleRate(), 16, 1, true, false);
+                ais = new AudioInputStream(new ByteArrayInputStream(data), rawFormat, data.length / 2);
             }
 
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, ais.getFormat());

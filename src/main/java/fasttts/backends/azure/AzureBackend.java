@@ -20,7 +20,7 @@ public final class AzureBackend implements FastTTSBackend {
     }
 
     @Override
-    public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+    public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
         throw new UnsupportedOperationException("Azure Backend is currently a placeholder. Implement REST API call here.");
     }
 
