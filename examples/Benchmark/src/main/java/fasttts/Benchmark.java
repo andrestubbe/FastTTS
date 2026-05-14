@@ -2,6 +2,7 @@ package fasttts;
 
 import fasttts.core.*;
 import fasttts.backends.windows.*;
+import fasttts.backends.piper.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class Benchmark {
     public static void main(String[] args) throws Exception {
         FastTTS tts = new FastTTS();
         tts.registerBackend(new WindowsTTSBackend());
+        tts.registerBackend(new PiperBackend("../../piper.exe", "../../thorsten.onnx"));
         
         System.out.println("======================================================");
         System.out.println("             FastTTS PERFORMANCE BENCHMARK            ");
@@ -29,19 +31,22 @@ public class Benchmark {
         long endNative = System.nanoTime();
         double msNative = (endNative - startNative) / 1_000_000.0;
 
-        // 2. Piper (CLI Emulation for comparison if not installed)
-        // Typical piper overhead is process start (50-200ms) + inference
-        double msPiperTypical = 185.0; 
+        // 2. Piper (CLI)
+        long startPiper = System.nanoTime();
+        FastTTSVoice piperVoice = new FastTTSVoice("thorsten.onnx", "Thorsten", "de_DE", "male", "piper");
+        byte[] piperAudio = tts.speak("piper", TEST_TEXT, piperVoice, null);
+        long endPiper = System.nanoTime();
+        double msPiper = (endPiper - startPiper) / 1_000_000.0;
 
         // 3. Cloud (ElevenLabs Typical Latency)
         double msCloudTypical = 850.0;
 
         printResult("Windows Native (JNI)", msNative, nativeAudio.length);
-        printResult("Piper (CLI Overhead)", msPiperTypical, nativeAudio.length);
+        printResult("Piper (CLI Real)", msPiper, piperAudio.length);
         printResult("ElevenLabs (Network)", msCloudTypical, nativeAudio.length);
 
         System.out.println("\n------------------------------------------------------");
-        System.out.printf("WINNER: Windows Native (JNI) is %.1fx faster than CLI\n", msPiperTypical / msNative);
+        System.out.printf("WINNER: Windows Native (JNI) is %.1fx faster than CLI\n", msPiper / msNative);
         System.out.println("------------------------------------------------------");
     }
 
