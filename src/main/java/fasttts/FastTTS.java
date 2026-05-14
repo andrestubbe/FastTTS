@@ -21,8 +21,15 @@ public final class FastTTS {
         }
     }
 
-    public byte[] speak(String text) throws Exception {
-        return speak(defaultBackendName, text, null, null);
+    /**
+     * Quick speak using default engine.
+     */
+    public void speak(String text) {
+        try {
+            speak(defaultBackendName, text, null, null);
+        } catch (Exception e) {
+            System.err.println("FastTTS Error: " + e.getMessage());
+        }
     }
 
     public byte[] speak(String backendName, String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {

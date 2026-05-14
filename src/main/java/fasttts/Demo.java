@@ -12,58 +12,21 @@ import java.io.ByteArrayInputStream;
 public class Demo {
 
     public static void main(String[] args) {
-        System.out.println("========================================");
-        System.out.println("   FastTTS — Native Terminal Demo");
-        System.out.println("========================================");
+        FastTTS tts = new FastTTS();
+        
+        // Register backends
+        tts.registerBackend(new WindowsTTSBackend());
+        tts.registerBackend(new PiperBackend("piper.exe", "en_US-lessac-medium.onnx"));
 
-        try {
-            FastTTS tts = new FastTTS();
-            
-            // Register Windows Backend
-            WindowsTTSBackend winBackend = new WindowsTTSBackend();
-            tts.registerBackend(winBackend);
-            
-            System.out.println("[SUCCESS] Registered Backend: " + winBackend.getName());
-
-            // List Voices
-            List<FastTTSVoice> voices = tts.getAllVoices();
-            System.out.println("\nAvailable Voices:");
-            for (int i = 0; i < voices.size(); i++) {
-                System.out.println((i + 1) + ". " + voices.get(i));
-            }
-
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("\nChoose a voice number (default 1): ");
-            int voiceIdx = 0;
-            try {
-                String input = scanner.nextLine();
-                if (!input.isEmpty()) voiceIdx = Integer.parseInt(input) - 1;
-            } catch (Exception e) { /* fallback to 0 */ }
-
-            FastTTSVoice selectedVoice = voices.get(Math.max(0, Math.min(voiceIdx, voices.size() - 1)));
-            System.out.println("Using: " + selectedVoice.name());
-
-            while (true) {
-                System.out.print("\nEnter text (or 'exit'): ");
-                String text = scanner.nextLine();
-                if (text.equalsIgnoreCase("exit")) break;
-
-                System.out.println("Synthesizing...");
-                long start = System.currentTimeMillis();
-                byte[] audio = tts.speak("windows", text, selectedVoice, new FastTTSConfig());
-                long end = System.currentTimeMillis();
-                
-                System.out.println("[INFO] Latency: " + (end - start) + "ms | Size: " + audio.length + " bytes");
-
-                playAudio(audio);
-            }
-
-            System.out.println("Goodbye!");
-
-        } catch (Exception e) {
-            System.err.println("[ERROR] " + e.getMessage());
-            e.printStackTrace();
-        }
+        System.out.println("FastTTS Ready. Default: Windows");
+        
+        // Zero Bullshit Speak
+        tts.speak("Hello Andre! FastTTS is running.");
+        
+        // Change engine on the fly
+        System.out.println("Switching to Piper...");
+        tts.setDefaultBackend("piper");
+        tts.speak("I am Piper, a fast offline voice.");
     }
 
     /**

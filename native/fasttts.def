@@ -1,4 +1,11 @@
 LIBRARY fasttts
 EXPORTS
     Java_fasttts_WindowsTTSBackend_synthesizeNative
+    Java_fasttts_WindowsTTSBackend_streamNative
     Java_fasttts_WindowsTTSBackend_getVoicesNative
+    
+    ; Kokoro ONNX Bridge
+    Java_fasttts_KokoroBackend_initNative
+    Java_fasttts_KokoroBackend_synthesizeNative
+    Java_fasttts_KokoroBackend_streamNative
+    Java_fasttts_KokoroBackend_releaseNative

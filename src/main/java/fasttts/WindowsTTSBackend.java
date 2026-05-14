@@ -28,18 +28,14 @@ public final class WindowsTTSBackend implements FastTTSBackend {
 
     @Override
     public void stream(String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> chunkConsumer) throws Exception {
-        // For Windows, we can either stream via a callback from C++ 
-        // or just synthesize and split (simulated streaming for now, 
-        // will upgrade to true native streaming if needed).
-        byte[] full = synthesize(text, voice, config);
-        // Split into 4KB chunks for demo purposes
-        int chunkSize = 4096;
-        for (int i = 0; i < full.length; i += chunkSize) {
-            int length = Math.min(chunkSize, full.length - i);
-            byte[] chunk = new byte[length];
-            System.arraycopy(full, i, chunk, 0, length);
-            chunkConsumer.accept(chunk);
-        }
+        streamNative(
+            text, 
+            voice != null ? voice.id() : null, 
+            config != null ? config.getRate() : 1.0f,
+            config != null ? config.getPitch() : 1.0f,
+            config != null ? config.getVolume() : 1.0f,
+            chunkConsumer
+        );
     }
 
     @Override
@@ -57,6 +53,8 @@ public final class WindowsTTSBackend implements FastTTSBackend {
     // --- Native Methods ---
 
     private native byte[] synthesizeNative(String text, String voiceId, float rate, float pitch, float volume);
+    
+    private native void streamNative(String text, String voiceId, float rate, float pitch, float volume, Consumer<byte[]> chunkConsumer);
     
     private native List<FastTTSVoice> getVoicesNative();
 }
