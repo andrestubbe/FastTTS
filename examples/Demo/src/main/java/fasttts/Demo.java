@@ -125,8 +125,8 @@ public class Demo {
                 ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioData));
                 System.out.println("Detected WAV format: " + ais.getFormat());
             } catch (UnsupportedAudioFileException e) {
-                System.out.println("No WAV header found. Treating as raw PCM (44.1kHz, 16-bit, Mono)...");
-                AudioFormat rawFormat = new AudioFormat(44100, 16, 1, true, false);
+                System.out.println("No WAV header found. Treating as raw PCM (16kHz, 16-bit, Mono)...");
+                AudioFormat rawFormat = new AudioFormat(16000, 16, 1, true, false);
                 ais = new AudioInputStream(new ByteArrayInputStream(audioData), rawFormat, audioData.length / 2);
             }
 
