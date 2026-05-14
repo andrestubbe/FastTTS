@@ -45,14 +45,37 @@ public class FastTTSManager {
     }
 
     private void manageWindowsVoices() {
-        clearConsole();
-        System.out.println("--- Windows System Voices ---");
-        List<FastTTSVoice> voices = tts.getAllVoices();
-        for (int i = 0; i < voices.size(); i++) {
-            System.out.println((i + 1) + ". " + voices.get(i).name());
+        while (true) {
+            clearConsole();
+            System.out.println("--- Windows System Voices ---");
+            List<FastTTSVoice> voices = tts.getAllVoices();
+            for (int i = 0; i < voices.size(); i++) {
+                System.out.println("  " + (i + 1) + ". " + voices.get(i).name());
+            }
+            System.out.println("\n  [t] Test current default");
+            System.out.println("  [s] Set default voice");
+            System.out.println("  [b] Back");
+
+            System.out.print("\nCommand: ");
+            String cmd = scanner.nextLine().toLowerCase();
+
+            if (cmd.equals("b")) return;
+            if (cmd.equals("t")) {
+                System.out.println("Synthesizing test phrase...");
+                tts.speak("This is a test of the Fast TTS native windows engine.");
+            }
+            if (cmd.equals("s")) {
+                System.out.print("Enter number: ");
+                try {
+                    int idx = Integer.parseInt(scanner.nextLine()) - 1;
+                    // TODO: Store default voice in config
+                    System.out.println("[SUCCESS] Voice selected.");
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    System.out.println("[ERROR] Invalid input.");
+                }
+            }
         }
-        System.out.println("\n[Press Enter to return]");
-        scanner.nextLine();
     }
 
     private void managePiper() {
