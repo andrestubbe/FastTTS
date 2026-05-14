@@ -49,15 +49,43 @@ JNIEXPORT jbyteArray JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_syn
 
             STATSTG stat;
             pBaseStream->Stat(&stat, STATFLAG_NONAME);
-            ULONG size = (ULONG)stat.cbSize.QuadPart;
+            ULONG pcmSize = (ULONG)stat.cbSize.QuadPart;
+            ULONG wavSize = pcmSize + 44;
             
-            if (size > 0) {
-                jbyteArray result = env->NewByteArray(size);
+            if (pcmSize > 0) {
+                jbyteArray result = env->NewByteArray(wavSize);
+                
+                // Write WAV Header
+                unsigned char header[44];
+                memcpy(header, "RIFF", 4);
+                unsigned int totalSize = wavSize - 8;
+                memcpy(header + 4, &totalSize, 4);
+                memcpy(header + 8, "WAVE", 4);
+                memcpy(header + 12, "fmt ", 4);
+                unsigned int fmtLen = 16;
+                memcpy(header + 16, &fmtLen, 4);
+                unsigned short format = 1; // PCM
+                memcpy(header + 20, &format, 2);
+                unsigned short channels = 1;
+                memcpy(header + 22, &channels, 2);
+                unsigned int sampleRate = 44100;
+                memcpy(header + 24, &sampleRate, 4);
+                unsigned int byteRate = 44100 * 2;
+                memcpy(header + 28, &byteRate, 4);
+                unsigned short blockAlign = 2;
+                memcpy(header + 32, &blockAlign, 2);
+                unsigned short bits = 16;
+                memcpy(header + 34, &bits, 2);
+                memcpy(header + 36, "data", 4);
+                memcpy(header + 40, &pcmSize, 4);
+
+                env->SetByteArrayRegion(result, 0, 44, (jbyte*)header);
+
                 HGLOBAL hGlobal;
                 if (SUCCEEDED(GetHGlobalFromStream(pBaseStream, &hGlobal))) {
                     void* pData = GlobalLock(hGlobal);
                     if (pData) {
-                        env->SetByteArrayRegion(result, 0, size, (jbyte*)pData);
+                        env->SetByteArrayRegion(result, 44, pcmSize, (jbyte*)pData);
                         GlobalUnlock(hGlobal);
                         pStream->Release(); pBaseStream->Release(); pVoice->Release();
                         CoUninitialize();

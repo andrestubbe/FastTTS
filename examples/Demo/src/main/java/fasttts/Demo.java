@@ -95,8 +95,6 @@ public class Demo {
                 } catch (Exception e) {
                     System.err.println("Error: " + e.getMessage());
                 }
-                System.out.println("\n[Done] Press Enter to continue...");
-                scanner.nextLine();
             }
         }
         System.out.println("Goodbye!");
