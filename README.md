@@ -63,22 +63,52 @@ public class Main {
 
 ## Installation
 
-### Maven (via JitPack)
+FastTTS requires **two** components: the `fasttts` library and the `fastcore` native loader.
+
+### Option 1: Maven (Recommended)
+Add the JitPack repository and the dependencies to your `pom.xml`:
+
 ```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
 <dependencies>
     <dependency>
-        <groupId>com.github.andrestubbe</groupId>
+        <groupId>io.github.andrestubbe</groupId>
         <artifactId>fasttts</artifactId>
         <version>0.1.0</version>
     </dependency>
-    
     <dependency>
-        <groupId>com.github.andrestubbe</groupId>
+        <groupId>io.github.andrestubbe</groupId>
         <artifactId>fastcore</artifactId>
         <version>1.0.0</version>
     </dependency>
 </dependencies>
 ```
+
+### Option 2: Gradle
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'io.github.andrestubbe:fasttts:0.1.0'
+    implementation 'io.github.andrestubbe:fastcore:1.0.0'
+}
+```
+
+### Option 3: Direct Download
+For projects without build tools, download the artifacts directly:
+1. 📦 **[fasttts-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases)**
+2. ⚙️ **[fastcore-1.0.0.jar](https://github.com/andrestubbe/FastCore/releases)**
+
+> [!IMPORTANT]
+> Ensure `fasttts.dll` is either in your `java.library.path` or bundled within the JAR for automatic extraction via FastCore.
 
 ---
 

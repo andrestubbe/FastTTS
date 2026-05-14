@@ -67,24 +67,17 @@ public class Demo {
     }
 
     /**
-     * Helper to play audio using FastAudioPlayer (Ecosystem standard).
+     * Helper to play audio using standard Java Sound API.
      */
     private static void playAudio(byte[] audioData) {
         try {
-            // Save to temp file as FastAudioPlayer currently loads from disk
-            java.io.File temp = java.io.File.createTempFile("fasttts_output", ".wav");
-            java.nio.file.Files.write(temp.toPath(), audioData);
-            
-            fastaudio.FastAudioPlayer player = new fastaudio.FastAudioPlayer();
-            if (player.load(temp.getAbsolutePath())) {
-                System.out.println("Playing via FastAudioPlayer...");
-                player.play();
-                while (player.isPlaying()) {
-                    Thread.sleep(100);
-                }
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioData));
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+            while (clip.isRunning()) {
+                Thread.sleep(100);
             }
-            player.close();
-            temp.delete();
         } catch (Exception e) {
             System.err.println("Playback error: " + e.getMessage());
         }
