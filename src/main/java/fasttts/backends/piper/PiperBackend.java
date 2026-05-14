@@ -25,11 +25,16 @@ public final class PiperBackend implements FastTTSBackend {
 
     @Override
     public byte[] synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
+        if (!new File(piperPath).exists()) {
+            throw new FileNotFoundException("piper.exe not found at: " + piperPath);
+        }
+
+        String currentModel = (voice != null && voice.id() != null) ? voice.id() : modelPath;
         Path tempOutput = Files.createTempFile("piper_out", ".wav");
         
         ProcessBuilder pb = new ProcessBuilder(
             piperPath,
-            "--model", modelPath,
+            "--model", currentModel,
             "--output_file", tempOutput.toAbsolutePath().toString()
         );
         

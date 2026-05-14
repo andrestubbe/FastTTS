@@ -16,11 +16,11 @@ std::wstring jstringToWString(JNIEnv* env, jstring jstr) {
     return wstr;
 }
 
-JNIEXPORT void JNICALL Java_fasttts_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer);
+JNIEXPORT void JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer);
 
-JNIEXPORT jobject JNICALL Java_fasttts_WindowsTTSBackend_getVoicesNative(JNIEnv* env, jobject obj);
+JNIEXPORT jobject JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_getVoicesNative(JNIEnv* env, jobject obj);
 
-JNIEXPORT jbyteArray JNICALL Java_fasttts_WindowsTTSBackend_synthesizeNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume) {
+JNIEXPORT jbyteArray JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_synthesizeNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume) {
     std::wstring wtext = jstringToWString(env, text);
     ISpVoice* pVoice = NULL;
     ISpStream* pStream = NULL;
@@ -75,8 +75,8 @@ JNIEXPORT jbyteArray JNICALL Java_fasttts_WindowsTTSBackend_synthesizeNative(JNI
     return nullptr;
 }
 
-JNIEXPORT void JNICALL Java_fasttts_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer) {
-    jbyteArray full = Java_fasttts_WindowsTTSBackend_synthesizeNative(env, obj, text, voiceId, rate, pitch, volume);
+JNIEXPORT void JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer) {
+    jbyteArray full = Java_fasttts_backends_windows_WindowsTTSBackend_synthesizeNative(env, obj, text, voiceId, rate, pitch, volume);
     if (!full) return;
 
     jclass consumerClass = env->GetObjectClass(chunkConsumer);
@@ -97,16 +97,14 @@ JNIEXPORT void JNICALL Java_fasttts_WindowsTTSBackend_streamNative(JNIEnv* env, 
     env->DeleteLocalRef(full);
 }
 
-
-
-JNIEXPORT jobject JNICALL Java_fasttts_WindowsTTSBackend_getVoicesNative(JNIEnv* env, jobject obj) {
+JNIEXPORT jobject JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_getVoicesNative(JNIEnv* env, jobject obj) {
     jclass listClass = env->FindClass("java/util/ArrayList");
     jmethodID listInit = env->GetMethodID(listClass, "<init>", "()V");
     jmethodID listAdd = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
     jobject list = env->NewObject(listClass, listInit);
 
-    jclass voiceClass = env->FindClass("fasttts/FastTTSVoice");
-    jmethodID voiceInit = env->GetMethodID(voiceClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+    jclass voiceClass = env->FindClass("fasttts/core/FastTTSVoice");
+    jmethodID voiceInit = env->GetMethodID(voiceClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 
     ISpObjectTokenCategory* pCategory = NULL;
     IEnumSpObjectTokens* pEnum = NULL;
@@ -131,8 +129,9 @@ JNIEXPORT jobject JNICALL Java_fasttts_WindowsTTSBackend_getVoicesNative(JNIEnv*
                     jstring name = env->NewString((const jchar*)pDescription, (jsize)wcslen(pDescription));
                     jstring lang = env->NewStringUTF("unknown");
                     jstring gender = env->NewStringUTF("unknown");
+                    jstring backendId = env->NewStringUTF("windows");
                     
-                    jobject voiceObj = env->NewObject(voiceClass, voiceInit, id, name, lang, gender);
+                    jobject voiceObj = env->NewObject(voiceClass, voiceInit, id, name, lang, gender, backendId);
                     env->CallBooleanMethod(list, listAdd, voiceObj);
                     
                     if (pDescription) CoTaskMemFree(pDescription);

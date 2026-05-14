@@ -45,6 +45,7 @@
         <resources>
             <resource>
                 <directory>build</directory>
+                <targetPath>native</targetPath>
                 <includes>
                     <include>*.dll</include>
                 </includes>

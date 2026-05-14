@@ -32,8 +32,6 @@
             <groupId>io.github.andrestubbe</groupId>
             <artifactId>fasttts</artifactId>
             <version>0.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../target/fasttts-0.1.0.jar</systemPath>
         </dependency>
     </dependencies>
     

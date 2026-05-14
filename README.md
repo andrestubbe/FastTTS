@@ -43,20 +43,44 @@ FastTTS minimizes the overhead of standard Java TTS wrappers by communicating di
 
 ---
 
-## Quick Start
+## 🚀 Quick Start (v0.2.0 Modular)
 
 ```java
 import fasttts.FastTTS;
-import fasttts.WindowsTTSBackend;
+import fasttts.backends.windows.WindowsTTSBackend;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         FastTTS tts = new FastTTS();
         tts.registerBackend(new WindowsTTSBackend());
+        tts.use("windows"); // Explicitly select backend
         
         tts.speak("FastJava is the future of native performance.");
     }
 }
+```
+
+## 🎙️ Engines & Setup
+
+### 1. Windows Native (SAPI/WinRT)
+Built-in, no setup required. Instant and reliable.
+```java
+tts.registerBackend(new WindowsTTSBackend());
+```
+
+### 2. Piper Offline (AI Voices)
+High-quality offline voices. Requires `piper.exe`.
+1.  **Download**: Get `piper.exe` via `run-manager.bat`.
+2.  **Models**: Download `.onnx` models from [Piper Voices](https://github.com/rhasspy/piper#voices).
+3.  **Register**:
+```java
+tts.registerBackend(new PiperBackend("piper.exe", "voice.onnx"));
+```
+
+### 3. ElevenLabs & Azure (Cloud)
+Premium voices via REST API. Requires API keys.
+```java
+tts.registerBackend(new ElevenLabsBackend("your_api_key"));
 ```
 
 ---
