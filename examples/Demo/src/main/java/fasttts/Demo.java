@@ -93,7 +93,9 @@ public class Demo {
                         System.err.println("No audio generated.");
                     }
                 } catch (Exception e) {
-                    System.err.println("Error: " + e.getMessage());
+                    System.err.println("\n[ERROR] Synthesis failed: " + e.getMessage());
+                    System.out.println("Press Enter to continue...");
+                    scanner.nextLine();
                 }
             }
         }
