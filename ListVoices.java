@@ -12,17 +12,27 @@ public class ListVoices {
             props.load(is);
         }
         String apiKey = props.getProperty("elevenlabs.api.key");
-        
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://api.elevenlabs.io/v1/voices"))
-            .header("xi-api-key", apiKey)
-            .GET()
-            .build();
-            
+                .uri(URI.create("https://api.elevenlabs.io/v1/voices"))
+                .header("xi-api-key", apiKey)
+                .GET()
+                .build();
+
         System.out.println("Fetching voices for your account...");
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Status: " + response.statusCode());
-        System.out.println("Response:\n" + response.body());
+        String body = response.body();
+
+        // Very basic manual parsing to find name, id and category
+        String[] parts = body.split("\\{\"voice_id\":\"");
+        for (int i = 1; i < parts.length; i++) {
+            String p = parts[i];
+            String id = p.substring(0, p.indexOf("\""));
+            String name = p.substring(p.indexOf("\"name\":\"") + 8, p.indexOf("\",\"samples\""));
+            String category = p.substring(p.indexOf("\"category\":\"") + 12, p.indexOf("\",\"fine_tuning\""));
+
+            System.out.println(" - " + name + " [" + id + "] Category: " + category);
+        }
     }
 }

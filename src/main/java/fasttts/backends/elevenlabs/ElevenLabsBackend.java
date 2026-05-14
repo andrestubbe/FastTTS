@@ -72,10 +72,10 @@ public final class ElevenLabsBackend implements FastTTSBackend {
     @Override
     public List<FastTTSVoice> getVoices() {
         return List.of(
-            new FastTTSVoice("piTKgcLEGmPE4e6mEKli", "Nicole (Multilingual)", "en/de", "female", "elevenlabs"),
-            new FastTTSVoice("MbbPUteESkJWr4IAaW35", "Marcus (Multilingual)", "en/de", "male", "elevenlabs"),
-            new FastTTSVoice("5Aahq892EEb6MdNwMM3p", "Laura (Multilingual)", "en/de", "female", "elevenlabs"),
-            new FastTTSVoice("pNInz6obpgDQGcFmaJgB", "Adam (Legacy)", "en", "male", "elevenlabs")
+            new FastTTSVoice("pNInz6obpgDQGcFmaJgB", "Adam (Multilingual)", "en/de", "male", "elevenlabs"),
+            new FastTTSVoice("hpp4J3VqNfWAUOO0d1Us", "Bella (Multilingual)", "en/de", "female", "elevenlabs"),
+            new FastTTSVoice("IKne3meq5aSn9XLyUdCD", "Charlie (Multilingual)", "en/de", "male", "elevenlabs"),
+            new FastTTSVoice("Xb7hH8MSUJpSbSDYk0k2", "Alice (Multilingual)", "en/de", "female", "elevenlabs")
         );
     }
 
