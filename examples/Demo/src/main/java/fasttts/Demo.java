@@ -20,9 +20,9 @@ public class Demo {
         tts.registerBackend(new WindowsTTSBackend());
         
         // Register Piper if available
-        File piperExe = new File("piper.exe");
+        File piperExe = new File("../../piper.exe");
         if (piperExe.exists()) {
-            tts.registerBackend(new PiperBackend("piper.exe", "thorsten.onnx"));
+            tts.registerBackend(new PiperBackend("../../piper.exe", "../../thorsten.onnx"));
         }
 
         System.out.println("=== FastTTS Multi-Engine Demo ===");
