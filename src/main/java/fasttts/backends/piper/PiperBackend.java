@@ -65,7 +65,16 @@ public final class PiperBackend implements FastTTSBackend {
 
     @Override
     public List<FastTTSVoice> getVoices() {
-        return Collections.emptyList(); // Voices are managed by model files in Piper
+        List<FastTTSVoice> voices = new java.util.ArrayList<>();
+        File dir = new File(".");
+        File[] models = dir.listFiles((d, name) -> name.endsWith(".onnx"));
+        if (models != null) {
+            for (File m : models) {
+                String name = m.getName().replace(".onnx", "");
+                voices.add(new FastTTSVoice(m.getPath(), name, "unknown", "unknown", "piper"));
+            }
+        }
+        return voices;
     }
 
     @Override

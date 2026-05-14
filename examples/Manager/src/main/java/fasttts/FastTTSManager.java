@@ -68,9 +68,48 @@ public class FastTTSManager {
     private void managePiper() {
         clearConsole();
         System.out.println("--- Piper Offline TTS ---");
-        System.out.println("Piper integration is ready for model management.");
+        File piperExe = new File("piper.exe");
+        if (!piperExe.exists()) {
+            System.out.println("Piper is NOT installed.");
+            System.out.print("Do you want to download it now? (y/n): ");
+            if (scanner.nextLine().equalsIgnoreCase("y")) {
+                downloadPiper();
+            }
+        } else {
+            System.out.println("Piper is installed.");
+            System.out.println("Voice Models:");
+            File[] models = new File(".").listFiles((d, n) -> n.endsWith(".onnx"));
+            if (models != null) {
+                for (File m : models) System.out.println("  - " + m.getName());
+            }
+        }
         System.out.println("\n[Press Enter to return]");
         scanner.nextLine();
+    }
+
+    private void downloadPiper() {
+        System.out.println("\n[INFO] Downloading Piper (Windows x64)...");
+        String zipUrl = "https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip";
+        try {
+            String psCommand = String.format(
+                "$ProgressPreference = 'SilentlyContinue'; " +
+                "Invoke-WebRequest -Uri '%s' -OutFile 'piper.zip'; " +
+                "Expand-Archive -Path 'piper.zip' -DestinationPath 'piper_root' -Force; " +
+                "Copy-Item -Path 'piper_root\\piper\\*' -Destination '.' -Recurse -Force; " +
+                "rm -r piper_root; rm piper.zip", zipUrl
+            );
+            new ProcessBuilder("powershell", "-Command", psCommand).inheritIO().start().waitFor();
+            
+            System.out.println("[INFO] Downloading Thorsten Voice Model...");
+            String modelUrl = "https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/de/de_DE/thorsten/low/de_DE-thorsten-low.onnx";
+            String voicePs = String.format("Invoke-WebRequest -Uri '%s' -OutFile 'thorsten.onnx'; " +
+                                         "Invoke-WebRequest -Uri '%s.json' -OutFile 'thorsten.onnx.json'", modelUrl, modelUrl);
+            new ProcessBuilder("powershell", "-Command", voicePs).inheritIO().start().waitFor();
+            
+            System.out.println("[SUCCESS] Piper and Thorsten voice model installed.");
+        } catch (Exception e) {
+            System.err.println("[ERROR] Installation failed: " + e.getMessage());
+        }
     }
 
     private void configureCloud() {

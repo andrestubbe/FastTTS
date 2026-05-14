@@ -2,10 +2,12 @@ package fasttts;
 
 import fasttts.core.*;
 import fasttts.backends.windows.*;
+import fasttts.backends.piper.*;
 import java.util.List;
 import java.util.Scanner;
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 /**
  * Terminal Demo for FastTTS.
@@ -16,8 +18,14 @@ public class Demo {
     public static void main(String[] args) {
         FastTTS tts = new FastTTS();
         tts.registerBackend(new WindowsTTSBackend());
+        
+        // Register Piper if available
+        File piperExe = new File("piper.exe");
+        if (piperExe.exists()) {
+            tts.registerBackend(new PiperBackend("piper.exe", "thorsten.onnx"));
+        }
 
-        System.out.println("=== FastTTS Windows Voice Test ===");
+        System.out.println("=== FastTTS Multi-Engine Demo ===");
         List<FastTTSVoice> voices = tts.getAllVoices();
         for (int i = 0; i < voices.size(); i++) {
             System.out.println((i + 1) + ". " + voices.get(i).name());
@@ -38,7 +46,7 @@ public class Demo {
 
             System.out.println("Speaking...");
             try {
-                byte[] audio = tts.speak("windows", text, selected, null);
+                byte[] audio = tts.speak(selected.backendId(), text, selected, null);
                 if (audio != null && audio.length > 0) {
                     playAudio(audio);
                 } else {
