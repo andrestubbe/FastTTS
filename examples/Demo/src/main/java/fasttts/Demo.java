@@ -123,10 +123,12 @@ public class Demo {
             AudioInputStream ais;
             try {
                 ais = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioData));
-                System.out.println("Detected WAV format: " + ais.getFormat());
+                System.out.println("Detected format: " + ais.getFormat());
             } catch (UnsupportedAudioFileException e) {
-                System.out.println("No WAV header found. Treating as raw PCM (16kHz, 16-bit, Mono)...");
-                AudioFormat rawFormat = new AudioFormat(16000, 16, 1, true, false);
+                // Fallback for raw PCM (Piper uses 22050, ElevenLabs Free uses 16000)
+                int rate = audioData.length < 50000 ? 16000 : 22050; 
+                System.out.println("No header found. Using fallback: " + rate + "Hz, 16-bit, Mono");
+                AudioFormat rawFormat = new AudioFormat(rate, 16, 1, true, false);
                 ais = new AudioInputStream(new ByteArrayInputStream(audioData), rawFormat, audioData.length / 2);
             }
 
