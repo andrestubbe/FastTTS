@@ -8,9 +8,9 @@ Thumbs.db
 .DS_Store
 
 # Build artifacts
-/target/
-/build/
-/out/
+target/
+build/
+out/
 
 # Release Staging (Private Templates)
 /release/
