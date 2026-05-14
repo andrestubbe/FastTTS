@@ -1,4 +1,4 @@
-# Building FastXXX from Source
+# Building FastTTS from Source
 
 ## Prerequisites
 
@@ -30,19 +30,19 @@ mvn clean package -DskipTests
 The `compile.bat` script:
 - Auto-detects Visual Studio 2019/2022
 - Auto-detects JAVA_HOME
-- Uses `native\fastXXX.def` for JNI exports
-- Outputs to `build\fastXXX.dll`
+- Uses `native\fasttts.def` for JNI exports
+- Outputs to `build\fasttts.dll`
 
-The Maven `pom.xml` will automatically pick up `build\fastXXX.dll` and bundle it inside the JAR.
+The Maven `pom.xml` will automatically pick up `build\fasttts.dll` and bundle it inside the JAR.
 
 ## JNI Exports (.def File)
 
-When using JNI, you MUST export your native functions in the `native\fastXXX.def` file:
+When using JNI, you MUST export your native functions in the `native\fasttts.def` file:
 
 ```def
-LIBRARY fastXXX
+LIBRARY fasttts
 EXPORTS
-    Java_fastXXX_FastXXX_doSomethingNative
+    Java_fasttts_WindowsTTSBackend_synthesizeNative
 ```
 
 **Important:** Function names must match Java's expected format:

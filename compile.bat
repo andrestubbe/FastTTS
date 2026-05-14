@@ -3,7 +3,7 @@
 :: Auto-detects Visual Studio and JAVA_HOME
 
 echo ========================================
-echo FastXXX Native Library Builder
+echo FastTTS Native Library Builder
 echo ========================================
 
 :: Configuration
