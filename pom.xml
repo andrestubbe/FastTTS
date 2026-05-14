@@ -72,7 +72,7 @@
                     <finalName>${project.artifactId}-${project.version}</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>fasttts.Demo</mainClass>
+                            <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
                 </configuration>

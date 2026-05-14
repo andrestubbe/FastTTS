@@ -36,8 +36,7 @@ public class Demo {
 
             System.out.println("Speaking...");
             try {
-                byte[] audio = tts.synthesize("windows", text, selected, null);
-                System.out.println("Synthesis complete. Buffer size: " + (audio != null ? audio.length : 0) + " bytes");
+                byte[] audio = tts.speak("windows", text, selected, null);
                 if (audio != null && audio.length > 0) {
                     playAudio(audio);
                 } else {

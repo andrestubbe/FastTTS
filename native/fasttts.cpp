@@ -26,31 +26,53 @@ JNIEXPORT jbyteArray JNICALL Java_fasttts_WindowsTTSBackend_synthesizeNative(JNI
     ISpStream* pStream = NULL;
     IStream* pBaseStream = NULL;
     HRESULT hr = CoInitialize(NULL);
+    
     hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void**)&pVoice);
     if (FAILED(hr)) return nullptr;
 
     hr = CreateStreamOnHGlobal(NULL, TRUE, &pBaseStream);
+    if (FAILED(hr)) { pVoice->Release(); return nullptr; }
+
     WAVEFORMATEX wfx = { WAVE_FORMAT_PCM, 1, 44100, 88200, 2, 16, 0 };
-
+    
     hr = CoCreateInstance(CLSID_SpStream, NULL, CLSCTX_ALL, IID_ISpStream, (void**)&pStream);
-    hr = pStream->SetBaseStream(pBaseStream, SPDFID_WaveFormatEx, &wfx);
-    hr = pVoice->SetOutput(pStream, TRUE);
-    pVoice->SetRate((long)((rate - 1.0f) * 10.0f));
-    pVoice->Speak(wtext.c_str(), SPF_DEFAULT, NULL);
+    if (SUCCEEDED(hr)) {
+        hr = pStream->SetBaseStream(pBaseStream, SPDFID_WaveFormatEx, &wfx);
+        hr = pVoice->SetOutput(pStream, TRUE);
+        
+        pVoice->SetRate((long)((rate - 1.0f) * 10.0f));
+        pVoice->SetVolume((unsigned short)(volume * 100.0f));
+        
+        hr = pVoice->Speak(wtext.c_str(), SPF_DEFAULT, NULL);
+        if (SUCCEEDED(hr)) {
+            pVoice->WaitUntilDone(INFINITE);
 
-    STATSTG stat;
-    pBaseStream->Stat(&stat, STATFLAG_NONAME);
-    ULONG size = (ULONG)stat.cbSize.QuadPart;
-    jbyteArray result = env->NewByteArray(size);
-    HGLOBAL hGlobal;
-    GetHGlobalFromStream(pBaseStream, &hGlobal);
-    void* pData = GlobalLock(hGlobal);
-    env->SetByteArrayRegion(result, 0, size, (jbyte*)pData);
-    GlobalUnlock(hGlobal);
+            STATSTG stat;
+            pBaseStream->Stat(&stat, STATFLAG_NONAME);
+            ULONG size = (ULONG)stat.cbSize.QuadPart;
+            
+            if (size > 0) {
+                jbyteArray result = env->NewByteArray(size);
+                HGLOBAL hGlobal;
+                if (SUCCEEDED(GetHGlobalFromStream(pBaseStream, &hGlobal))) {
+                    void* pData = GlobalLock(hGlobal);
+                    if (pData) {
+                        env->SetByteArrayRegion(result, 0, size, (jbyte*)pData);
+                        GlobalUnlock(hGlobal);
+                        pStream->Release(); pBaseStream->Release(); pVoice->Release();
+                        CoUninitialize();
+                        return result;
+                    }
+                }
+            }
+        }
+    }
 
-    pStream->Release(); pBaseStream->Release(); pVoice->Release();
+    if (pStream) pStream->Release();
+    if (pBaseStream) pBaseStream->Release();
+    if (pVoice) pVoice->Release();
     CoUninitialize();
-    return result;
+    return nullptr;
 }
 
 JNIEXPORT void JNICALL Java_fasttts_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer) {
