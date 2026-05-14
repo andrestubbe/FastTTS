@@ -1,5 +1,6 @@
-package fasttts;
+package fasttts.backends.azure;
 
+import fasttts.core.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;

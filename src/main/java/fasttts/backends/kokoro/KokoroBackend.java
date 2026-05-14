@@ -1,6 +1,7 @@
-package fasttts;
+package fasttts.backends.kokoro;
 
 import fastcore.FastCore;
+import fasttts.core.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;

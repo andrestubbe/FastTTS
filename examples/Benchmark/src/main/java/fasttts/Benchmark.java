@@ -1,5 +1,7 @@
 package fasttts;
 
+import fasttts.core.*;
+import fasttts.backends.windows.*;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,13 +1,12 @@
-package fasttts;
+package fasttts.backends.windows;
 
 import fastcore.FastCore;
-import java.util.ArrayList;
+import fasttts.core.*;
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Windows-native TTS Backend using WinRT SpeechSynthesis.
- * Adheres to FastJava philosophy: Direct native calls, minimal overhead.
+ * Native Windows SAPI/WinRT Backend.
  */
 public final class WindowsTTSBackend implements FastTTSBackend {
 

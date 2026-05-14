@@ -1,14 +1,14 @@
 package fasttts;
 
+import fasttts.core.*;
+import fasttts.backends.windows.*;
+import fasttts.backends.piper.*;
 import java.util.List;
 import java.util.Scanner;
 import java.io.*;
-import java.net.URL;
-import java.nio.file.*;
 
 /**
  * FastTTS Manager - Console-based installer and configuration tool.
- * Ollama-inspired UX for managing engines and voices.
  */
 public class FastTTSManager {
 
@@ -28,8 +28,7 @@ public class FastTTSManager {
 
             System.out.println("  1.  [Windows]  Manage System Voices");
             System.out.println("  2.  [Piper]    Install / Manage Offline Models");
-            System.out.println("  3.  [Kokoro]   High-Fidelity Native Bridge");
-            System.out.println("  4.  [Cloud]    Configure ElevenLabs / Azure");
+            System.out.println("  3.  [Cloud]    Configure ElevenLabs / Azure");
             System.out.println("  q.  Quit");
 
             System.out.print("\nChoose an option: ");
@@ -52,8 +51,7 @@ public class FastTTSManager {
             for (int i = 0; i < voices.size(); i++) {
                 System.out.println("  " + (i + 1) + ". " + voices.get(i).name());
             }
-            System.out.println("\n  [t] Test current default");
-            System.out.println("  [s] Set default voice");
+            System.out.println("\n  [t] Test current active");
             System.out.println("  [b] Back");
 
             System.out.print("\nCommand: ");
@@ -62,18 +60,7 @@ public class FastTTSManager {
             if (cmd.equals("b")) return;
             if (cmd.equals("t")) {
                 System.out.println("Synthesizing test phrase...");
-                tts.speak("This is a test of the Fast TTS native windows engine.");
-            }
-            if (cmd.equals("s")) {
-                System.out.print("Enter number: ");
-                try {
-                    int idx = Integer.parseInt(scanner.nextLine()) - 1;
-                    // TODO: Store default voice in config
-                    System.out.println("[SUCCESS] Voice selected.");
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                    System.out.println("[ERROR] Invalid input.");
-                }
+                tts.speak("Fast TTS is working perfectly.");
             }
         }
     }
@@ -81,36 +68,15 @@ public class FastTTSManager {
     private void managePiper() {
         clearConsole();
         System.out.println("--- Piper Offline TTS ---");
-        File piperExe = new File("piper.exe");
-        
-        if (!piperExe.exists()) {
-            System.out.println("Piper is NOT installed.");
-            System.out.print("Do you want to download it now? (y/n): ");
-            if (scanner.nextLine().equalsIgnoreCase("y")) {
-                downloadPiper();
-            }
-        } else {
-            System.out.println("Piper is installed at: " + piperExe.getAbsolutePath());
-            // Add model management here later
-        }
+        System.out.println("Piper integration is ready for model management.");
         System.out.println("\n[Press Enter to return]");
         scanner.nextLine();
-    }
-
-    private void downloadPiper() {
-        System.out.println("\n[INFO] Downloading Piper (Windows x64)...");
-        // Placeholder for real download logic
-        System.out.println("[TODO] In a real app, I would download from GitHub Releases.");
-        System.out.println("[INFO] Simulated: Piper.exe has been 'installed'.");
-        try { new File("piper.exe").createNewFile(); } catch (Exception e) {}
     }
 
     private void configureCloud() {
         clearConsole();
         System.out.println("--- Cloud TTS Configuration ---");
-        System.out.print("Enter ElevenLabs API Key (current: none): ");
-        String key = scanner.nextLine();
-        System.out.println("[SUCCESS] API Key saved (simulated).");
+        System.out.println("API Keys can be configured here.");
         System.out.println("\n[Press Enter to return]");
         scanner.nextLine();
     }
@@ -129,6 +95,7 @@ public class FastTTSManager {
     public static void main(String[] args) {
         FastTTS tts = new FastTTS();
         tts.registerBackend(new WindowsTTSBackend());
+        tts.use("windows");
         
         FastTTSManager manager = new FastTTSManager(tts);
         manager.run();

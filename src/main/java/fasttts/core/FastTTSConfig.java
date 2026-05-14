@@ -1,4 +1,4 @@
-package fasttts;
+package fasttts.core;
 
 public class FastTTSConfig {
     private float rate = 1.0f;

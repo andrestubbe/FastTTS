@@ -1,5 +1,6 @@
-package fasttts;
+package fasttts.backends.piper;
 
+import fasttts.core.*;
 import java.io.*;
 import java.nio.file.*;
 import java.util.Collections;
