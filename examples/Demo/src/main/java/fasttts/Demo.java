@@ -28,7 +28,8 @@ public class Demo {
         System.out.println("=== FastTTS Multi-Engine Demo ===");
         List<FastTTSVoice> voices = tts.getAllVoices();
         for (int i = 0; i < voices.size(); i++) {
-            System.out.println((i + 1) + ". " + voices.get(i).name());
+            FastTTSVoice v = voices.get(i);
+            System.out.println((i + 1) + ". [" + v.backendId() + "] " + v.name());
         }
 
         Scanner scanner = new Scanner(System.in);
