@@ -43,7 +43,7 @@ public final class ElevenLabsBackend implements FastTTSBackend {
         float similarity = Float.parseFloat(config.getProperty("elevenlabs.similarity", String.valueOf(defaultSimilarity)));
 
         String json = String.format(java.util.Locale.US,
-            "{\"text\":\"%s\", \"model_id\":\"eleven_monolingual_v1\", \"voice_settings\":{\"stability\":%f, \"similarity_boost\":%f}}",
+            "{\"text\":\"%s\", \"model_id\":\"eleven_turbo_v2_5\", \"voice_settings\":{\"stability\":%f, \"similarity_boost\":%f}}",
             text.replace("\"", "\\\""), stability, similarity
         );
 
