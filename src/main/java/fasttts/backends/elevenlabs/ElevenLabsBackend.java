@@ -42,7 +42,7 @@ public final class ElevenLabsBackend implements FastTTSBackend {
         float stability = Float.parseFloat(config.getProperty("elevenlabs.stability", String.valueOf(defaultStability)));
         float similarity = Float.parseFloat(config.getProperty("elevenlabs.similarity", String.valueOf(defaultSimilarity)));
 
-        String json = String.format(
+        String json = String.format(java.util.Locale.US,
             "{\"text\":\"%s\", \"model_id\":\"eleven_monolingual_v1\", \"voice_settings\":{\"stability\":%f, \"similarity_boost\":%f}}",
             text.replace("\"", "\\\""), stability, similarity
         );
