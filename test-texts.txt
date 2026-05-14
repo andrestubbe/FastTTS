@@ -1,0 +1,5 @@
+[ENGLISH]
+FastTTS is a high-performance native text-to-speech engine for the FastJava ecosystem. It supports Windows SAPI, Piper, and ElevenLabs with sub-millisecond latency.
+
+[DEUTSCH]
+FastTTS ist eine hochperformante, native Text-zu-Sprache-Engine für das FastJava-Ökosystem. Sie unterstützt Windows SAPI, Piper und ElevenLabs mit extrem niedriger Latenz.

@@ -85,9 +85,22 @@ public class Demo {
                 if (text.isEmpty()) continue;
 
                 System.out.println("\n[Synthesizing...]");
+                long startTime = System.nanoTime();
                 try {
                     FastTTSAudio audio = tts.speak(selected.backendId(), text, selected, null);
+                    long endTime = System.nanoTime();
+                    double durationMs = (endTime - startTime) / 1_000_000.0;
+                    
                     if (audio != null) {
+                        System.out.printf("[LATENCY] %.2f ms\n", durationMs);
+                        
+                        // Persistent logging
+                        try (java.io.FileWriter fw = new java.io.FileWriter("../../latency-results.log", true)) {
+                            String snippet = text.length() > 30 ? text.substring(0, 27) + "..." : text;
+                            fw.write(String.format("[%s] Latency: %.2f ms | Text: %s\n", 
+                                selected.backendId().toUpperCase(), durationMs, snippet));
+                        } catch (Exception ignored) {}
+
                         playAudio(audio);
                     } else {
                         System.err.println("No audio generated.");
