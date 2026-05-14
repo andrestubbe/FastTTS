@@ -1,6 +1,6 @@
 # FastTTS — High-Performance Native Windows TTS API for Java [v0.1.0]
 
-**A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT and SAPI.**
+**A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT/SAPI, Piper, Kokoro, and Cloud backends (ElevenLabs/Azure).**
 
 [![Status](https://img.shields.io/badge/status-v0.1.0--alpha-orange.svg)]()
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
@@ -9,7 +9,7 @@
 
 ---
 
-**FastTTS** provides professional-grade speech synthesis with minimal overhead. Perfect for AI agents, accessibility tools, and high-performance interactive systems.
+**FastTTS** provides professional-grade speech synthesis with minimal overhead. Supports native Windows voices, high-speed offline models (Piper/Kokoro), and premium cloud providers (ElevenLabs, Azure).
 
 ## Table of Contents
 - [Features](#features)
