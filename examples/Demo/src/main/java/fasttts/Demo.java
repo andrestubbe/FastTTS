@@ -3,11 +3,14 @@ package fasttts;
 import fasttts.core.*;
 import fasttts.backends.windows.*;
 import fasttts.backends.piper.*;
+import fasttts.backends.elevenlabs.*;
 import java.util.List;
 import java.util.Scanner;
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Terminal Demo for FastTTS.
@@ -24,6 +27,19 @@ public class Demo {
         if (piperExe.exists()) {
             tts.registerBackend(new PiperBackend("../../piper.exe", "../../thorsten.onnx"));
         }
+
+        // Register ElevenLabs if API key exists
+        java.util.Properties props = new java.util.Properties();
+        try (InputStream is = new FileInputStream("../../fasttts.properties")) {
+            props.load(is);
+            String elKey = props.getProperty("elevenlabs.api.key");
+            if (elKey != null && !elKey.isEmpty()) {
+                String defVoice = props.getProperty("elevenlabs.default.voice", "21m00Tcm4TlvDq8ikWAM");
+                float stability = Float.parseFloat(props.getProperty("elevenlabs.default.stability", "0.5"));
+                float similarity = Float.parseFloat(props.getProperty("elevenlabs.default.similarity", "0.75"));
+                tts.registerBackend(new ElevenLabsBackend(elKey, defVoice, stability, similarity));
+            }
+        } catch (Exception ignored) {}
 
         System.out.println("=== FastTTS Multi-Engine Demo ===");
         List<FastTTSVoice> voices = tts.getAllVoices();

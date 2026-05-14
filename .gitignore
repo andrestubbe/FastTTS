@@ -12,5 +12,6 @@ target/
 build/
 out/
 
-# Release Staging (Private Templates)
-/release/
+# Local Configuration & Secrets
+fasttts.properties
+*.local

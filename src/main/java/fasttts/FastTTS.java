@@ -58,6 +58,10 @@ public final class FastTTS {
         return b;
     }
 
+    public FastTTSBackend getBackend(String name) {
+        return backends.get(name.toLowerCase());
+    }
+
     public void use(String name) {
         if (!backends.containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("Backend not registered: " + name);
