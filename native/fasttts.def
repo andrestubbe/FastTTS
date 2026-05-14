@@ -1,0 +1,4 @@
+LIBRARY fasttts
+EXPORTS
+    Java_fasttts_WindowsTTSBackend_synthesizeNative
+    Java_fasttts_WindowsTTSBackend_getVoicesNative

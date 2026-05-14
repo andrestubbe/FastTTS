@@ -7,7 +7,7 @@ echo FastXXX Native Library Builder
 echo ========================================
 
 :: Configuration
-set LIB_NAME=fastXXX
+set LIB_NAME=fasttts
 
 :: Try to find VS using vswhere.exe (most reliable)
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
@@ -71,7 +71,7 @@ cl.exe /O2 /W3 /MD /EHsc /LD ^
    /Fo:build\ ^
    /Fe:build\%LIB_NAME%.dll ^
    native\*.cpp ^
-   user32.lib gdi32.lib shcore.lib advapi32.lib dwmapi.lib ^
+   user32.lib gdi32.lib shcore.lib advapi32.lib dwmapi.lib ole32.lib ^
    /link /DLL /MACHINE:X64 /DEF:native\%LIB_NAME%.def
 
 if %ERRORLEVEL% == 0 (

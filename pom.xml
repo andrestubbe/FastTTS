@@ -5,7 +5,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.andrestubbe</groupId>
+    <groupId>io.github.andrestubbe</groupId>
     <artifactId>fasttts</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
@@ -28,6 +28,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.andrestubbe</groupId>
+            <artifactId>fastaudioplayer</artifactId>
+            <version>0.1.0</version>
+        </dependency>
         <dependency>
             <groupId>io.github.andrestubbe</groupId>
             <artifactId>fastcore</artifactId>
