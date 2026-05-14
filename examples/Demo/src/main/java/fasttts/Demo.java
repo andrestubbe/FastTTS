@@ -43,13 +43,17 @@ public class Demo {
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("\n=== FastTTS Multi-Engine Demo ===");
+            clearConsole();
+            System.out.println("========================================");
+            System.out.println("   FastTTS Multi-Engine Demo v0.2.2");
+            System.out.println("========================================\n");
+            
             List<FastTTSVoice> voices = tts.getAllVoices();
             for (int i = 0; i < voices.size(); i++) {
                 FastTTSVoice v = voices.get(i);
-                System.out.println((i + 1) + ". [" + v.backendId() + "] " + v.name());
+                System.out.println("  " + (i + 1) + ". [" + v.backendId() + "] " + v.name());
             }
-            System.out.println("q. Quit");
+            System.out.println("  q. Quit");
 
             System.out.print("\nSelect voice (1-" + voices.size() + ") or 'q': ");
             String choice = scanner.nextLine();
@@ -65,10 +69,14 @@ public class Demo {
             }
 
             FastTTSVoice selected = voices.get(index);
-            System.out.println("\n--- Selected: " + selected.name() + " [" + selected.backendId() + "] ---");
-            System.out.println("(Type 'm' for menu, 'q' to quit)");
-
             while (true) {
+                clearConsole();
+                System.out.println("========================================");
+                System.out.println("   SPEAKING: " + selected.name().toUpperCase());
+                System.out.println("   BACKEND : " + selected.backendId().toUpperCase());
+                System.out.println("========================================\n");
+                System.out.println("(Type 'm' for menu, 'q' to quit)");
+
                 System.out.print("\nEnter text: ");
                 String text = scanner.nextLine();
                 if (text.equalsIgnoreCase("m") || text.equalsIgnoreCase("b")) break;
@@ -76,7 +84,7 @@ public class Demo {
 
                 if (text.isEmpty()) continue;
 
-                System.out.println("Speaking...");
+                System.out.println("\n[Synthesizing...]");
                 try {
                     byte[] audio = tts.speak(selected.backendId(), text, selected, null);
                     if (audio != null && audio.length > 0) {
@@ -87,9 +95,22 @@ public class Demo {
                 } catch (Exception e) {
                     System.err.println("Error: " + e.getMessage());
                 }
+                System.out.println("\n[Done] Press Enter to continue...");
+                scanner.nextLine();
             }
         }
         System.out.println("Goodbye!");
+    }
+
+    private static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception ignored) {}
     }
 
     /**
