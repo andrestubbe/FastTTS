@@ -52,14 +52,10 @@ public final class FastTTS {
         return all;
     }
 
-    private FastTTSBackend getBackend(String name) {
+    public FastTTSBackend getBackend(String name) {
         FastTTSBackend b = backends.get(name.toLowerCase());
         if (b == null) throw new IllegalArgumentException("Backend not found: " + name);
         return b;
-    }
-
-    public FastTTSBackend getBackend(String name) {
-        return backends.get(name.toLowerCase());
     }
 
     public void use(String name) {

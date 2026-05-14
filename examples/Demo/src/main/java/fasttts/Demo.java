@@ -41,39 +41,55 @@ public class Demo {
             }
         } catch (Exception ignored) {}
 
-        System.out.println("=== FastTTS Multi-Engine Demo ===");
-        List<FastTTSVoice> voices = tts.getAllVoices();
-        for (int i = 0; i < voices.size(); i++) {
-            FastTTSVoice v = voices.get(i);
-            System.out.println((i + 1) + ". [" + v.backendId() + "] " + v.name());
-        }
-
         Scanner scanner = new Scanner(System.in);
-        System.out.print("\nSelect voice (1-" + voices.size() + "): ");
-        int idx = scanner.nextInt();
-        scanner.nextLine(); // consume newline
-
-        FastTTSVoice selected = voices.get(idx - 1);
-        System.out.println("Using: " + selected.name());
-
         while (true) {
-            System.out.print("\nEnter text (q to quit): ");
-            String text = scanner.nextLine();
-            if (text.equalsIgnoreCase("q")) break;
+            System.out.println("\n=== FastTTS Multi-Engine Demo ===");
+            List<FastTTSVoice> voices = tts.getAllVoices();
+            for (int i = 0; i < voices.size(); i++) {
+                FastTTSVoice v = voices.get(i);
+                System.out.println((i + 1) + ". [" + v.backendId() + "] " + v.name());
+            }
+            System.out.println("q. Quit");
 
-            System.out.println("Speaking...");
+            System.out.print("\nSelect voice (1-" + voices.size() + ") or 'q': ");
+            String choice = scanner.nextLine();
+            if (choice.equalsIgnoreCase("q")) break;
+
+            int index;
             try {
-                byte[] audio = tts.speak(selected.backendId(), text, selected, null);
-                if (audio != null && audio.length > 0) {
-                    playAudio(audio);
-                } else {
-                    System.err.println("Warning: Received empty audio buffer.");
-                }
+                index = Integer.parseInt(choice) - 1;
+                if (index < 0 || index >= voices.size()) throw new Exception();
             } catch (Exception e) {
-                System.err.println("Error: " + e.getMessage());
-                e.printStackTrace();
+                System.out.println("Invalid selection.");
+                continue;
+            }
+
+            FastTTSVoice selected = voices.get(index);
+            System.out.println("\n--- Selected: " + selected.name() + " [" + selected.backendId() + "] ---");
+            System.out.println("(Type 'm' for menu, 'q' to quit)");
+
+            while (true) {
+                System.out.print("\nEnter text: ");
+                String text = scanner.nextLine();
+                if (text.equalsIgnoreCase("m") || text.equalsIgnoreCase("b")) break;
+                if (text.equalsIgnoreCase("q")) return;
+
+                if (text.isEmpty()) continue;
+
+                System.out.println("Speaking...");
+                try {
+                    byte[] audio = tts.speak(selected.backendId(), text, selected, null);
+                    if (audio != null && audio.length > 0) {
+                        playAudio(audio);
+                    } else {
+                        System.err.println("No audio generated.");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
             }
         }
+        System.out.println("Goodbye!");
     }
 
     /**
