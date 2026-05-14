@@ -48,7 +48,7 @@ public final class ElevenLabsBackend implements FastTTSBackend {
         );
 
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://api.elevenlabs.io/v1/text-to-speech/" + voiceId))
+            .uri(URI.create("https://api.elevenlabs.io/v1/text-to-speech/" + voiceId + "?output_format=pcm_44100"))
             .header("Content-Type", "application/json")
             .header("xi-api-key", apiKey)
             .POST(HttpRequest.BodyPublishers.ofString(json))
