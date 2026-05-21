@@ -18,7 +18,9 @@ public class Benchmark {
     public static void main(String[] args) throws Exception {
         FastTTS tts = new FastTTS();
         tts.registerBackend(new WindowsTTSBackend());
-        tts.registerBackend(new PiperBackend("../../piper.exe", "../../thorsten.onnx"));
+        String piperPath = PathResolver.resolve("piper.path", "piper.exe");
+        String piperModel = PathResolver.resolve("piper.model", "thorsten.onnx");
+        tts.registerBackend(new PiperBackend(piperPath, piperModel));
         
         System.out.println("======================================================");
         System.out.println("             FastTTS PERFORMANCE BENCHMARK            ");
@@ -34,7 +36,7 @@ public class Benchmark {
 
         // 2. Piper (CLI)
         long startPiper = System.nanoTime();
-        FastTTSVoice piperVoice = new FastTTSVoice("thorsten.onnx", "Thorsten", "de_DE", "male", "piper");
+        FastTTSVoice piperVoice = new FastTTSVoice(piperModel, "Thorsten", "de_DE", "male", "piper");
         FastTTSAudio piperAudio = tts.speak("piper", TEST_TEXT, piperVoice, null);
         long endPiper = System.nanoTime();
         double msPiper = (endPiper - startPiper) / 1_000_000.0;

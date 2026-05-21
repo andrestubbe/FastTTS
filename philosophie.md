@@ -13,7 +13,7 @@ FastTTS is built on the principle that modern Java applications require a **nati
 3.  **Direct Hardware Access**
     By utilizing JNI and native Windows components, FastTTS ensures optimal CPU and GPU utilization for neural voices, providing a premium acoustic experience.
 
-4.  **Blueprint Consistency**
+4.  **Ecosystem Consistency**
     As a core module of the **FastJava** ecosystem, FastTTS adheres to a standardized architecture:
     *   **Native Backend**: Direct C++/JNI implementation.
     *   **Unified Loading**: Powered by `FastCore` for seamless extraction.

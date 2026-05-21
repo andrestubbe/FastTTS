@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>io.github.andrestubbe</groupId>
-    <artifactId>fasttts-manager</artifactId>
+    <artifactId>fasttts-installer</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
     
@@ -33,6 +33,11 @@
             <artifactId>fasttts</artifactId>
             <version>0.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.17.1</version>
+        </dependency>
     </dependencies>
     
     <build>
@@ -42,7 +47,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>fasttts.FastTTSManager</mainClass>
+                    <mainClass>fasttts.FastTTSInstaller</mainClass>
                 </configuration>
             </plugin>
         </plugins>

@@ -8,14 +8,14 @@ import java.util.Scanner;
 import java.io.*;
 
 /**
- * FastTTS Manager - Console-based installer and configuration tool.
+ * FastTTS Installer — Setup and manage backends.
  */
-public class FastTTSManager {
+public class FastTTSInstaller {
 
     private final FastTTS tts;
     private final Scanner scanner = new Scanner(System.in);
 
-    public FastTTSManager(FastTTS tts) {
+    public FastTTSInstaller(FastTTS tts) {
         this.tts = tts;
     }
 
@@ -23,12 +23,13 @@ public class FastTTSManager {
         while (true) {
             clearConsole();
             System.out.println("========================================");
-            System.out.println("   FastTTS Manager — Native & Modular");
+            System.out.println("   FastTTS Installer — Setup & Modular");
             System.out.println("========================================\n");
 
             System.out.println("  1.  [Windows]  Manage System Voices");
             System.out.println("  2.  [Piper]    Install / Manage Offline Models");
             System.out.println("  3.  [Cloud]    Configure ElevenLabs / Azure");
+            System.out.println("  4.  [Kokoro]   Install Native ONNX Model");
             System.out.println("  q.  Quit");
 
             System.out.print("\nChoose an option: ");
@@ -38,9 +39,31 @@ public class FastTTSManager {
                 case "1": manageWindowsVoices(); break;
                 case "2": managePiper(); break;
                 case "3": configureCloud(); break;
+                case "4": downloadKokoro(); break;
                 case "q": return;
             }
         }
+    }
+
+    private void downloadKokoro() {
+        clearConsole();
+        System.out.println("--- Kokoro Native TTS ---");
+        System.out.println("[INFO] Downloading Kokoro v0.19 (ONNX)...");
+        String modelUrl = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/kokoro-v0_19.int8.onnx";
+        String voicesUrl = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.bin";
+        try {
+            String psCommand = String.format(
+                "Invoke-WebRequest -Uri '%s' -OutFile 'kokoro-v0_19.onnx'; " +
+                "Write-Host '[INFO] Downloading voices.bin...'; " +
+                "Invoke-WebRequest -Uri '%s' -OutFile 'voices.bin'", modelUrl, voicesUrl
+            );
+            new ProcessBuilder("powershell", "-Command", psCommand).inheritIO().start().waitFor();
+            System.out.println("[SUCCESS] Kokoro model and voices installed.");
+        } catch (Exception e) {
+            System.err.println("[ERROR] Download failed: " + e.getMessage());
+        }
+        System.out.println("\n[Press Enter to return]");
+        scanner.nextLine();
     }
 
     private void manageWindowsVoices() {
@@ -140,7 +163,7 @@ public class FastTTSManager {
         tts.registerBackend(new WindowsTTSBackend());
         tts.use("windows");
         
-        FastTTSManager manager = new FastTTSManager(tts);
-        manager.run();
+        FastTTSInstaller installer = new FastTTSInstaller(tts);
+        installer.run();
     }
 }

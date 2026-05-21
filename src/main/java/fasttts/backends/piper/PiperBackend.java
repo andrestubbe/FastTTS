@@ -38,7 +38,12 @@ public final class PiperBackend implements FastTTSBackend {
             "--output_file", tempOutput.toAbsolutePath().toString()
         );
         
-        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+        File piperExe = new File(piperPath).getAbsoluteFile();
+        if (piperExe.getParentFile() != null) {
+            pb.directory(piperExe.getParentFile());
+        }
+        
+        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
         Process p = pb.start();
         
         try (OutputStream os = p.getOutputStream(); 

@@ -15,3 +15,11 @@ out/
 # Local Configuration & Secrets
 fasttts.properties
 *.local
+
+# Temporary/Test Audio and Logs
+*.wav
+*.log
+
+# Models and large binary vectors
+*.onnx
+*.bin
