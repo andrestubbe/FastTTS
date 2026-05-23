@@ -1,4 +1,4 @@
-﻿# FastTTS â€” High-Performance Native Windows TTS API for Java [v0.1.0]
+﻿# FastTTS — High-Performance Native Windows TTS API for Java [v0.1.0]
 
 **A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT/SAPI, Piper, Kokoro, and Cloud backends (ElevenLabs/Azure).**
 
@@ -21,10 +21,10 @@
 - [License](#license)
 
 ## Features
-- **ðŸš€ Native Speed**: Direct access to Windows WinRT/SAPI for instant synthesis.
-- **âš¡ Zero Latency**: Designed for real-time applications and low-overhead agents.
-- **ðŸŽ™ï¸ Neural Voices**: Support for high-quality Windows 10/11 natural voices.
-- **ðŸ“¦ Streaming Ready**: Built-in support for audio chunk streaming.
+- **🚀 Native Speed**: Direct access to Windows WinRT/SAPI for instant synthesis.
+- **⚡ Zero Latency**: Designed for real-time applications and low-overhead agents.
+- **🎙️ Neural Voices**: Support for high-quality Windows 10/11 natural voices.
+- **📦 Streaming Ready**: Built-in support for audio chunk streaming.
 
 ---
 
@@ -43,7 +43,7 @@ FastTTS minimizes the overhead of standard Java TTS wrappers by communicating di
 
 ---
 
-## ðŸš€ Quick Start (v0.2.0 Modular)
+## 🚀 Quick Start (v0.2.0 Modular)
 
 ```java
 import fasttts.FastTTS;
@@ -60,7 +60,7 @@ public class Main {
 }
 ```
 
-## ðŸŽ™ï¸ Engines & Setup
+## 🎙️ Engines & Setup
 
 ### 1. Windows Native (SAPI/WinRT)
 Built-in, no setup required. Instant and reliable.
@@ -157,10 +157,10 @@ See [COMPILE.md](COMPILE.md) for details.
 ---
 
 ## License
-MIT License â€” See [LICENSE](LICENSE) for details.
+MIT License — See [LICENSE](LICENSE) for details.
 
 ---
-**Part of the FastJava Ecosystem** â€” *Making the JVM faster.*
+**Part of the FastJava Ecosystem** — *Making the JVM faster.*
 
 <!-- 
 SEO Keywords: java, jni, native, fastjava, tts, text-to-speech, windows, winrt, performance
