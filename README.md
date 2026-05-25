@@ -28,6 +28,25 @@ high-speed offline models (Piper/Kokoro), and premium cloud providers (ElevenLab
 
 ---
 
+## Quick Start
+
+```java
+import fasttts.FastTTS;
+import fasttts.backends.windows.WindowsTTSBackend;
+
+public class Main {
+    public static void main(String[] args) {
+        FastTTS tts = new FastTTS();
+        tts.registerBackend(new WindowsTTSBackend());
+        tts.use("windows"); // Explicitly select backend
+
+        tts.speak("FastJava is the future of native performance.");
+    }
+}
+```
+
+---
+
 ## Features
 
 - **🚀 Native Speed**: Direct access to Windows WinRT/SAPI for instant synthesis.
@@ -53,23 +72,6 @@ benchmark results (Windows 11, i7-12700K):
 > bridges.
 
 ---
-
-## 🚀 Quick Start (v0.2.0 Modular)
-
-```java
-import fasttts.FastTTS;
-import fasttts.backends.windows.WindowsTTSBackend;
-
-public class Main {
-    public static void main(String[] args) {
-        FastTTS tts = new FastTTS();
-        tts.registerBackend(new WindowsTTSBackend());
-        tts.use("windows"); // Explicitly select backend
-
-        tts.speak("FastJava is the future of native performance.");
-    }
-}
-```
 
 ## 🎙️ Engines & Setup
 
@@ -189,20 +191,10 @@ MIT License — See [LICENSE](LICENSE) file for details.
 ## Related Projects
 
 - [FastCore](https://github.com/andrestubbe/FastCore) — Native Library Loader for Java
-- [FastKeyboard](https://github.com/andrestubbe/FastKeyboard) — High-performance RawInput engine
-- [FastTheme](https://github.com/andrestubbe/FastTheme) — Advanced UI styling engine
+- [FastAudioCapture](https://github.com/andrestubbe/FastAudioCapture) — High-Performance Native Audio Capture for Java
+- [FastAudiolayer](https://github.com/andrestubbe/FastAudiolayer) — High-Performance Native Audio Capture for Java
+- [FastSTT](https://github.com/andrestubbe/FastSTT) — Ultra-Fast Native Speech-to-Text for Java
+- [FastWakeWord](https://github.com/andrestubbe/FastWakeWord)
 
 ---
-**Part of the FastJava Ecosystem** — *Making the JVM faster.*
-
-
-
-<!-- 
-SEO Keywords: java, jni, native, fastjava, tts, text-to-speech, windows, winrt, performance
--->
-
-
-<!-- 
-SEO Keywords: java, jni, native, fastjava, windows api, performance tuning
-Remember to also add these keywords as Topics in the GitHub repository settings!
--->
+**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
