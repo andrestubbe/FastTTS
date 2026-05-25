@@ -26,6 +26,8 @@ high-speed offline models (Piper/Kokoro), and premium cloud providers (ElevenLab
 - [Build from Source](#build-from-source)
 - [License](#license)
 
+---
+
 ## Features
 
 - **🚀 Native Speed**: Direct access to Windows WinRT/SAPI for instant synthesis.
