@@ -112,28 +112,23 @@ tts.registerBackend(new ElevenLabsBackend("your_api_key"));
 Add the JitPack repository and the dependencies to your `pom.xml`:
 
 ```xml
-
 <repositories>
     <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
-
 <dependencies>
-<!-- FastTTS Library -->
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fasttts</artifactId>
-    <version>v0.1.0</version>
-</dependency>
-
-<!-- FastCore (Required Native Loader) -->
-<dependency>
-    <groupId>com.github.andrestubbe</groupId>
-    <artifactId>fastcore</artifactId>
-    <version>v0.1.0</version>
-</dependency>
+   <dependency>
+       <groupId>com.github.andrestubbe</groupId>
+       <artifactId>fasttts</artifactId>
+       <version>v0.1.0</version>
+   </dependency>
+   <dependency>
+       <groupId>com.github.andrestubbe</groupId>
+       <artifactId>fastcore</artifactId>
+       <version>v0.1.0</version>
+   </dependency>
 </dependencies>
 ```
 
@@ -143,7 +138,6 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
 repositories {
     maven { url 'https://jitpack.io' }
 }
-
 dependencies {
     implementation 'com.github.andrestubbe:fasttts:v0.1.0'
     implementation 'com.github.andrestubbe:fastcore:v0.1.0'
@@ -159,8 +153,7 @@ Download the latest JARs directly to add them to your classpath:
 2. ⚙️ **[fastcore-v0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/v0.1.0/fastcore-v0.1.0.jar)** (
    The Mandatory Native Loader)
 
-> [!IMPORTANT]
-> All JARs must be in your classpath for the native JNI calls to function correctly.
+---
 
 ## API Reference
 
@@ -172,13 +165,12 @@ Download the latest JARs directly to add them to your classpath:
 
 ---
 
-## Build from Source
+## Documentation
 
-- **JDK 17+**
-- **Windows 10/11**
-- **Visual Studio 2022** (with C++ Desktop development)
-
-See [COMPILE.md](COMPILE.md) for details.
+* **[COMPILE.md](COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
+* **[REFERENCE.md](REFERENCE.md)**: Full API descriptions, border configurations, and codepoint index.
+* **[PHILOSOPHIE.md](PHILOSOPHIE.md)**: The engineering rationale for zero-allocation performance.
+* **[ROADMAP.md](ROADMAP.md)**: Future milestones and planned features.
 
 ---
 
