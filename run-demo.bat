@@ -1,8 +1,6 @@
-@echo off
+﻿@echo off
 chcp 65001 > nul
 echo [FastTTS] Rebuilding Core...
-call mvn -q clean install -DskipTests
-if %ERRORLEVEL% NEQ 0 ( echo Core build failed. & pause & exit /b )
 
 echo [FastTTS] Compiling Demo...
 pushd examples\Demo
