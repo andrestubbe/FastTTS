@@ -1,10 +1,9 @@
-﻿@echo off
-chcp 65001 > nul
+@echo off
 echo [FastTTS] Rebuilding Core...
 
 echo [FastTTS] Compiling Demo...
 pushd examples\Demo
-call mvn -q compile dependency:copy-dependencies -DincludeScope=runtime -DskipTests
+call mvn compile dependency:copy-dependencies -DincludeScope=runtime -DskipTests
 if %ERRORLEVEL% NEQ 0 ( popd & echo Demo compile failed. & pause & exit /b )
 
 echo [FastTTS] Launching Demo UI...
