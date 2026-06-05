@@ -7,7 +7,7 @@
 
     <groupId>io.github.andrestubbe</groupId>
     <artifactId>FastTTS</artifactId>
-    <version>v0.1.0</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>FastTTS</name>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.github.andrestubbe</groupId>
             <artifactId>FastCore</artifactId>
-            <version>v0.1.0</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.onnxruntime</groupId>
