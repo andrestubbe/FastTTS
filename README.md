@@ -1,4 +1,4 @@
-# FastTTS 0.1.0 [ALPHA-2026-06] — High-Performance Native Windows TTS API for Java
+# FastTTS 0.1.0 [ALPHA-2026-06] â€” ï¿½ High-Performance Native Windows TTS API for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
