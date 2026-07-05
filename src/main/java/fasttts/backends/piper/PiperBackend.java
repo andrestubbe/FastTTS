@@ -26,7 +26,7 @@ public final class PiperBackend implements FastTTSBackend {
     @Override
     public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
         if (!new File(piperPath).exists()) {
-            throw new FileNotFoundException("piper.exe not found at: " + piperPath);
+            throw new FileNotFoundException("piper.exe not found at exact path: [" + new File(piperPath).getAbsolutePath() + "] (piperPath string was: " + piperPath + ")");
         }
 
         String currentModel = (voice != null && voice.id() != null) ? voice.id() : modelPath;
@@ -59,9 +59,20 @@ public final class PiperBackend implements FastTTSBackend {
         byte[] data = Files.readAllBytes(tempOutput);
         Files.deleteIfExists(tempOutput);
         
-        // Piper outputs WAV by default, but we treat it as 22050 if raw. 
-        // Actually Piper WAVs are usually 22050Hz.
-        return new FastTTSAudio(data, 22050);
+        // Dynamically parse sample rate from .onnx.json config
+        int sampleRate = 22050; // Fallback
+        try {
+            String jsonPath = currentModel + ".json";
+            if (new File(jsonPath).exists()) {
+                String content = Files.readString(Paths.get(jsonPath));
+                java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"sample_rate\"\\s*:\\s*(\\d+)").matcher(content);
+                if (m.find()) {
+                    sampleRate = Integer.parseInt(m.group(1));
+                }
+            }
+        } catch (Throwable ignored) {}
+        
+        return new FastTTSAudio(data, sampleRate);
     }
 
     @Override
