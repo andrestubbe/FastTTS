@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
 [![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
-**âš¡ A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT/SAPI,
+**⚡ A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT/SAPI,
 Piper, Kokoro, and Cloud backends (ElevenLabs/Azure).**
 
 **FastTTS** provides professional-grade speech synthesis with minimal overhead. Supports native Windows voices,
@@ -73,7 +73,7 @@ benchmark results (Windows 11, i7-12700K):
 
 ---
 
-## ðŸš€? Engines & Setup
+## Engines & Setup
 
 ### 1. Windows Native (SAPI/WinRT)
 
@@ -148,10 +148,8 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. ðŸš€ **[fasttts-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.0/fasttts-0.1.0.jar)** (The
-   Core Library)
-2. ðŸš€ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (
-   The Mandatory Native Loader)
+1. 📥 **[fasttts-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.0/fasttts-0.1.0.jar)** (The Core Library)
+2. 📥 **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (The Mandatory Native Loader)
 
 ---
 
