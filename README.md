@@ -1,107 +1,133 @@
-# FastTTS 0.1.0 [ALPHA]  High-Performance Native Windows TTS API for Java
+# FastTTS 0.1.0 — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-ready-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
-
-**⚡ A low-latency native Text-to-Speech module for the FastJava ecosystem. Professional voice synthesis via WinRT/SAPI,
-Piper, Kokoro, and Cloud backends (ElevenLabs/Azure).**
-
-**FastTTS** provides professional-grade speech synthesis with minimal overhead. Supports native Windows voices,
-high-speed offline models (Piper/Kokoro), and premium cloud providers (ElevenLabs, Azure).
-
-[![FastKeyboard Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=BZsqQl7WqWk)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.0-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
 
-## Table of Contents
+**⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline and cloud providers.**
 
-- [Features](#features)
-- [Performance](#performance)
-- [Quick Start](#quick-start)
-- [Installation](#installation)
-- [API Reference](#api-reference)
-- [Build from Source](#build-from-source)
-- [License](#license)
+FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
 
 ---
 
-## Quick Start
+## Quick Start — Example
 
 ```java
 import fasttts.FastTTS;
+import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
+import fasttts.backends.elevenlabs.ElevenLabsBackend;
+import fasttts.backends.deepgram.DeepgramBackend;
+import fasttts.core.FastTTSAudio;
 
-public class Main {
-    public static void main(String[] args) {
+public class Demo {
+    public static void main(String[] args) throws Exception {
         FastTTS tts = new FastTTS();
+        
+        // Windows SAPI (no setup required)
         tts.registerBackend(new WindowsTTSBackend());
-        tts.use("windows"); // Explicitly select backend
-
-        tts.speak("FastJava is the future of native performance.");
+        FastTTSAudio audio = tts.speak("Hello World");
+        
+        // Piper (offline, requires piper.exe and models)
+        tts.registerBackend(new PiperBackend("piper.exe", "models/de_DE-thorsten-medium.onnx"));
+        FastTTSAudio germanAudio = tts.speak("Hallo Welt");
+        
+        // ElevenLabs (cloud, requires API key)
+        tts.registerBackend(new ElevenLabsBackend("your-api-key"));
+        FastTTSAudio cloudAudio = tts.speak("Hello World");
+        
+        // Deepgram (cloud, requires API key)
+        tts.registerBackend(new DeepgramBackend("your-api-key"));
+        FastTTSAudio deepgramAudio = tts.speak("Hello World");
     }
 }
 ```
 
 ---
 
-## Features
+## Table of Contents
 
-- **ðŸš€ Native Speed**: Direct access to Windows WinRT/SAPI for instant synthesis.
-- **? Zero Latency**: Designed for real-time applications and low-overhead agents.
-- **ðŸš€? Neural Voices**: Support for high-quality Windows 10/11 natural voices.
-- **ðŸš€ Streaming Ready**: Built-in support for audio chunk streaming.
-
----
-
-## Performance
-
-FastTTS minimizes the overhead of standard Java TTS wrappers by communicating directly with the OS layer. Typical
-benchmark results (Windows 11, i7-12700K):
-
-| Operation       | FastTTS (Native) | Standard Java Wrapper | Speedup |
-|-----------------|------------------|-----------------------|---------|
-| Library Load    | 15 ms            | 120 ms                | **8x**  |
-| Engine Ready    | 4 ms             | 350 ms                | **85x** |
-| Synthesis Start | 8 ms             | 80 ms                 | **10x** |
-
-> [!NOTE]
-> Speedups are achieved by bypassing the JVM's reflection-heavy initialization processes found in many open-source TTS
-> bridges.
+- [Why FastTTS?](#why-fasttts)
+- [Key Features](#key-features)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Architecture Overview](#architecture-overview)
+- [API Quick Reference](#api-quick-reference)
+- [Installation](#installation)
+- [Backend Setup](#backend-setup)
+- [Documentation](#documentation)
+- [Platform Support](#platform-support)
+- [License](#license)
+- [Related Projects](#related-projects)
 
 ---
 
-## Engines & Setup
+## Why FastTTS?
 
-### 1. Windows Native (SAPI/WinRT)
+Traditional TTS libraries force developers into heavyweight Python dependencies, complex cloud API integrations, or platform-specific code. `FastTTS` provides:
 
-Built-in, no setup required. Instant and reliable.
+- **100% Native JVM Pipeline** — Orchestrates multiple TTS backends in a single JVM process with unified interface.
+- **Offline and Cloud Support** — Seamlessly switch between local models (Piper) and cloud providers (ElevenLabs, Deepgram).
+- **Model Agnostic** — Works with offline ONNX models, system voices, and cloud APIs through the same `FastTTSBackend` interface.
+- **Zero Configuration Overlap** — Integrates seamlessly with existing FastJava ecosystem libraries.
 
-```java
-tts.registerBackend(new WindowsTTSBackend());
+---
+
+## Key Features
+
+* **🎭 Multiple Backend Support** — Unified interface for Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
+* **📱 Offline Capable** — Run TTS locally with Piper models without internet connection.
+* **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs and Deepgram.
+* **⚡ Performance Focused** — Built for low-latency synthesis with detailed timing metrics.
+* **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
+
+---
+
+## Performance Benchmarks
+
+`FastTTS` is built for high-performance text-to-speech synthesis. Based on the built-in demo timing metrics:
+
+```text
+Backend          Load Time    Synth Time    Total Time
+Windows SAPI     104 ms       151 ms        255 ms
+Piper (offline)  0 ms         1761 ms       1761 ms
 ```
 
-### 2. Piper Offline (AI Voices)
+> **Windows SAPI** provides the fastest synthesis (255ms total) for quick feedback, while **Piper** offers higher quality offline synthesis (1761ms total) with no internet dependency.
 
-High-quality offline voices. Requires `piper.exe`.
+---
 
-1. **Download**: Get `piper.exe` via `run-manager.bat`.
-2. **Models**: Download `.onnx` models from [Piper Voices](https://github.com/rhasspy/piper#voices).
-3. **Register**:
+## Architecture Overview
 
-```java
-tts.registerBackend(new PiperBackend("piper.exe", "voice.onnx"));
-```
+**Windows SAPI Backend**  
+System-native text-to-speech using Windows Speech API (SAPI). No external dependencies required.
 
-### 3. ElevenLabs & Azure (Cloud)
+**Piper Backend**  
+Offline TTS using the Piper neural TTS engine. Requires `piper.exe` and ONNX model files for local synthesis.
 
-Premium voices via REST API. Requires API keys.
+**ElevenLabs Backend**  
+Cloud-based TTS accessing ElevenLabs high-quality voices. Requires API key and internet connection.
 
-```java
-tts.registerBackend(new ElevenLabsBackend("your_api_key"));
-```
+**Deepgram Backend**  
+Cloud-based TTS using Deepgram's fast synthesis API. Requires API key and internet connection.
+
+**FastTTS (This Library — The Orchestration Layer)**  
+Higher-level TTS framework that provides a unified interface for all backends, allowing seamless switching between offline and cloud providers.
+
+---
+
+## API Quick Reference
+
+| Method | Description | Backend |
+|--------|-------------|---------|
+| `registerBackend(FastTTSBackend)` | Registers a TTS backend with the orchestrator. | All |
+| `speak(String)` | Synthesizes text to audio using the active backend. | All |
+| `speak(String, String, FastTTSVoice, FastTTSConfig)` | Synthesizes text with specific backend and configuration. | All |
+| `use(String)` | Sets the active backend by name. | All |
+| `getVoices()` | Returns available voices for all registered backends. | All |
 
 ---
 
@@ -109,7 +135,7 @@ tts.registerBackend(new ElevenLabsBackend("your_api_key"));
 
 ### Option 1: Maven (Recommended)
 
-Add the JitPack repository and the dependencies to your `pom.xml`:
+Add the JitPack repository and the dependency to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -119,16 +145,16 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
     </repository>
 </repositories>
 <dependencies>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fasttts</artifactId>
-       <version>0.1.0</version>
-   </dependency>
-   <dependency>
-       <groupId>com.github.andrestubbe</groupId>
-       <artifactId>fastcore</artifactId>
-       <version>0.1.0</version>
-   </dependency>
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastTTS</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastCore</artifactId>
+        <version>0.1.0</version>
+    </dependency>
 </dependencies>
 ```
 
@@ -138,9 +164,10 @@ Add the JitPack repository and the dependencies to your `pom.xml`:
 repositories {
     maven { url 'https://jitpack.io' }
 }
+
 dependencies {
-    implementation 'com.github.andrestubbe:fasttts:0.1.0'
-    implementation 'com.github.andrestubbe:fastcore:0.1.0'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.0'
+    implementation 'com.github.andrestubbe:FastCore:0.1.0'
 }
 ```
 
@@ -148,43 +175,79 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. 📥 **[fasttts-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.0/fasttts-0.1.0.jar)** (The Core Library)
-2. 📥 **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (The Mandatory Native Loader)
+1. 🎭 **[FastTTS-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.0/FastTTS-0.1.0.jar)** (TTS Engine)
+2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (Required Native JNI Loader)
+
+> [!IMPORTANT]
+> All JARs must be included in your classpath for the native JNI bindings to function correctly.
 
 ---
 
-## API Reference
+## Backend Setup
 
-| Method                           | Description                             |
-|----------------------------------|-----------------------------------------|
-| `byte[] speak(String text)`      | Synchronous synthesis to memory buffer. |
-| `void stream(String text, ...)`  | Real-time streaming of audio chunks.    |
-| `List<FastTTSVoice> getVoices()` | Enumerate all system-native voices.     |
+### Windows SAPI (System TTS)
+- **No installation required** — uses Windows built-in voices
+- Works immediately after FastTTS installation
+- Multiple voices available (system default)
+
+### Piper (Offline TTS)
+- **Download Piper:** https://github.com/rhasspy/piper/releases
+- Extract Piper to a directory (e.g., `C:\Piper\`)
+- Set environment variable: `set PIPER_PATH=C:\Piper\piper.exe`
+- Or copy `piper.exe` to your project directory
+- Download models from: https://huggingface.co/models?search=piper
+- Place model files in `models/` folder
+
+**Available Models:**
+- `de_DE-thorsten-medium` - German male voice
+- `en_US-lessac-medium` - US English male
+- `en_US-amy-medium` - US English female
+
+### ElevenLabs (Cloud TTS)
+- Requires API key from: https://elevenlabs.io
+- High-quality voices
+- Cloud-based (requires internet)
+
+### Deepgram (Cloud TTS)
+- Requires API key from: https://deepgram.com
+- Fast cloud-based synthesis
+- Multiple voice options
 
 ---
 
 ## Documentation
 
-* **[COMPILE.md](docs/COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
-* **[REFERENCE.md](REFERENCE.md)**: Full API descriptions, border configurations, and codepoint index.
-* **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: The engineering rationale for zero-allocation performance.
-* **[ROADMAP.md](docs/ROADMAP.md)**: Future milestones and planned features.
+* **[run-demo.bat](run-demo.bat)**: Demo script for testing all backends.
+* **[Demo.java](src/main/java/fasttts/Demo.java)**: Example implementation showing timing metrics.
+
+---
+
+## Platform Support
+
+| Platform | Status |
+|----------|--------|
+| Windows 10/11 (x64) | ✅ Fully Supported |
+| Linux | 🚧 Planned |
+| macOS | 🚧 Planned |
 
 ---
 
 ## License
 
-MIT License  See [LICENSE](LICENSE) file for details.
+MIT License — See [LICENSE](LICENSE) file for details.
 
 ---
 
 ## Related Projects
 
-- [FastCore](https://github.com/andrestubbe/FastCore)  Native Library Loader for Java
-- [FastAudioCapture](https://github.com/andrestubbe/FastAudioCapture)  High-Performance Native Audio Capture for Java
-- [FastAudiolayer](https://github.com/andrestubbe/FastAudiolayer)  High-Performance Native Audio Capture for Java
-- [FastSTT](https://github.com/andrestubbe/FastSTT)  Ultra-Fast Native Speech-to-Text for Java
-- [FastWakeWord](https://github.com/andrestubbe/FastWakeWord)
+- [FastCore](https://github.com/andrestubbe/FastCore) — Native JNI loader for FastJava libraries
+- [FastAI](https://github.com/andrestubbe/fastai) — Unified lightweight AI model client interface
+- [FastAIModel](https://github.com/andrestubbe/FastAIModel) — Embedded GGUF and ONNX runtimes for local feature embeddings
+- [FastAIRag](https://github.com/andrestubbe/FastAIRag) — Unified, zero-bloat RAG pipeline client for Java
+- [FastAIVectorDB](https://github.com/andrestubbe/FastAIVectorDB) — High-speed native C++ SIMD vector database
+- [FastContentParse](https://github.com/andrestubbe/FastContentParse) — Standardized Java document parser for text extraction
+- [FastContentChunk](https://github.com/andrestubbe/FastContentChunk) — High-performance native SIMD tokenizer and chunker
 
 ---
-**Part of the FastJava Ecosystem**  *Making the JVM faster. Small package. Maximum speed. Zero bloat. ðŸš€ðŸš€*
+
+Part of the FastJava Ecosystem — Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋
