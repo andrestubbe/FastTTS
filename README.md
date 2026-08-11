@@ -12,7 +12,7 @@
 
 FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
 
-[![Showcase](docs/screenshot.png)](https://www.youtube.com/watch?v=PyTXlm9bfxc)
+[![Showcase](docs/screenshot.png)](https://youtu.be/PyTXlm9bfxc)
 
 ---
 
@@ -187,7 +187,7 @@ Download the latest JARs directly to add them to your classpath:
 
 ## Backend Setup
 
-### Windows SAPI (System TTS)
+### Windows SAPI (Offline TTS)
 - **No installation required** — uses Windows built-in voices
 - Works immediately after FastTTS installation
 - Multiple voices available (system default)
@@ -199,11 +199,6 @@ Download the latest JARs directly to add them to your classpath:
 - Or copy `piper.exe` to your project directory
 - Download models from: https://huggingface.co/models?search=piper
 - Place model files in `models/` folder
-
-**Available Models:**
-- `de_DE-thorsten-medium` - German male voice
-- `en_US-lessac-medium` - US English male
-- `en_US-amy-medium` - US English female
 
 ### ElevenLabs (Cloud TTS)
 - Requires API key from: https://elevenlabs.io

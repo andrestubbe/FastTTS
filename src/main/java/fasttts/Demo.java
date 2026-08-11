@@ -4,6 +4,8 @@ import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.elevenlabs.ElevenLabsBackend;
 import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
+import fasttts.backends.huggingface.HuggingFaceBackend;
+import fasttts.backends.dia2.Dia2Backend;
 import fasttts.core.FastTTSAudio;
 import javax.sound.sampled.*;
 import java.io.File;
@@ -21,13 +23,17 @@ public class Demo {
                 System.out.println("Backends:");
                 System.out.println("  windows     - System SAPI (no API key needed)");
                 System.out.println("  piper       - Offline TTS (no API key needed)");
+                System.out.println("  dia         - Dia2 online via Hugging Face (space URL)");
+                System.out.println("  dia2        - Dia2 offline GGUF (model path)");
                 System.out.println("  elevenlabs  - Cloud TTS (requires API key)");
                 System.out.println("  deepgram    - Cloud TTS (requires API key)");
                 System.out.println();
                 System.out.println("Examples:");
                 System.out.println("  run-demo windows \"Hello World\"");
                 System.out.println("  run-demo windows \"Hello World\" output.wav");
-                System.out.println("  run-demo piper \"Hello World\"");
+                System.out.println("  run-demo piper \"Hello World\" path/to/model.onnx");
+                System.out.println("  run-demo dia https://huggingface.co/spaces/nari-labs/Dia2-2B \"Hello World\"");
+                System.out.println("  run-demo dia2 \"Hello World\" path/to/model.gguf");
                 System.out.println("  run-demo elevenlabs YOUR_API_KEY \"Hello World\"");
                 System.out.println("  run-demo deepgram YOUR_API_KEY \"Hello World\"");
                 return;
@@ -37,15 +43,36 @@ public class Demo {
             String text;
             String apiKey = null;
             String outputFile = null;
+            String modelPath = null;
 
-            if (backend.equals("windows") || backend.equals("piper")) {
+            if (backend.equals("windows")) {
                 if (args.length < 2) {
-                    System.out.println("Usage: Demo " + backend + " <text> [output_file]");
+                    System.out.println("Usage: Demo windows <text> [output_file]");
                     return;
                 }
                 text = args[1];
                 if (args.length >= 3) {
                     outputFile = args[2];
+                }
+            } else if (backend.equals("piper") || backend.equals("dia2")) {
+                if (args.length < 3) {
+                    System.out.println("Usage: Demo " + backend + " <text> <model_path> [output_file]");
+                    return;
+                }
+                text = args[1];
+                String modelPath = args[2];
+                if (args.length >= 4) {
+                    outputFile = args[3];
+                }
+            } else if (backend.equals("dia")) {
+                if (args.length < 3) {
+                    System.out.println("Usage: Demo dia <space_url> <text> [output_file]");
+                    return;
+                }
+                apiKey = args[1]; // Reuse apiKey for space URL
+                text = args[2];
+                if (args.length >= 4) {
+                    outputFile = args[3];
                 }
             } else {
                 if (args.length < 3) {
@@ -80,13 +107,12 @@ public class Demo {
 
                 case "piper":
                     String piperPath = findPiper();
-                    String modelPath = findModel();
                     if (piperPath == null) {
                         System.err.println("piper.exe not found!");
                         return;
                     }
                     if (modelPath == null) {
-                        System.err.println("Model file not found!");
+                        System.err.println("Model path required for piper!");
                         return;
                     }
                     
@@ -97,6 +123,31 @@ public class Demo {
                     long synthStart = System.currentTimeMillis();
                     audio = piperBackend.synthesize(text, null, null);
                     synthTime = System.currentTimeMillis() - synthStart;
+                    break;
+
+                case "dia2":
+                    if (modelPath == null) {
+                        System.err.println("Model path required for dia2!");
+                        return;
+                    }
+                    
+                    long loadStartDia2 = System.currentTimeMillis();
+                    Dia2Backend dia2Backend = new Dia2Backend(modelPath);
+                    loadTime = System.currentTimeMillis() - loadStartDia2;
+                    
+                    long synthStartDia2 = System.currentTimeMillis();
+                    audio = dia2Backend.synthesize(text, null, null);
+                    synthTime = System.currentTimeMillis() - synthStartDia2;
+                    break;
+
+                case "dia":
+                    long loadStartHF = System.currentTimeMillis();
+                    HuggingFaceBackend hfBackend = new HuggingFaceBackend(apiKey);
+                    loadTime = System.currentTimeMillis() - loadStartHF;
+                    
+                    long synthStartHF = System.currentTimeMillis();
+                    audio = hfBackend.synthesize(text, null, null);
+                    synthTime = System.currentTimeMillis() - synthStartHF;
                     break;
 
                 case "elevenlabs":
