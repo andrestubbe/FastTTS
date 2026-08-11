@@ -62,7 +62,6 @@ public class Demo {
             System.out.println("=== FastTTS Demo ===");
             System.out.println("Loading " + backend + " backend...");
             System.out.println("Synthesizing...");
-            System.out.println();
 
             FastTTSAudio audio;
             long loadTime = 0;
@@ -125,8 +124,6 @@ public class Demo {
                     return;
             }
 
-            System.out.println();
-            System.out.println("=== Results ===");
             System.out.println("Load time:   " + loadTime + " ms");
             System.out.println("Synth time:  " + synthTime + " ms");
             System.out.println("Total time:  " + (loadTime + synthTime) + " ms");

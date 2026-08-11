@@ -1,0 +1,37 @@
+TITLE:
+FastTTS: Unified Multi-Backend Text-to-Speech Engine for Java ⚡
+
+DESCRIPTION:
+Showcasing the unified FastTTS demo with multiple TTS backends supporting both offline and cloud providers. Featuring Windows SAPI (system), Piper (offline), ElevenLabs (cloud), and Deepgram (cloud) backends through a single clean API with automatic performance timing.
+
+TECHNICAL HIGHLIGHTS:
+- Unified Backend Interface: Single API for Windows SAPI, Piper, ElevenLabs, and Deepgram
+- Automatic Backend Discovery: Smart Piper installation detection and environment variable support
+- Performance Metrics: Real-time timing for load time, synthesis time, and total execution
+- Internal Audio Playback: Zero-latency Java Sound API integration without external players
+- Optional File Output: Direct WAV file export when needed with optional path specification
+
+BACKEND ARCHITECTURE:
+1. Windows SAPI: Native system voice synthesis (no dependencies)
+2. Piper: Offline neural TTS with external model support (piper.exe + models)
+3. ElevenLabs: Premium cloud TTS with real-time streaming (API key required)
+4. Deepgram: High-speed cloud TTS with low-latency responses (API key required)
+
+PIPELINE FLOW:
+1. Backend Selection: Choose from windows/piper/elevenlabs/deepgram
+2. Backend Loading: Initialize selected backend with timing metrics
+3. Text Synthesis: Convert input text to audio with performance tracking
+4. Audio Playback: Internal playback or optional file export
+
+FASTJAVA TTS PIPELINE REPOSITORIES:
+1. FastTTS: https://github.com/andrestubbe/FastTTS
+2. FastCore: https://github.com/andrestubbe/FastCore (Native Library Loader)
+3. FastAudioPlayer: https://github.com/andrestubbe/FastAudioPlayer (Native Audio Playback)
+
+Ecosystem Overview: https://github.com/andrestubbe/FastJava
+
+Part of the FastJava Ecosystem — Making the JVM faster.
+Made with ⚡ by Andre Stubbe
+
+TAGS:
+Java, FastJava, TTS, FastTTS, Text-to-Speech, Piper, Windows SAPI, ElevenLabs, Deepgram, Java Audio, Voice Synthesis
