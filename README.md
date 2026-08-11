@@ -40,11 +40,15 @@ public class Demo {
         FastTTSAudio germanAudio = tts.speak("Hallo Welt");
         
         // ElevenLabs (cloud, requires API key)
-        tts.registerBackend(new ElevenLabsBackend("your-api-key"));
+        // Get API key from: https://elevenlabs.io
+        String elevenLabsKey = System.getenv("ELEVENLABS_API_KEY");
+        tts.registerBackend(new ElevenLabsBackend(elevenLabsKey));
         FastTTSAudio cloudAudio = tts.speak("Hello World");
         
         // Deepgram (cloud, requires API key)
-        tts.registerBackend(new DeepgramBackend("your-api-key"));
+        // Get API key from: https://deepgram.com
+        String deepgramKey = System.getenv("DEEPGRAM_API_KEY");
+        tts.registerBackend(new DeepgramBackend(deepgramKey));
         FastTTSAudio deepgramAudio = tts.speak("Hello World");
     }
 }
