@@ -34,21 +34,6 @@
             <version>0.1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.andrestubbe</groupId>
-            <artifactId>fastaimodel-onnx</artifactId>
-            <version>0.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.onnxruntime</groupId>
-            <artifactId>onnxruntime</artifactId>
-            <version>1.18.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.opennlp</groupId>
-            <artifactId>opennlp-tools</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.0</version>
