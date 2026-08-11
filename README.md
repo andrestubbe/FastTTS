@@ -35,6 +35,7 @@ public class Demo {
         FastTTSAudio audio = tts.speak("Hello World");
         
         // Piper (offline, requires piper.exe and models)
+        // Note: Piper needs both .onnx and .onnx.json files
         tts.registerBackend(new PiperBackend("piper.exe", "models/de_DE-thorsten-medium.onnx"));
         FastTTSAudio germanAudio = tts.speak("Hallo Welt");
         
@@ -198,7 +199,9 @@ Download the latest JARs directly to add them to your classpath:
 - Set environment variable: `set PIPER_PATH=C:\Piper\piper.exe`
 - Or copy `piper.exe` to your project directory
 - Download models from: https://huggingface.co/models?search=piper
-- Place model files in `models/` folder
+- **Place both model files in `models/` folder:**
+  - `model-name.onnx` (the model weights)
+  - `model-name.onnx.json` (the model configuration)
 
 ### ElevenLabs (Cloud TTS)
 - Requires API key from: https://elevenlabs.io
