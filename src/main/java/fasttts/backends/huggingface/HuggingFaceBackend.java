@@ -77,7 +77,7 @@ public final class HuggingFaceBackend implements FastTTSBackend {
     @Override
     public List<FastTTSVoice> getVoices() {
         // Spaces typically don't expose voice lists via API
-        return List.of(new FastTTSVoice("default", "Default Voice", null));
+        return List.of(new FastTTSVoice("default", "Default Voice", "en-US", null, "huggingface"));
     }
 
     private String buildRequestBody(String text, FastTTSVoice voice, FastTTSConfig config) {

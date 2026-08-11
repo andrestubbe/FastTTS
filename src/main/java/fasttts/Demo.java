@@ -4,6 +4,7 @@ import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.elevenlabs.ElevenLabsBackend;
 import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
+import fasttts.backends.openai.OpenAIBackend;
 import fasttts.core.FastTTSAudio;
 import fasttts.core.FastTTSVoice;
 import javax.sound.sampled.*;
@@ -22,8 +23,7 @@ public class Demo {
                 System.out.println("Backends:");
                 System.out.println("  windows     - System SAPI (no API key needed)");
                 System.out.println("  piper       - Offline TTS (no API key needed)");
-                // System.out.println("  dia         - Dia2 online via Hugging Face (space URL)");
-                // System.out.println("  dia2        - Dia2 offline GGUF (model path)");
+                System.out.println("  openai      - OpenAI TTS (OPENAI_API_KEY env var)");
                 System.out.println("  elevenlabs  - Cloud TTS (ELEVENLABS_API_KEY env var)");
                 System.out.println("  deepgram    - Cloud TTS (DEEPGRAM_API_KEY env var)");
                 System.out.println();
@@ -31,8 +31,7 @@ public class Demo {
                 System.out.println("  run-demo windows \"Hello World\"");
                 System.out.println("  run-demo windows \"Hello World\" output.wav");
                 System.out.println("  run-demo piper \"Hello World\" path/to/model.onnx");
-                // System.out.println("  run-demo dia https://huggingface.co/spaces/nari-labs/Dia2-2B \"Hello World\"");
-                // System.out.println("  run-demo dia2 \"Hello World\" path/to/model.gguf");
+                System.out.println("  run-demo openai \"Hello World\" [voice]");
                 System.out.println("  run-demo elevenlabs \"Hello World\" [voice_id]");
                 System.out.println("  run-demo deepgram \"Hello World\" [voice_id]");
                 return;
@@ -160,6 +159,24 @@ public class Demo {
                     synthTime = System.currentTimeMillis() - synthStartEL;
                     break;
 
+                case "openai":
+                    String openaiKey = System.getenv("OPENAI_API_KEY");
+                    if (openaiKey == null) {
+                        System.err.println("OPENAI_API_KEY environment variable not set!");
+                        return;
+                    }
+                    long loadStartOpenAI = System.currentTimeMillis();
+                    OpenAIBackend openaiBackend = new OpenAIBackend(openaiKey);
+                    if (voiceId != null) {
+                        openaiBackend.setDefaultVoice(voiceId);
+                    }
+                    loadTime = System.currentTimeMillis() - loadStartOpenAI;
+                    
+                    long synthStartOpenAI = System.currentTimeMillis();
+                    audio = openaiBackend.synthesize(text, null, null);
+                    synthTime = System.currentTimeMillis() - synthStartOpenAI;
+                    break;
+
                 case "deepgram":
                     String deepgramKey = System.getenv("DEEPGRAM_API_KEY");
                     if (deepgramKey == null) {
@@ -171,8 +188,7 @@ public class Demo {
                     loadTime = System.currentTimeMillis() - loadStartDG;
                     
                     long synthStartDG = System.currentTimeMillis();
-                    // Deepgram uses voice ID as model parameter
-                    FastTTSVoice dgVoice = voiceId != null ? new FastTTSVoice(voiceId, voiceId, null) : null;
+                    FastTTSVoice dgVoice = voiceId != null ? new FastTTSVoice(voiceId, voiceId, voiceId, null, "deepgram") : null;
                     audio = deepgramBackend.synthesize(text, dgVoice, null);
                     synthTime = System.currentTimeMillis() - synthStartDG;
                     break;

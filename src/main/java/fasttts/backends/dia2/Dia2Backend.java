@@ -60,7 +60,7 @@ public final class Dia2Backend implements FastTTSBackend {
     @Override
     public List<FastTTSVoice> getVoices() {
         // GGUF models typically have a single voice/model
-        return List.of(new FastTTSVoice(modelId, "Dia2 Model", null));
+        return List.of(new FastTTSVoice(modelId, "Dia2 Model", "en-US", null, "dia2"));
     }
 
     private byte[] synthesizeWithGGUF(String text, Path modelFile) {

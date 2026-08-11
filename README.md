@@ -24,6 +24,7 @@ import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
 import fasttts.backends.elevenlabs.ElevenLabsBackend;
 import fasttts.backends.deepgram.DeepgramBackend;
+import fasttts.backends.openai.OpenAIBackend;
 import fasttts.core.FastTTSAudio;
 
 public class Demo {
@@ -50,6 +51,12 @@ public class Demo {
         String deepgramKey = System.getenv("DEEPGRAM_API_KEY");
         tts.registerBackend(new DeepgramBackend(deepgramKey));
         FastTTSAudio deepgramAudio = tts.speak("Hello World");
+        
+        // OpenAI (cloud, requires API key)
+        // Get API key from: https://platform.openai.com
+        String openaiKey = System.getenv("OPENAI_API_KEY");
+        tts.registerBackend(new OpenAIBackend(openaiKey));
+        FastTTSAudio openaiAudio = tts.speak("Hello World");
     }
 }
 ```
@@ -206,6 +213,12 @@ Download the latest JARs directly to add them to your classpath:
 - **Place both model files in `models/` folder:**
   - `model-name.onnx` (the model weights)
   - `model-name.onnx.json` (the model configuration)
+
+### OpenAI (Cloud TTS)
+- Requires API key from: https://platform.openai.com
+- High-quality neural voices
+- Cloud-based (requires internet)
+- Models: tts-1, tts-1-hd
 
 ### ElevenLabs (Cloud TTS)
 - Requires API key from: https://elevenlabs.io
