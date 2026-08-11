@@ -25,9 +25,9 @@ public class Demo {
                 System.out.println("  deepgram    - Cloud TTS (requires API key)");
                 System.out.println();
                 System.out.println("Examples:");
-                System.out.println("  run-demo windows \"Hallo Welt\"");
-                System.out.println("  run-demo windows \"Hallo Welt\" output.wav");
-                System.out.println("  run-demo piper \"Hallo Welt\"");
+                System.out.println("  run-demo windows \"Hello World\"");
+                System.out.println("  run-demo windows \"Hello World\" output.wav");
+                System.out.println("  run-demo piper \"Hello World\"");
                 System.out.println("  run-demo elevenlabs YOUR_API_KEY \"Hello World\"");
                 System.out.println("  run-demo deepgram YOUR_API_KEY \"Hello World\"");
                 return;
