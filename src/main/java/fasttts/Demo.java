@@ -5,7 +5,9 @@ import fasttts.backends.elevenlabs.ElevenLabsBackend;
 import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
 import fasttts.core.FastTTSAudio;
+import javax.sound.sampled.*;
 import java.io.File;
+import java.io.ByteArrayInputStream;
 
 /**
  * Simple demo for all FastTTS backends.
@@ -14,7 +16,7 @@ public class Demo {
     public static void main(String[] args) {
         try {
             if (args.length < 1) {
-                System.out.println("Usage: Demo <backend> [apikey] <text>");
+                System.out.println("Usage: Demo <backend> [apikey] <text> [output_file]");
                 System.out.println();
                 System.out.println("Backends:");
                 System.out.println("  piper       - Offline TTS (no API key needed)");
@@ -26,27 +28,34 @@ public class Demo {
                 System.out.println("  Demo piper \"Hallo Welt\"");
                 System.out.println("  Demo elevenlabs YOUR_API_KEY \"Hello World\"");
                 System.out.println("  Demo deepgram YOUR_API_KEY \"Hello World\"");
-                System.out.println("  Demo windows \"Hallo Welt\"");
+                System.out.println("  Demo windows \"Hallo Welt\" output.wav");
                 return;
             }
 
             String backend = args[0].toLowerCase();
             String text;
             String apiKey = null;
+            String outputFile = null;
 
             if (backend.equals("piper") || backend.equals("windows")) {
                 if (args.length < 2) {
-                    System.out.println("Usage: Demo " + backend + " <text>");
+                    System.out.println("Usage: Demo " + backend + " <text> [output_file]");
                     return;
                 }
                 text = args[1];
+                if (args.length >= 3) {
+                    outputFile = args[2];
+                }
             } else {
                 if (args.length < 3) {
-                    System.out.println("Usage: Demo " + backend + " <api_key> <text>");
+                    System.out.println("Usage: Demo " + backend + " <api_key> <text> [output_file]");
                     return;
                 }
                 apiKey = args[1];
                 text = args[2];
+                if (args.length >= 4) {
+                    outputFile = args[3];
+                }
             }
 
             System.out.println("=== FastTTS Demo ===");
@@ -136,17 +145,19 @@ public class Demo {
             System.out.println("Sample rate: " + audio.getSampleRate() + " Hz");
             System.out.println("Duration:    " + String.format("%.2f", (double)audio.getData().length / (audio.getSampleRate() * 2)) + " seconds");
 
-            // Save to file
-            java.nio.file.Files.write(
-                java.nio.file.Paths.get("output.wav"),
-                audio.getData()
-            );
-            System.out.println("Saved to: output.wav");
-
-            // Play audio
-            System.out.println("Playing audio...");
-            playAudio("output.wav");
-            System.out.println("Playback finished.");
+            // Save to file only if specified
+            if (outputFile != null) {
+                java.nio.file.Files.write(
+                    java.nio.file.Paths.get(outputFile),
+                    audio.getData()
+                );
+                System.out.println("Saved to: " + outputFile);
+            } else {
+                // Play audio directly without saving
+                System.out.println("Playing audio...");
+                playAudioInMemory(audio.getData(), audio.getSampleRate());
+                System.out.println("Playback finished.");
+            }
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -203,6 +214,30 @@ public class Demo {
             pb.start();
         } catch (Exception e) {
             System.err.println("Could not play audio: " + e.getMessage());
+        }
+    }
+
+    private static void playAudioInMemory(byte[] audioData, int sampleRate) {
+        try {
+            // Use AudioSystem to handle WAV format automatically
+            ByteArrayInputStream bais = new ByteArrayInputStream(audioData);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bais);
+            
+            DataLine.Info info = new DataLine.Info(Clip.class, audioStream.getFormat());
+            Clip clip = (Clip) AudioSystem.getLine(info);
+            
+            clip.open(audioStream);
+            clip.start();
+            
+            // Wait for playback to complete
+            while (!clip.isRunning()) Thread.sleep(10);
+            while (clip.isRunning()) Thread.sleep(10);
+            
+            clip.close();
+            audioStream.close();
+        } catch (Exception e) {
+            System.err.println("Could not play audio: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

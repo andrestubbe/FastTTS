@@ -148,7 +148,7 @@ Add the JitPack repository and the dependency to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
     </dependency>
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
@@ -166,7 +166,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastTTS:0.1.0'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.1'
     implementation 'com.github.andrestubbe:FastCore:0.1.0'
 }
 ```
@@ -175,7 +175,7 @@ dependencies {
 
 Download the latest JARs directly to add them to your classpath:
 
-1. 🎭 **[FastTTS-0.1.0.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.0/FastTTS-0.1.0.jar)** (TTS Engine)
+1. 🎭 **[FastTTS-0.1.1.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.1/FastTTS-0.1.1.jar)** (TTS Engine)
 2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (Required Native JNI Loader)
 
 > [!IMPORTANT]
@@ -217,8 +217,11 @@ Download the latest JARs directly to add them to your classpath:
 
 ## Documentation
 
-* **[run-demo.bat](run-demo.bat)**: Demo script for testing all backends.
-* **[Demo.java](src/main/java/fasttts/Demo.java)**: Example implementation showing timing metrics.
+* **[REFERENCE.md](docs/REFERENCE.md)**: Core API reference manual.
+* **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: Unified TTS pipeline design goals.
+* **[COMPILE.md](docs/COMPILE.md)**: Maven build instructions.
+* **[CHANGELOG.md](docs/CHANGELOG.md)**: Project history.
+* **[ROADMAP.md](docs/ROADMAP.md)**: Future development goals.
 
 ---
 
@@ -241,6 +244,7 @@ MIT License — See [LICENSE](LICENSE) file for details.
 ## Related Projects
 
 - [FastCore](https://github.com/andrestubbe/FastCore) — Native JNI loader for FastJava libraries
+- [FastAudioPlayer](https://github.com/andrestubbe/FastAudioPlayer) — Native audio playback for Java via WASAPI
 - [FastAI](https://github.com/andrestubbe/fastai) — Unified lightweight AI model client interface
 - [FastAIModel](https://github.com/andrestubbe/FastAIModel) — Embedded GGUF and ONNX runtimes for local feature embeddings
 - [FastAIRag](https://github.com/andrestubbe/FastAIRag) — Unified, zero-bloat RAG pipeline client for Java
