@@ -34,6 +34,11 @@
             <version>0.1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.github.andrestubbe</groupId>
+            <artifactId>fastaimodel-onnx</artifactId>
+            <version>0.1.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.microsoft.onnxruntime</groupId>
             <artifactId>onnxruntime</artifactId>
             <version>1.18.0</version>

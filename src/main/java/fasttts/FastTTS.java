@@ -1,5 +1,6 @@
 package fasttts;
 
+import fasttts.backends.piper.PiperONNXBackend;
 import fasttts.core.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,15 @@ public final class FastTTS {
             activeBackend = backend.getName().toLowerCase();
         }
     }
-
+    
+    /**
+     * Convenience method to register a PiperONNXBackend.
+     */
+    public void registerPiperONNX(String modelPath, String espeakPath) throws Exception {
+        PiperONNXBackend backend = new PiperONNXBackend(modelPath, espeakPath);
+        backend.initialize();
+        registerBackend(backend);
+    }
 
     public FastTTSAudio speak(String text) throws Exception {
         return speak(activeBackend, text, null, null);

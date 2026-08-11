@@ -3,3 +3,6 @@ EXPORTS
     Java_fasttts_backends_windows_WindowsTTSBackend_synthesizeNative
     Java_fasttts_backends_windows_WindowsTTSBackend_streamNative
     Java_fasttts_backends_windows_WindowsTTSBackend_getVoicesNative
+    Java_fasttts_backends_piper_PiperONNXBackend_espeakInitNative
+    Java_fasttts_backends_piper_PiperONNXBackend_textToPhonemesNative
+    Java_fasttts_backends_piper_PiperONNXBackend_espeakCleanupNative
