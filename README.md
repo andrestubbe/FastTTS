@@ -1,4 +1,4 @@
-# FastTTS 0.1.2  — High-Performance Native Audio Engine for Java
+# FastTTS 0.1.2 [ALPHA-2026-08] — High-Performance Native Audio Engine for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
