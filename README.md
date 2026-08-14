@@ -14,6 +14,10 @@ FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide 
 
 ---
 
+[![Showcase](https://raw.githubusercontent.com/andrestubbe/FastTTS/main/docs/screenshot.png)](https://youtu.be/PyTXlm9bfxc)
+
+---
+
 ## Quick Start — Example
 
 ```java
