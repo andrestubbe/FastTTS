@@ -1,4 +1,4 @@
-# FastTTS 0.1.2 [ALPHA-2026-08] — High-Performance Native Audio Engine for Java
+# FastTTS 0.1.2 [ALPHA-2026-08] â€” High-Performance Native Audio Engine for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -8,13 +8,13 @@
 
 ---
 
-**⚡ Hardware SIMD AVX2-accelerated native audio processing engine for Java.**
+**âš¡ Hardware SIMD AVX2-accelerated native audio processing engine for Java.**
 
 ![Showcase](https://raw.githubusercontent.com/andrestubbe/FastTTS/main/docs/screenshot.png)
 
 ---
 
-## Quick Start — Example
+## Quick Start â€” Example
 
 ```java
 import fasttts.*;
@@ -43,9 +43,9 @@ public class Demo {
 
 ## Key Features
 
-* **⚡ AVX2 SIMD Audio Vector Acceleration** — 256-bit SIMD registers for low-latency audio processing.
-* **💾 Off-Heap Zero-GC Memory** — Operates outside JVM Garbage Collection heap limits.
-* **⚡ Full FastJava Interoperability** — Integrates seamlessly with **[FastAudioProcess](https://github.com/andrestubbe/FastAudioProcess)** and **[FastSIMD](https://github.com/andrestubbe/FastSIMD)**.
+* **âš¡ AVX2 SIMD Audio Vector Acceleration** â€” 256-bit SIMD registers for low-latency audio processing.
+* **ðŸ’¾ Off-Heap Zero-GC Memory** â€” Operates outside JVM Garbage Collection heap limits.
+* **âš¡ Full FastJava Interoperability** â€” Integrates seamlessly with **[FastAudioProcess](https://github.com/andrestubbe/FastAudioProcess)** and **[FastSIMD](https://github.com/andrestubbe/FastSIMD)**.
 
 ---
 
@@ -73,4 +73,4 @@ public class Demo {
 
 ## License
 
-MIT License — See [LICENSE](LICENSE) file for details.
+MIT License â€” See [LICENSE](LICENSE) file for details.
