@@ -1,7 +1,9 @@
 # FastTTS Changelog
 
 ## [0.1.2] - 2026-08-14
-- Integrated native `FastSIMD` (v0.1.3) AVX2 vector processing.
-- Created official JMH benchmark suite.
-- Restructured README.md with Quick Start above Table of Contents.
-- Updated full 5-module installation stack.
+- Integrated FastSIMD AVX2 audio vector gain and pitch scaling.
+- Updated 5-module ecosystem dependency stack.
+- Added Real-World Use Cases section.
+
+## [0.1.1] - 2026-06-14
+- Initial release with Piper, Windows SAPI, ElevenLabs, and Deepgram backends.

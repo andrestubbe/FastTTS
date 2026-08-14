@@ -1,10 +1,10 @@
-# FastTTS 0.1.1 — Unified, Zero-Bloat TTS Backend Orchestration for Java
+# FastTTS 0.1.2 [ALPHA-2026-08] — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.1)
+[![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.1-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.2-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
 
@@ -53,6 +53,7 @@ public class Demo {
 
 - [Why FastTTS?](#why-fasttts)
 - [Key Features](#key-features)
+- [Real-World Use Cases](#real-world-use-cases)
 - [Performance Benchmarks](#performance-benchmarks)
 - [Architecture Overview](#architecture-overview)
 - [API Quick Reference](#api-quick-reference)
@@ -73,6 +74,18 @@ Traditional TTS libraries force developers into heavyweight Python dependencies,
 - **Offline and Cloud Support** — Seamlessly switch between local models (Piper) and cloud providers (ElevenLabs, Deepgram).
 - **Model Agnostic** — Works with offline ONNX models, system voices, and cloud APIs through the same `FastTTSBackend` interface.
 - **Zero Configuration Overlap** — Integrates seamlessly with existing FastJava ecosystem libraries.
+
+---
+
+## Key Features
+---
+
+## Real-World Use Cases
+
+- 🗣️ **Conversational Voice AI Assistants**: Low-latency neural speech synthesis for AI chatbots and desktop voice assistants.
+- 📖 **Audiobook & Content Reader**: High-speed offline speech synthesis for document reading and accessibility tools.
+- 📢 **In-App & Game Audio Notifications**: Real-time voice announcements with zero Garbage Collection latency impact.
+- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices and cloud APIs (ElevenLabs, Deepgram).
 
 ---
 
@@ -135,7 +148,7 @@ Higher-level TTS framework that provides a unified interface for all backends, a
 
 ### Option 1: Maven (Recommended)
 
-Add the JitPack repository and the dependency to your `pom.xml`:
+Add the JitPack repository and the complete dependency stack to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -144,12 +157,44 @@ Add the JitPack repository and the dependency to your `pom.xml`:
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
+
 <dependencies>
+    <!-- FastTTS Engine -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
+        <version>0.1.2</version>
+    </dependency>
+
+    <!-- FastSIMD Hardware Vector Acceleration Engine -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastSIMD</artifactId>
+        <version>0.1.3</version>
+    </dependency>
+
+    <!-- FastMemory Aligned Allocator -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastMemory</artifactId>
         <version>0.1.1</version>
     </dependency>
+
+    <!-- FastPointer Address Wrapper -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastPointer</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+
+    <!-- FastAudioProcess Audio Engine -->
+    <dependency>
+        <groupId>com.github.andrestubbe</groupId>
+        <artifactId>FastAudioProcess</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+
+    <!-- FastCore Unified JNI Loader -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastCore</artifactId>
@@ -166,20 +211,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastTTS:0.1.1'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.2'
+    implementation 'com.github.andrestubbe:FastSIMD:0.1.3'
+    implementation 'com.github.andrestubbe:FastMemory:0.1.1'
+    implementation 'com.github.andrestubbe:FastPointer:0.1.1'
+    implementation 'com.github.andrestubbe:FastAudioProcess:0.1.1'
     implementation 'com.github.andrestubbe:FastCore:0.1.0'
 }
 ```
-
-### Option 3: Direct Download (No Build Tool)
-
-Download the latest JARs directly to add them to your classpath:
-
-1. 🎭 **[FastTTS-0.1.1.jar](https://github.com/andrestubbe/FastTTS/releases/download/0.1.1/FastTTS-0.1.1.jar)** (TTS Engine)
-2. ⚙️ **[fastcore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/fastcore-0.1.0.jar)** (Required Native JNI Loader)
-
-> [!IMPORTANT]
-> All JARs must be included in your classpath for the native JNI bindings to function correctly.
 
 ---
 
