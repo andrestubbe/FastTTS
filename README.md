@@ -1,7 +1,5 @@
 # FastTTS 0.1.2 — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
-
-
 [![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -12,31 +10,17 @@
 
 [![JitPack](https://img.shields.io/badge/JitPack-0.1.2-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
-
-
 ---
-
-
 
 **⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline and cloud providers.**
 
-
-
 FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
-
-
 
 [![Showcase](docs/screenshot.png)](https://youtu.be/PyTXlm9bfxc)
 
-
-
 ---
 
-
-
 ## Quick Start — Example
-
-
 
 ```java
 
@@ -53,8 +37,6 @@ import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.backends.openai.OpenAIBackend;
 
 import fasttts.core.FastTTSAudio;
-
-
 
 public class Demo {
 
@@ -122,15 +104,9 @@ public class Demo {
 
 ```
 
-
-
 ---
 
-
-
 ## Table of Contents
-
-
 
 - [Why FastTTS?](#why-fasttts)
 
@@ -154,19 +130,11 @@ public class Demo {
 
 - [Related Projects](#related-projects)
 
-
-
 ---
-
-
 
 ## Why FastTTS?
 
-
-
 Traditional TTS libraries force developers into heavyweight Python dependencies, complex cloud API integrations, or platform-specific code. `FastTTS` provides:
-
-
 
 - **100% Native JVM Pipeline** — Orchestrates multiple TTS backends in a single JVM process with unified interface.
 
@@ -176,15 +144,9 @@ Traditional TTS libraries force developers into heavyweight Python dependencies,
 
 - **Zero Configuration Overlap** — Integrates seamlessly with existing FastJava ecosystem libraries.
 
-
-
 ---
 
-
-
 ## Key Features
-
-
 
 * **🎭 Multiple Backend Support** — Unified interface for Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
 
@@ -196,19 +158,11 @@ Traditional TTS libraries force developers into heavyweight Python dependencies,
 
 * **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
 
-
-
 ---
-
-
 
 ## Performance Benchmarks
 
-
-
 `FastTTS` is built for high-performance text-to-speech synthesis. Based on the built-in demo timing metrics:
-
-
 
 ```text
 
@@ -220,57 +174,35 @@ Piper (offline)  0 ms         1761 ms       1761 ms
 
 ```
 
-
-
 > **Windows SAPI** provides the fastest synthesis (255ms total) for quick feedback, while **Piper** offers higher quality offline synthesis (1761ms total) with no internet dependency.
-
-
 
 ---
 
-
-
 ## Architecture Overview
-
-
 
 **Windows SAPI Backend**  
 
 System-native text-to-speech using Windows Speech API (SAPI). No external dependencies required.
 
-
-
 **Piper Backend**  
 
 Offline TTS using the Piper neural TTS engine. Requires `piper.exe` and ONNX model files for local synthesis.
-
-
 
 **ElevenLabs Backend**  
 
 Cloud-based TTS accessing ElevenLabs high-quality voices. Requires API key and internet connection.
 
-
-
 **Deepgram Backend**  
 
 Cloud-based TTS using Deepgram's fast synthesis API. Requires API key and internet connection.
-
-
 
 **FastTTS (This Library — The Orchestration Layer)**  
 
 Higher-level TTS framework that provides a unified interface for all backends, allowing seamless switching between offline and cloud providers.
 
-
-
 ---
 
-
-
 ## API Quick Reference
-
-
 
 | Method | Description | Backend |
 
@@ -286,11 +218,7 @@ Higher-level TTS framework that provides a unified interface for all backends, a
 
 | `getVoices()` | Returns available voices for all registered backends. | All |
 
-
-
 ---
-
-
 
 ## Installation
 
@@ -372,8 +300,6 @@ dependencies {
 
 ## Backend Setup
 
-
-
 ### Windows SAPI (Offline TTS)
 
 - **No installation required** — uses Windows built-in voices
@@ -381,8 +307,6 @@ dependencies {
 - Works immediately after FastTTS installation
 
 - Multiple voices available (system default)
-
-
 
 ### Piper (Offline TTS)
 
@@ -402,8 +326,6 @@ dependencies {
 
   - `model-name.onnx.json` (the model configuration)
 
-
-
 ### OpenAI (Cloud TTS)
 
 - Requires API key from: https://platform.openai.com
@@ -414,8 +336,6 @@ dependencies {
 
 - Models: tts-1, tts-1-hd
 
-
-
 ### ElevenLabs (Cloud TTS)
 
 - Requires API key from: https://elevenlabs.io
@@ -423,8 +343,6 @@ dependencies {
 - High-quality voices
 
 - Cloud-based (requires internet)
-
-
 
 ### Deepgram (Cloud TTS)
 
@@ -434,15 +352,9 @@ dependencies {
 
 - Multiple voice options
 
-
-
 ---
 
-
-
 ## Documentation
-
-
 
 * **[REFERENCE.md](docs/REFERENCE.md)**: Core API reference manual.
 
@@ -454,15 +366,9 @@ dependencies {
 
 * **[ROADMAP.md](docs/ROADMAP.md)**: Future development goals.
 
-
-
 ---
 
-
-
 ## Platform Support
-
-
 
 | Platform | Status |
 
@@ -474,27 +380,15 @@ dependencies {
 
 | macOS | 🚧 Planned |
 
-
-
 ---
-
-
 
 ## License
 
-
-
 MIT License — See [LICENSE](LICENSE) file for details.
-
-
 
 ---
 
-
-
 ## Related Projects
-
-
 
 - [FastCore](https://github.com/andrestubbe/FastCore) — Native JNI loader for FastJava libraries
 
@@ -512,11 +406,7 @@ MIT License — See [LICENSE](LICENSE) file for details.
 
 - [FastContentChunk](https://github.com/andrestubbe/FastContentChunk) — High-performance native SIMD tokenizer and chunker
 
-
-
 ---
-
-
 
 Part of the FastJava Ecosystem — Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋
 
