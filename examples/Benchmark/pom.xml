@@ -15,8 +15,6 @@
             <groupId>com.github.andrestubbe</groupId>
             <artifactId>FastTTS</artifactId>
             <version>0.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../target/FastTTS-0.1.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
