@@ -1,0 +1,79 @@
+🎛️ A. Klassische DSP‑Synthese (regelbasiert, keine Modelle)
+Formant‑Synthese
+Klatt
+KlattGrid
+MBROLA
+TD‑PSOLA
+FD‑PSOLA
+VocalTractLab
+Articulatory Synthesis
+FreeTTS
+Flite
+CLUSTERGEN
+
+📊 B. Parametrische Modelle (statistische Modelle → Vocoder)
+HTS
+SPSS
+
+🔡 C. Autoregressive Neural TTS (Encoder‑Decoder + Attention)
+Tacotron
+Tacotron 2
+DeepVoice 1
+DeepVoice 2
+DeepVoice 3
+Char2Wav
+Transformer TTS
+DurIAN
+AlignTTS
+SpeechT5
+
+⚡ D. Non‑Autoregressive Neural TTS (Fast, stabil)
+FastSpeech
+FastSpeech 2
+Glow‑TTS
+VITS
+VITS2
+
+🧬 E. Zero‑Shot / Voice‑Cloning Modelle (Speaker Embedding + TTS)
+YourTTS
+VALL‑E
+VALL‑E X
+Meta MMS TTS
+
+🌫️ F. Diffusion‑basierte TTS (höchste Qualität)
+DiffWave
+WaveGrad
+Grad‑TTS
+ProDiff
+EdiTTS
+Matcha‑TTS
+NaturalSpeech
+NaturalSpeech 2
+NaturalSpeech 3
+StyleTTS
+StyleTTS 2
+
+🎙️ G. Neural Codec LM (EnCodec‑basierte Sprachmodelle)
+Neural Codec LM
+EnCodec TTS
+SoundStream TTS
+MegaSpeech Codec LM
+SpeechTokenizer TTS
+
+🔊 H. Vocoder (Mel → Audio, modular einsetzbar)
+WaveNet
+Parallel WaveNet
+WaveGlow
+HiFi‑GAN
+BigVGAN
+WaveRNN
+MelGAN
+StyleMelGAN
+RefineGAN
+UnivNet
+RT‑HiFiGAN
+
+🎵 I. Singing‑Synthese (Gesang statt Sprache)
+DiffSinger
+NANSY++ Singing
+NANSY++ (Speech → Singing Transfer)
