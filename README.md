@@ -14,7 +14,7 @@ FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide 
 
 Watch Demo (YouTube) | Watch JMH Benchmark (YouTube)
 
-![Showcase](https://raw.githubusercontent.com/andrestubbe/FastTTS/main/docs/screenshot.png) | Watch JMH Benchmark (YouTube)
+![Showcase](docs/screenshot.png) 
 
 ---
 
