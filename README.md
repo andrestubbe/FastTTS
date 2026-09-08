@@ -12,9 +12,9 @@
 
 FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
 
----
+Watch Demo (YouTube) | Watch JMH Benchmark (YouTube)
 
-![Showcase](https://raw.githubusercontent.com/andrestubbe/FastTTS/main/docs/screenshot.png)
+![Showcase](https://raw.githubusercontent.com/andrestubbe/FastTTS/main/docs/screenshot.png) | Watch JMH Benchmark (YouTube)
 
 ---
 
