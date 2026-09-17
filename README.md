@@ -94,33 +94,20 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 ## Key Features
 
----
-
-## Real-World Use Cases
-
-- 🗣️ **Conversational Voice AI Assistants**: Low-latency neural speech synthesis for AI chatbots and desktop voice assistants.
-- 📖 **Audiobook & Content Reader**: High-speed offline speech synthesis for document reading and accessibility tools.
-- 📢 **In-App & Game Audio Notifications**: Real-time voice announcements with zero Garbage Collection latency impact.
-- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices and cloud APIs (ElevenLabs, Deepgram).
-
----
-
-## Key Features
-
----
-
-## Real-World Use Cases
-
-- 🗣️ **Conversational Voice AI Assistants**: Low-latency neural speech synthesis for AI chatbots and desktop voice assistants.
-- 📖 **Audiobook & Content Reader**: High-speed offline speech synthesis for document reading and accessibility tools.
-- 📢 **In-App & Game Audio Notifications**: Real-time voice announcements with zero Garbage Collection latency impact.
-- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices and cloud APIs (ElevenLabs, Deepgram).
-
 * **🎭 Multiple Backend Support** — Unified interface for Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
 * **📱 Offline Capable** — Run TTS locally with Piper models without internet connection.
 * **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs and Deepgram.
 * **⚡ Performance Focused** — Built for low-latency synthesis with detailed timing metrics.
 * **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
+
+---
+
+## Real-World Use Cases
+
+- 🗣️ **Conversational Voice AI Assistants**: Low-latency neural speech synthesis for AI chatbots and desktop voice assistants.
+- 📖 **Audiobook & Content Reader**: High-speed offline speech synthesis for document reading and accessibility tools.
+- 📢 **In-App & Game Audio Notifications**: Real-time voice announcements with zero Garbage Collection latency impact.
+- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices and cloud APIs (ElevenLabs, Deepgram).
 
 ---
 
