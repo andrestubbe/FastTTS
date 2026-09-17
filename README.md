@@ -79,6 +79,17 @@ Traditional TTS libraries force developers into heavyweight Python dependencies,
 - **Model Agnostic** — Works with offline ONNX models, system voices, and cloud APIs through the same `FastTTSBackend` interface.
 - **Zero Configuration Overlap** — Integrates seamlessly with existing FastJava ecosystem libraries.
 
+FastTTS unifies local neural inference, system voices, and cloud TTS into a single framework-agnostic API:
+
+| Feature | MaryTTS (Legacy Java) | Python Coqui/Piper Subprocess | FastTTS |
+|:---|:---|:---|:---|
+| **Synthesis Backends** | Obsolete Java voices only | Single CLI wrapper | **Unified (SAPI, Piper, ElevenLabs, Deepgram)** |
+| **Offline Privacy** | Yes (Robotic sound) | Yes (Heavy Python runtime) | **100% Offline (Piper ONNX / Windows SAPI)** |
+| **Startup / Synthesis** | 800–2500 ms (Heap heavy) | 2000–5000 ms (Process spawn) | **~255 ms (Windows SAPI) / Fast Piper** |
+| **Voice Quality** | Synthetic 2000s robotic | Neural quality | **State-of-the-Art Neural & System** |
+| **Barge-In Ready** | Difficult to interrupt | Stalled CLI process | **Instant Cancellation via FastVAD** |
+| **Dependencies** | Massive legacy JARs | Python 3 + Pip dependencies | **Pure Java 17+ backed by FastCore** |
+
 ---
 
 ## Key Features
