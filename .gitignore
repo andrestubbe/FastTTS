@@ -11,6 +11,10 @@ Thumbs.db
 target/
 build/
 out/
+release/
+*.obj
+*.lib
+*.exp
 
 # Local Configuration & Secrets
 fasttts.properties
@@ -25,3 +29,4 @@ fasttts.properties
 *.bin
 *.gguf
 models/
+

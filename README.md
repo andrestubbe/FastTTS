@@ -1,9 +1,9 @@
-# FastTTS 0.1.2 [ALPHA-2026-08] — Unified, Zero-Bloat TTS Backend Orchestration for Java
+# FastTTS 0.1.2 [ALPHA-2026-09-30] — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
 [![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
-[![Platform](https://img.shields.io/badge/Platform-Windows%2010+-lightgrey.svg)]()
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
 [![JitPack](https://img.shields.io/badge/JitPack-0.1.2-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
@@ -61,6 +61,7 @@ public class Demo {
 - [Performance Benchmarks](#performance-benchmarks)
 - [Architecture Overview](#architecture-overview)
 - [API Quick Reference](#api-quick-reference)
+- [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
 - [Backend Setup](#backend-setup)
 - [Documentation](#documentation)
@@ -146,13 +147,24 @@ Higher-level TTS framework that provides a unified interface for all backends, a
 
 ## API Quick Reference
 
-| Method | Description | Backend |
-|--------|-------------|---------|
-| `registerBackend(FastTTSBackend)` | Registers a TTS backend with the orchestrator. | All |
-| `speak(String)` | Synthesizes text to audio using the active backend. | All |
-| `speak(String, String, FastTTSVoice, FastTTSConfig)` | Synthesizes text with specific backend and configuration. | All |
-| `use(String)` | Sets the active backend by name. | All |
-| `getVoices()` | Returns available voices for all registered backends. | All |
+| Method / Signature | Return Type | Description | Docs |
+|:---|:---|:---|:---|
+| `registerBackend(FastTTSBackend backend)` | `void` | Registers a TTS backend with the orchestrator. | [Wiki](docs/REFERENCE.md) |
+| `speak(String text)` | `FastTTSAudio` | Synthesizes text to audio using the active backend. | [Wiki](docs/REFERENCE.md) |
+| `speak(String backend, String text, FastTTSVoice voice, FastTTSConfig config)` | `FastTTSAudio` | Synthesizes text with specific backend and configuration. | [Wiki](docs/REFERENCE.md) |
+| `stream(String backend, String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> consumer)` | `void` | Streams audio chunks directly to a byte consumer callback. | [Wiki](docs/REFERENCE.md) |
+| `use(String backendName)` | `void` | Sets the active backend by name. | [Wiki](docs/REFERENCE.md) |
+| `getAllVoices()` | `List<FastTTSVoice>` | Returns available voices across all registered backends. | [Wiki](docs/REFERENCE.md) |
+| `getBackend(String name)` | `FastTTSBackend` | Retrieves a registered backend by name. | [Wiki](docs/REFERENCE.md) |
+
+---
+
+## Technical Demos & Benchmarks
+
+| Case | Java Example | Launcher | Description |
+|:---|:---|:---|:---|
+| **Multi-Backend CLI Demo** | [Demo.java](examples/Demo/src/main/java/fasttts/demo/Demo.java) | `run-demo.bat` | Command-line speech synthesis across Windows SAPI, Piper, ElevenLabs, and Deepgram. |
+| **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fasttts/benchmark/Benchmark.java) | `run-benchmark.bat` | Formal OpenJDK JMH throughput and latency benchmarks for TTS synthesis. |
 
 ---
 
@@ -268,20 +280,21 @@ dependencies {
 
 ## Documentation
 
-* **[CHANGELOG.md](docs/CHANGELOG.md)**: Release notes and version history.
-* **[REFERENCE.md](docs/REFERENCE.md)**: Core API reference manual.
-* **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: Engineering rationale for zero-allocation performance.
-* **[COMPILE.md](docs/COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
-* **[ROADMAP.md](docs/ROADMAP.md)**: Future development goals.
+- **[CHANGELOG.md](docs/CHANGELOG.md)**: Release notes and version history.
+- **[REFERENCE.md](docs/REFERENCE.md)**: Core API reference manual.
+- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: Engineering rationale for zero-allocation performance.
+- **[COMPILE.md](docs/COMPILE.md)**: Full compilation guide (MSVC C++17 build chain + JNI Setup).
+- **[ROADMAP.md](docs/ROADMAP.md)**: Future development goals.
+
 ---
 
 ## Platform Support
 
-| Platform | Status |
-|----------|--------|
-| Windows 10/11 (x64) | ✅ Fully Supported |
-| Linux | 🚧 Planned |
-| macOS | 🚧 Planned |
+| Platform | Architecture | Status | Notes |
+|:---|:---|:---|:---|
+| Windows 10/11 | x64 | ✅ Fully Supported | Native Windows SAPI and MSVC AVX2 compilation |
+| Linux | x64, ARM64 | 🚧 Planned | Native Piper and ALSA / Pulse audio support |
+| macOS | Apple Silicon, x64 | 🚧 Planned | AVFoundation / Piper support |
 
 ---
 
@@ -305,3 +318,4 @@ MIT License — See [LICENSE](LICENSE) file for details.
 ---
 
 Part of the FastJava Ecosystem — Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋
+
