@@ -28,11 +28,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.andrestubbe</groupId>
-            <artifactId>FastCore</artifactId>
-            <version>0.1.0</version>
-        </dependency>
         <!-- <dependency>
             <groupId>me.friwi</groupId>
             <artifactId>jcefmaven</artifactId>

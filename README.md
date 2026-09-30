@@ -12,9 +12,9 @@
 
 FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
 
-Watch Demo (YouTube) | Watch JMH Benchmark (YouTube)
+[**Watch Demo (YouTube)**](https://youtu.be/PyTXlm9bfxc) | Watch JMH Benchmark (YouTube)
 
-![Showcase](docs/screenshot.png) 
+[![FastTTS Showcase](docs/screenshot.png)](https://youtu.be/PyTXlm9bfxc) 
 
 ---
 
@@ -257,14 +257,14 @@ dependencies {
 - **Download Piper:** https://github.com/rhasspy/piper/releases
 - Extract Piper to a directory (e.g., `C:\Piper\`)
 - Set environment variable: `set PIPER_PATH=C:\Piper\piper.exe`
-- Or copy `piper.exe` to your project directory
-- Download models from: https://huggingface.co/models?search=piper
-- Place model files in `models/` folder
+- Or place `piper.exe` in your project directory
+- Download voice models (`.onnx` and `.onnx.json`) from: https://huggingface.co/models?search=piper
+- Place model files in the `models/` folder
 
-**Available Models:**
-- `de_DE-thorsten-medium` - German male voice
-- `en_US-lessac-medium` - US English male
-- `en_US-amy-medium` - US English female
+**Supported Piper ONNX Voices (Examples):**
+- `de_DE-thorsten-medium.onnx` — High-quality German male voice (bundled in `models/`)
+- `en_US-lessac-medium.onnx` — Clear US English voice
+- `en_US-amy-medium.onnx` — Expressive US English voice
 
 ### ElevenLabs (Cloud TTS)
 - Requires API key from: https://elevenlabs.io
