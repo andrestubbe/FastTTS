@@ -1,3 +1,6 @@
+KYUTAI
+Pocket TTS
+
 🎛️ A. Klassische DSP‑Synthese (regelbasiert, keine Modelle)
 Formant‑Synthese
 Klatt
