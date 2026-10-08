@@ -16,6 +16,8 @@ std::wstring jstringToWString(JNIEnv* env, jstring jstr) {
     return wstr;
 }
 
+extern "C" {
+
 JNIEXPORT void JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_streamNative(JNIEnv* env, jobject obj, jstring text, jstring voiceId, jfloat rate, jfloat pitch, jfloat volume, jobject chunkConsumer);
 
 JNIEXPORT jobject JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_getVoicesNative(JNIEnv* env, jobject obj);
@@ -39,7 +41,21 @@ JNIEXPORT jbyteArray JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_syn
     if (SUCCEEDED(hr)) {
         hr = pStream->SetBaseStream(pBaseStream, SPDFID_WaveFormatEx, &wfx);
         hr = pVoice->SetOutput(pStream, TRUE);
-        
+        if (voiceId != NULL) {
+            std::wstring wVoiceId = jstringToWString(env, voiceId);
+            if (!wVoiceId.empty()) {
+                ISpObjectToken* pToken = NULL;
+                hr = CoCreateInstance(CLSID_SpObjectToken, NULL, CLSCTX_ALL, IID_ISpObjectToken, (void**)&pToken);
+                if (SUCCEEDED(hr) && pToken) {
+                    hr = pToken->SetId(NULL, wVoiceId.c_str(), FALSE);
+                    if (SUCCEEDED(hr)) {
+                        pVoice->SetVoice(pToken);
+                    }
+                    pToken->Release();
+                }
+            }
+        }
+
         pVoice->SetRate((long)((rate - 1.0f) * 10.0f));
         pVoice->SetVolume((unsigned short)(volume * 100.0f));
         
@@ -175,5 +191,7 @@ JNIEXPORT jobject JNICALL Java_fasttts_backends_windows_WindowsTTSBackend_getVoi
     CoUninitialize();
     return list;
 }
+
+} // extern "C"
 
 

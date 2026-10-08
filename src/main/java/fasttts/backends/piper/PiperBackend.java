@@ -16,17 +16,49 @@ public final class PiperBackend implements FastTTSBackend {
     private String piperPath = "piper.exe";
     private String modelPath = "model.onnx";
 
-    public PiperBackend() {}
+    public PiperBackend() {
+        this(resolvePiperBinary(), "model.onnx");
+    }
 
     public PiperBackend(String piperPath, String modelPath) {
-        this.piperPath = piperPath;
+        this.piperPath = piperPath != null ? piperPath : resolvePiperBinary();
         this.modelPath = modelPath;
+    }
+
+    private static String resolvePiperBinary() {
+        // 1. Current working dir
+        if (new File("piper.exe").exists()) {
+            return new File("piper.exe").getAbsolutePath();
+        }
+        // 2. Relative bin/piper/piper.exe
+        if (new File("bin/piper/piper.exe").exists()) {
+            return new File("bin/piper/piper.exe").getAbsolutePath();
+        }
+        // 3. ~/.speak/bin/piper/piper.exe
+        String userHome = System.getProperty("user.home");
+        File homePiper = new File(userHome, ".speak/bin/piper/piper.exe");
+        if (homePiper.exists()) {
+            return homePiper.getAbsolutePath();
+        }
+        // 4. ~/.speak/bin/piper.exe
+        File homePiperDirect = new File(userHome, ".speak/bin/piper.exe");
+        if (homePiperDirect.exists()) {
+            return homePiperDirect.getAbsolutePath();
+        }
+        // 5. Default fallback
+        return "bin/piper/piper.exe";
     }
 
     @Override
     public FastTTSAudio synthesize(String text, FastTTSVoice voice, FastTTSConfig config) throws Exception {
         if (!new File(piperPath).exists()) {
-            throw new FileNotFoundException("piper.exe not found at exact path: [" + new File(piperPath).getAbsolutePath() + "] (piperPath string was: " + piperPath + ")");
+            // Re-check dynamic paths in case it was installed after startup
+            String resolved = resolvePiperBinary();
+            if (new File(resolved).exists()) {
+                this.piperPath = resolved;
+            } else {
+                throw new FileNotFoundException("piper.exe not found at [" + new File(piperPath).getAbsolutePath() + "]. Please ensure Piper is installed in ~/.speak/bin/piper/piper.exe or in current dir.");
+            }
         }
 
         String currentModel = (voice != null && voice.id() != null) ? voice.id() : modelPath;
