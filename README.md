@@ -323,14 +323,15 @@ MIT License — See [LICENSE](LICENSE) file for details.
 
 ## Related Projects
 
-- [FastCore](https://github.com/andrestubbe/FastCore) — Native JNI loader for FastJava libraries
-- [FastAudioPlayer](https://github.com/andrestubbe/FastAudioPlayer) — Native audio playback for Java via WASAPI
-- [FastAI](https://github.com/andrestubbe/fastai) — Unified lightweight AI model client interface
-- [FastAIModel](https://github.com/andrestubbe/FastAIModel) — Embedded GGUF and ONNX runtimes for local feature embeddings
-- [FastAIRag](https://github.com/andrestubbe/FastAIRag) — Unified, zero-bloat RAG pipeline client for Java
-- [FastAIVectorDB](https://github.com/andrestubbe/FastAIVectorDB) — High-speed native C++ SIMD vector database
-- [FastContentParse](https://github.com/andrestubbe/FastContentParse) — Standardized Java document parser for text extraction
-- [FastContentChunk](https://github.com/andrestubbe/FastContentChunk) — High-performance native SIMD tokenizer and chunker
+- [FastCore](https://github.com/andrestubbe/FastCore) — Native library loader, FFM gateway, and platform abstraction
+- [FastAudioCapture](https://github.com/andrestubbe/FastAudioCapture) — Zero-copy WASAPI audio loopback & microphone capture
+- [FastAudioPlayer](https://github.com/andrestubbe/FastAudioPlayer) — Ultra low-latency WASAPI and DirectSound audio playback engine
+- [FastAudioProcess](https://github.com/andrestubbe/FastAudioProcess) — Zero-allocation audio DSP, resamplers, and format converters
+- [FastVAD](https://github.com/andrestubbe/FastVAD) — Ultra-fast real-time Voice Activity Detection (Silero-ONNX & WebRTC)
+- [FastTurn](https://github.com/andrestubbe/FastTurn) — Real-time conversational turn-taking and speech arbitration
+- [FastSSML](https://github.com/andrestubbe/FastSSML) — High-performance SSML parsing and speech synthesis markup
+- [FastSTT](https://github.com/andrestubbe/FastSTT) — High-throughput local speech-to-text recognition
+- [FastWakeWord](https://github.com/andrestubbe/FastWakeWord) — Neural wake-word and keyword spotting detector
 
 ---
 
