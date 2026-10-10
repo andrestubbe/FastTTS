@@ -100,9 +100,9 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 ## Key Features
 
-* **🎭 Multiple Backend Support** — Unified interface for Pocket TTS (offline CPU neural), Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
+* **🎭 Multiple Backend Support** — Unified interface for Pocket TTS (offline CPU neural), Piper (offline), Windows SAPI (system), ElevenLabs (cloud), Deepgram (cloud), and OpenAI (cloud).
 * **📱 Offline Capable** — Run local CPU neural TTS with Pocket TTS (Sherpa-ONNX) or Piper without internet connection.
-* **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs and Deepgram.
+* **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs, Deepgram, and OpenAI.
 * **⚡ Performance Focused** — Built for low-latency synthesis with detailed timing metrics.
 * **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
 
@@ -133,6 +133,9 @@ Piper (offline)  0 ms         1761 ms       1761 ms
 
 ## Architecture Overview
 
+**Pocket TTS Backend**  
+Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX. Runs quantized INT8 models with no heavy Python or ML runtime dependencies.
+
 **Windows SAPI Backend**  
 System-native text-to-speech using Windows Speech API (SAPI). No external dependencies required.
 
@@ -144,6 +147,9 @@ Cloud-based TTS accessing ElevenLabs high-quality voices. Requires API key and i
 
 **Deepgram Backend**  
 Cloud-based TTS using Deepgram's fast synthesis API. Requires API key and internet connection.
+
+**OpenAI Backend**  
+Cloud-based speech synthesis using OpenAI's TTS API (`tts-1`, `tts-1-hd`). Requires API key and internet connection.
 
 **FastTTS (This Library — The Orchestration Layer)**  
 Higher-level TTS framework that provides a unified interface for all backends, allowing seamless switching between offline and cloud providers.
@@ -281,6 +287,11 @@ dependencies {
 - Requires API key from: https://deepgram.com
 - Fast cloud-based synthesis
 - Multiple voice options
+
+### OpenAI (Cloud TTS)
+- Requires API key from: https://platform.openai.com
+- Models: `tts-1`, `tts-1-hd`
+- Voices: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`
 
 ---
 
