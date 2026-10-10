@@ -272,11 +272,6 @@ dependencies {
 - Download voice models (`.onnx` and `.onnx.json`) from: https://huggingface.co/models?search=piper
 - Place model files in the `models/` folder
 
-**Supported Piper ONNX Voices (Examples):**
-- `de_DE-thorsten-medium.onnx` — High-quality German male voice (bundled in `models/`)
-- `en_US-lessac-medium.onnx` — Clear US English voice
-- `en_US-amy-medium.onnx` — Expressive US English voice
-
 ### ElevenLabs (Cloud TTS)
 - Requires API key from: https://elevenlabs.io
 - High-quality voices
