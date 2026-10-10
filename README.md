@@ -1,16 +1,16 @@
-# FastTTS 0.1.2 [ALPHA-2026-09-30] — Unified, Zero-Bloat TTS Backend Orchestration for Java
+# FastTTS 0.1.3 [ALPHA-2026-10-10] — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.2)
+[![Status](https://img.shields.io/badge/status-0.1.3-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.2-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.3-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
 
-**⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline and cloud providers.**
+**⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline neural engines, system voices, and cloud providers.**
 
-FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
+FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Pocket TTS (offline Sherpa-ONNX)**, **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
 
 [**Watch Demo (YouTube)**](https://youtu.be/PyTXlm9bfxc) | Watch JMH Benchmark (YouTube)
 
@@ -22,6 +22,7 @@ FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide 
 
 ```java
 import fasttts.FastTTS;
+import fasttts.backends.pockettts.PocketTTSBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
 import fasttts.backends.elevenlabs.ElevenLabsBackend;
@@ -32,21 +33,25 @@ public class Demo {
     public static void main(String[] args) throws Exception {
         FastTTS tts = new FastTTS();
         
-        // Windows SAPI (no setup required)
+        // 1. Pocket TTS (ultra-compact, offline CPU neural TTS via Sherpa-ONNX)
+        tts.registerBackend(new PocketTTSBackend());
+        FastTTSAudio pocketAudio = tts.speak("Hello from Pocket TTS neural synthesis!");
+
+        // 2. Windows SAPI (no external setup required)
         tts.registerBackend(new WindowsTTSBackend());
-        FastTTSAudio audio = tts.speak("Hello World");
+        FastTTSAudio audio = tts.speak("windows", "Hello World", null, null);
         
-        // Piper (offline, requires piper.exe and models)
+        // 3. Piper (offline, requires piper.exe and models)
         tts.registerBackend(new PiperBackend("piper.exe", "models/de_DE-thorsten-medium.onnx"));
-        FastTTSAudio germanAudio = tts.speak("Hallo Welt");
+        FastTTSAudio germanAudio = tts.speak("piper", "Hallo Welt", null, null);
         
-        // ElevenLabs (cloud, requires API key)
+        // 4. ElevenLabs (cloud, requires API key)
         tts.registerBackend(new ElevenLabsBackend("your-api-key"));
-        FastTTSAudio cloudAudio = tts.speak("Hello World");
+        FastTTSAudio cloudAudio = tts.speak("elevenlabs", "Hello World", null, null);
         
-        // Deepgram (cloud, requires API key)
+        // 5. Deepgram (cloud, requires API key)
         tts.registerBackend(new DeepgramBackend("your-api-key"));
-        FastTTSAudio deepgramAudio = tts.speak("Hello World");
+        FastTTSAudio deepgramAudio = tts.speak("deepgram", "Hello World", null, null);
     }
 }
 ```
@@ -76,17 +81,17 @@ public class Demo {
 Traditional TTS libraries force developers into heavyweight Python dependencies, complex cloud API integrations, or platform-specific code. `FastTTS` provides:
 
 - **100% Native JVM Pipeline** — Orchestrates multiple TTS backends in a single JVM process with unified interface.
-- **Offline and Cloud Support** — Seamlessly switch between local models (Piper) and cloud providers (ElevenLabs, Deepgram).
-- **Model Agnostic** — Works with offline ONNX models, system voices, and cloud APIs through the same `FastTTSBackend` interface.
+- **Offline Neural & Cloud Support** — Seamlessly switch between local CPU neural models (Pocket TTS, Piper), system voices (Windows SAPI), and cloud providers (ElevenLabs, Deepgram).
+- **Model Agnostic** — Works with quantized INT8 ONNX models, system voices, and cloud APIs through the same `FastTTSBackend` interface.
 - **Zero Configuration Overlap** — Integrates seamlessly with existing FastJava ecosystem libraries.
 
 FastTTS unifies local neural inference, system voices, and cloud TTS into a single framework-agnostic API:
 
 | Feature | MaryTTS (Legacy Java) | Python Coqui/Piper Subprocess | FastTTS |
 |:---|:---|:---|:---|
-| **Synthesis Backends** | Obsolete Java voices only | Single CLI wrapper | **Unified (SAPI, Piper, ElevenLabs, Deepgram)** |
-| **Offline Privacy** | Yes (Robotic sound) | Yes (Heavy Python runtime) | **100% Offline (Piper ONNX / Windows SAPI)** |
-| **Startup / Synthesis** | 800–2500 ms (Heap heavy) | 2000–5000 ms (Process spawn) | **~255 ms (Windows SAPI) / Fast Piper** |
+| **Synthesis Backends** | Obsolete Java voices only | Single CLI wrapper | **Unified (Pocket TTS, Piper, SAPI, Cloud)** |
+| **Offline Privacy** | Yes (Robotic sound) | Yes (Heavy Python runtime) | **100% Offline (Pocket TTS Sherpa / Piper / SAPI)** |
+| **Startup / Synthesis** | 800–2500 ms (Heap heavy) | 2000–5000 ms (Process spawn) | **~255 ms (Windows SAPI) / Instant Pocket TTS** |
 | **Voice Quality** | Synthetic 2000s robotic | Neural quality | **State-of-the-Art Neural & System** |
 | **Barge-In Ready** | Difficult to interrupt | Stalled CLI process | **Instant Cancellation via FastVAD** |
 | **Dependencies** | Massive legacy JARs | Python 3 + Pip dependencies | **Pure Java 17+ backed by FastCore** |
@@ -95,8 +100,8 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 ## Key Features
 
-* **🎭 Multiple Backend Support** — Unified interface for Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
-* **📱 Offline Capable** — Run TTS locally with Piper models without internet connection.
+* **🎭 Multiple Backend Support** — Unified interface for Pocket TTS (offline CPU neural), Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
+* **📱 Offline Capable** — Run local CPU neural TTS with Pocket TTS (Sherpa-ONNX) or Piper without internet connection.
 * **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs and Deepgram.
 * **⚡ Performance Focused** — Built for low-latency synthesis with detailed timing metrics.
 * **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
@@ -187,7 +192,7 @@ Add the JitPack repository and the complete dependency stack to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
-        <version>0.1.2</version>
+        <version>0.1.3</version>
     </dependency>
 
     <!-- FastSIMD Hardware Vector Acceleration Engine -->
@@ -235,7 +240,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastTTS:0.1.2'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.3'
     implementation 'com.github.andrestubbe:FastSIMD:0.1.3'
     implementation 'com.github.andrestubbe:FastMemory:0.1.1'
     implementation 'com.github.andrestubbe:FastPointer:0.1.1'
@@ -247,6 +252,12 @@ dependencies {
 ---
 
 ## Backend Setup
+
+### Pocket TTS (Offline Neural TTS)
+- **High-speed INT8 quantized offline CPU neural TTS** powered by Sherpa-ONNX.
+- Binary resolution: Auto-discovers `sherpa-onnx-offline-tts.exe` in `bin/pocket/`, `bin/`, or `%USERPROFILE%/.speak/bin/pocket/`.
+- Model resolution: Auto-discovers model directories in `models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26`, `models/pocket/`, or `%USERPROFILE%/.speak/models/pocket/`.
+- Zero Python or heavy ML framework dependencies; pure low-latency offline inference.
 
 ### Windows SAPI (System TTS)
 - **No installation required** — uses Windows built-in voices

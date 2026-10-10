@@ -37,6 +37,13 @@ Synthesizes the input text using the default or specified registered backend and
 - **Native Implementation**: Uses Windows SAPI (`sapi.h`) via `fasttts.dll` (AVX2-optimized).
 - **Zero Config**: Uses system default voices without downloading external model files.
 
+### `PocketTTSBackend`
+- **Neural Offline CPU TTS**: Integrates Sherpa-ONNX INT8 quantized neural TTS (`sherpa-onnx-offline-tts.exe`).
+- **Models**: Auto-resolves INT8 ONNX models and test WAV references without external Python or heavy ML runtimes.
+- **Constructors**:
+  - `PocketTTSBackend()`: Default discovery in `bin/pocket/` and `models/pocket/`.
+  - `PocketTTSBackend(String binaryPath, String modelDir, String referenceAudio)`: Explicit paths to binary, model directory, and speaker reference WAV.
+
 ### `PiperBackend`
 - **Neural Offline TTS**: Integrates Piper ONNX engine (`piper.exe`).
 - **Models**: Requires `.onnx` weights and `.onnx.json` config in `models/`.

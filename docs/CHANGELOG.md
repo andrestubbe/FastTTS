@@ -4,6 +4,17 @@ All notable changes to `FastTTS` are documented in this file.
 
 ---
 
+## [0.1.3] - 2026-10-10
+
+### Added
+- **Pocket TTS Integration**: Added `PocketTTSBackend` powered by Sherpa-ONNX offline CPU neural engine (`sherpa-onnx-offline-tts.exe` with INT8 quantized models).
+- **Auto-Resolution Architecture**: Automated discovery for Pocket TTS binary paths and model directories in workspace `bin/pocket/` / `models/pocket/` as well as user home `.speak/`.
+
+### Removed
+- **EdgeTTS Backend**: Removed `EdgeTTSBackend` in favor of self-contained offline neural Pocket TTS.
+
+---
+
 ## [0.1.2] - 2026-08-14
 
 ### Added

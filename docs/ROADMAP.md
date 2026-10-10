@@ -4,8 +4,9 @@ The long-term development milestones for `FastTTS`.
 
 ---
 
-## Phase 1: Core Engine & Multi-Backend (Completed - v0.1.2)
+## Phase 1: Core Engine & Multi-Backend (Completed - 0.1.3)
 - [x] Native Windows SAPI text-to-speech JNI integration.
+- [x] Pocket TTS (Sherpa-ONNX INT8 offline neural CPU synthesis).
 - [x] Piper ONNX offline neural TTS backend.
 - [x] Cloud API integration (ElevenLabs, Deepgram, OpenAI).
 - [x] Hardware AVX2 SIMD audio vector scaling.

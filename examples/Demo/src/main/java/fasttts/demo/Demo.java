@@ -3,7 +3,7 @@ import fasttts.FastTTS;
 
 public class Demo {
     public static void main(String[] args) {
-        System.out.println("--- FastTTS 0.1.2 Demo ---");
+        System.out.println("--- FastTTS 0.1.3 Demo ---");
         try {
             FastTTS tts = new FastTTS();
             
@@ -14,7 +14,22 @@ public class Demo {
             byte[] wav = audio != null ? audio.getData() : null;
             System.out.println("  Synthesized WAV size: " + (wav != null ? wav.length : 0) + " bytes");
 
-            // 2. Piper (Offline neural TTS if model & executable exist)
+            // 2. Pocket TTS (Offline neural Sherpa-ONNX)
+            try {
+                fasttts.backends.pockettts.PocketTTSBackend pocket = new fasttts.backends.pockettts.PocketTTSBackend();
+                if (pocket.isAvailable()) {
+                    tts.registerBackend(pocket);
+                    System.out.println("Synthesizing via Pocket TTS (Sherpa-ONNX)...");
+                    fasttts.core.FastTTSAudio pocketAudio = tts.speak("pocket", "Pocket TTS offline neural inference active!", null, null);
+                    System.out.println("  Pocket WAV size: " + (pocketAudio != null && pocketAudio.getData() != null ? pocketAudio.getData().length : 0) + " bytes");
+                } else {
+                    System.out.println("  [Notice] Pocket TTS skipped (sherpa binary or models not found in standard paths)");
+                }
+            } catch (Exception ex) {
+                System.out.println("  [Notice] Pocket TTS init skipped: " + ex.getMessage());
+            }
+
+            // 3. Piper (Offline neural TTS if model & executable exist)
             java.io.File piperExe = new java.io.File("piper.exe");
             java.io.File piperModel = new java.io.File("models/de_DE-thorsten-medium.onnx");
             if (piperExe.exists() && piperModel.exists()) {
