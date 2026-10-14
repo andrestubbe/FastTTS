@@ -1,3 +1,10 @@
+[ ] Dia2 (nari-labs/dia2) TTS Backend Integration:
+    - Primärer Einsatzzweck: High-End Video Dubbing & Synchronisation für Clip+ (Qualität vor Latenz)
+    - Voice-Cloning via Audio-Prefix (5-15s Referenzclip des Originalsprechers auf der Video-Timeline)
+    - GGUF-Modell (dia2-2b) über FastAIModel mit GPU-Beschleunigung einbinden
+    - Audio-Decoder / Vocoder Pipeline für Audio-Tokens integrieren
+    - Dia2Backend in FastTTS vollenden und für Clip+ & Speak+ bereitstellen
+
 KYUTAI
 Pocket TTS
 
