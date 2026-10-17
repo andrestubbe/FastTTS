@@ -57,8 +57,8 @@ public class Demo {
 - [Why FastTTS?](#why-fasttts)
 - [Key Features](#key-features)
 - [Real-World Use Cases](#real-world-use-cases)
-- [Performance Benchmarks](#performance-benchmarks)
 - [Architecture Overview](#architecture-overview)
+- [Performance Benchmarks](#performance-benchmarks)
 - [API Quick Reference](#api-quick-reference)
 - [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
@@ -112,54 +112,66 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 ---
 
-## Multi-Engine Benchmark Suite
-
-Directly benchmarked across all engines via `run-demo.bat benchmark` with audio playback through `FastAudioPlayer` (WASAPI):
+## Architecture Overview
 
 ```text
-ENGINE                  | VOICE / MODEL            | LANG   | SYNTH (ms) | AUDIO (ms) |       RTF |  SIZE (KB) | STATUS
---------------------------------------------------------------------------------------------------------------------------------
-Windows SAPI            | OneCore/Default          | en-US  |     152 ms |    5044 ms |    0,030x |   434,5 KB | [SUCCESS]
-Kokoro Studio (ONNX)    | af_bella                 | en-US  |    4479 ms |    4363 ms |    1,027x |   204,6 KB | [SUCCESS]
-Kokoro Studio (ONNX)    | am_adam                  | en-US  |    4053 ms |    4187 ms |    0,968x |   196,3 KB | [SUCCESS]
-Kokoro Studio (ONNX)    | bf_emma                  | en-GB  |    4281 ms |    4843 ms |    0,884x |   227,0 KB | [SUCCESS]
-Kokoro Studio (ONNX)    | bm_george                | en-GB  |    3935 ms |    4373 ms |    0,900x |   205,0 KB | [SUCCESS]
-Piper Neural (ONNX)     | thorsten-medium          | de-DE  |     848 ms |    3405 ms |    0,249x |   146,7 KB | [SUCCESS]
-Pocket TTS (ONNX)       | int8-bria                | en-US  |    3473 ms |    3600 ms |    0,965x |   168,8 KB | [SUCCESS]
-OmniVoice (Diffusion)   | bria (Zero-Shot)         | en-US  |   54413 ms |    4040 ms |   13,469x |   189,4 KB | [SUCCESS]
-Dia2 Dialogue (GGUF)    | dia2-2b-q4_k             | en-US  |          - |          - |         - |          - | [MODEL READY: GGUF 1.2GB]
-HuggingFace API         | mms-tts-eng              | en-US  |          - |          - |         - |          - | [Requires HF_TOKEN]
---------------------------------------------------------------------------------------------------------------------------------
-RTF (Real-Time Factor): values < 1.0x indicate faster than real-time synthesis! (e.g., 0.25x = 4x real-time speed)
+       ┌───────────────────────────────────────────────────────────────┐
+       │             FastTTS (Public Orchestration Facade)             │
+       │     AutoCloseable  •  Streaming Callback  •  Voice Router     │
+       └───────────────────────────────┬───────────────────────────────┘
+                                       │
+        ┌──────────────────────────────┼──────────────────────────────┐
+        ▼                              ▼                              ▼
+ ┌──────────────┐              ┌──────────────┐              ┌────────────────┐
+ │ System SAPI  │              │ Offline ONNX │              │  Cloud Engines │
+ │ fasttts.dll  │              │ Sherpa/Piper │              │ ElevenLabs etc │
+ └──────┬───────┘              └──────┬───────┘              └────────┬───────┘
+        │                             │                               │
+        │ (~152 ms, 0.03x RTF)        │ (AVX2 INT8 / Zero-Shot)       │ (Remote REST)
+        ▼                             ▼                               ▼
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │                  FastTTSAudio (Standard Linear PCM Buffer)                 │
+ │            Sample Rate  •  Channels (Mono/Stereo)  •  Raw Bytes            │
+ └─────────────────────────────────────┬──────────────────────────────────────┘
+                                       │
+                                       ▼
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │         FastJava AVX2 Audio DSP & Low-Latency Playback Substrate           │
+ │       FastAudioProcess (SIMD DSP)  •  FastAudioPlayer (Direct WASAPI)      │
+ └────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Core Backend Engines
+
+- 🔊 **Windows SAPI Backend**: System-native text-to-speech using Windows Speech API via AVX2-optimized `fasttts.dll` (~152 ms latency, **0.03x RTF**).
+- 🎙️ **Kokoro Studio (ONNX)**: Studio-grade offline neural TTS powered by Sherpa-ONNX (`kokoro-en-v0_19`) with high-fidelity voices (`af_bella`, `am_adam`, `bf_emma`, `bm_george`).
+- ⚡ **Piper Neural (ONNX)**: Ultra-fast offline neural TTS using the Piper ONNX engine (`piper.exe`) with multi-directory auto-discovery (~848 ms latency, **0.25x RTF**).
+- 📱 **Pocket TTS (ONNX)**: Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX with quantized INT8 models (**0.96x RTF**).
+- 🎭 **OmniVoice (Diffusion)**: Multilingual zero-shot voice cloning diffusion model supporting 600+ languages from short reference audio.
+- 💬 **Dia2 Dialogue (GGUF)**: Quantized GGUF dialogue model (`dia2-2b-q4_k.gguf`) with multi-speaker turn parsing and memory page cache warming.
+- 🌐 **Cloud Backends**: Cloud APIs (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI) with hardened JSON escaping and automatic token resolution.
 
 ---
 
-## Architecture Overview
+## Performance Benchmarks
 
-**Kokoro Studio Backend**  
-High-fidelity studio-grade offline neural TTS powered by Sherpa-ONNX (`models/kokoro/kokoro-en-v0_19`).
+Directly benchmarked across all engines via `run-demo.bat benchmark` with audio playback through `FastAudioPlayer` (WASAPI):
 
-**OmniVoice Backend**  
-Massively multilingual zero-shot voice cloning diffusion model supporting 600+ languages and custom voice cloning.
+| Engine / Backend | Voice / Model | Lang | Synth Time | Audio Length | Real-Time Factor (RTF) | Buffer Size | Status |
+|:---|:---|:---:|---:|---:|---:|---:|:---:|
+| **Windows SAPI** | `OneCore/Default` | `en-US` | **152 ms** | 5,044 ms | **0.030x** | 434.5 KB | ✅ Active |
+| **Piper Neural (ONNX)** | `thorsten-medium` | `de-DE` | **848 ms** | 3,405 ms | **0.249x** | 146.7 KB | ✅ Active |
+| **Pocket TTS (ONNX)** | `int8-bria` | `en-US` | **3,473 ms** | 3,600 ms | **0.965x** | 168.8 KB | ✅ Active |
+| **Kokoro Studio (ONNX)** | `am_adam` | `en-US` | **4,053 ms** | 4,187 ms | **0.968x** | 196.3 KB | ✅ Active |
+| **Kokoro Studio (ONNX)** | `bm_george` | `en-GB` | **3,935 ms** | 4,373 ms | **0.900x** | 205.0 KB | ✅ Active |
+| **Kokoro Studio (ONNX)** | `bf_emma` | `en-GB` | **4,281 ms** | 4,843 ms | **0.884x** | 227.0 KB | ✅ Active |
+| **Kokoro Studio (ONNX)** | `af_bella` | `en-US` | **4,479 ms** | 4,363 ms | **1.027x** | 204.6 KB | ✅ Active |
+| **OmniVoice (Diffusion)** | `bria (Zero-Shot)` | `en-US` | **54,413 ms** | 4,040 ms | **13.469x** | 189.4 KB | ✅ Active |
+| **Dia2 Dialogue (GGUF)** | `dia2-2b-q4_k` | `en-US` | — | — | — | — | 📦 Model Ready (1.2 GB) |
+| **Hugging Face API** | `mms-tts-eng` | `en-US` | — | — | — | — | 🔑 Cloud (Needs Token) |
 
-**Pocket TTS Backend**  
-Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX with quantized INT8 models (~0.96x RTF).
-
-**Windows SAPI Backend**  
-System-native text-to-speech using Windows Speech API (SAPI) via AVX2-optimized `fasttts.dll` (~152 ms latency, 0.03x RTF).
-
-**Piper Backend**  
-Ultra-fast offline neural TTS using the Piper ONNX engine (`piper.exe`) with multi-directory auto-discovery (~848 ms latency, 0.25x RTF).
-
-**Dia2 Dialogue Backend**  
-Quantized GGUF dialogue model (`dia2-2b-q4_k.gguf`) with multi-speaker turn parsing and memory page cache warming.
-
-**Cloud Backends (HuggingFace, ElevenLabs, Deepgram, OpenAI)**  
-Cloud APIs with hardened JSON escaping and automatic authorization token resolution.
-
-**FastTTS (Orchestration & Lifecycle Layer)**  
-Unified `AutoCloseable` registry supporting pre-warming (`prepare()`), fallback chaining, and streaming.
+> [!NOTE]
+> **Real-Time Factor (RTF)**: Values `< 1.0x` indicate faster than real-time synthesis (e.g. `0.25x` = 4× real-time speed; `0.03x` = 33× real-time speed). System SAPI and Piper achieve immediate sub-second voice response suitable for real-time conversational agents.
 
 ---
 
@@ -359,5 +371,5 @@ MIT License — See [LICENSE](LICENSE) file for details.
 
 ---
 
-Part of the FastJava Ecosystem — Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋
+**Part of the FastJava Ecosystem** — *Making the JVM faster. Small package. Maximum speed. Zero bloat. 🚀📋*
 
