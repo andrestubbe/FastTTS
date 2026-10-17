@@ -4,14 +4,18 @@ The long-term development milestones for `FastTTS`.
 
 ---
 
-## Phase 1: Core Engine & Multi-Backend (Completed - v0.1.4)
+## Phase 1: Core Engine & Multi-Backend (Completed - v0.1.5)
 - [x] Native Windows SAPI text-to-speech JNI integration (0.03x RTF).
+- [x] Matcha-TTS Flow-Matching neural speech (0.09x RTF, > 10× real-time).
+- [x] VITS deterministic low-latency variational inference (0.09x RTF).
+- [x] F5-TTS non-autoregressive flow-matching zero-shot voice cloning.
 - [x] Kokoro Studio offline neural speech (Sherpa-ONNX runtime).
 - [x] Piper ONNX offline neural TTS backend with auto-discovery.
 - [x] Pocket TTS (Sherpa-ONNX INT8 offline neural CPU synthesis).
 - [x] OmniVoice Zero-Shot Voice Cloning (diffusion language model, 600+ languages).
 - [x] Dia2 Dialogue Backend (GGUF 2B multi-speaker scripted conversation).
 - [x] Cloud API integration (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI).
+- [x] Engine & Model Manager CLI Installer (`run-installer.bat`).
 - [x] Lifecycle contracts (`prepare()`, `isPrepared()`, `isAvailable()`, `AutoCloseable`).
 - [x] Hardware AVX2 SIMD audio vector scaling.
 

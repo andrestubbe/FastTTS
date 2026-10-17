@@ -56,9 +56,21 @@ Pre-warms engines into memory / OS page cache for sub-millisecond dispatch, and 
 - **Neural Offline TTS**: Integrates Piper ONNX engine (`piper.exe`).
 - **Models**: Resolves models in `models/piper/` or `~/.speak/models/piper/`.
 
+### `MatchaBackend`
+- **Optimal-Transport Flow Matching**: Flow matching acoustic model (`matcha-icefall-en_US-ljspeech.onnx`) combined with Vocos neural vocoder at 22.05 kHz.
+- **Ultra-Fast CPU Inferenz**: Operates at **~0.09x RTF** (> 10× real-time speed) powered by `sherpa-onnx-offline-tts.exe`.
+
+### `VITSBackend`
+- **Deterministic Neural Synthesis**: End-to-end variational inference via Piper ONNX (`vits-piper-en_US-amy-low.onnx`).
+- **Low-Latency Streaming**: Sub-second deterministic speech generation at **~0.09x RTF**.
+
+### `F5TTSBackend`
+- **Flow Matching Zero-Shot Voice Cloning**: Non-autoregressive speech synthesis via `audiocpp_cli.exe` with GGUF weights (`f5-tts-v1-base-f16.gguf`) and Vocos decoder.
+- **Voice Cloning**: Custom reference voice cloning via reference audio clips.
+
 ### `PocketTTSBackend`
 - **Neural Offline CPU TTS**: Integrates Sherpa-ONNX INT8 quantized neural TTS (`sherpa-onnx-offline-tts.exe`).
-- **Models**: Auto-resolves INT8 ONNX models and test WAV references without external Python or heavy ML runtimes (~0.96x RTF).
+- **Models**: Auto-resolves INT8 ONNX models and test WAV references without external Python or heavy ML runtimes (~0.71x - 0.96x RTF).
 
 ### `OmniVoiceBackend`
 - **Zero-Shot Voice Cloning**: Diffusion language model supporting 600+ languages and voice cloning from reference WAV files.

@@ -7,7 +7,7 @@
 ## Core Architecture Principles
 
 1. **Unified Multi-Backend Orchestration**  
-   Developers interact with a single, clean `FastTTS` API, seamlessly orchestrating between local studio neural models (Kokoro), zero-shot multilingual diffusion cloning (OmniVoice), compact INT8 CPU models (Pocket TTS), offline ONNX models (Piper), multi-speaker GGUF dialogue (Dia2), native OS voices (Windows SAPI), and cloud APIs (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI).
+   Developers interact with a single, clean `FastTTS` API, seamlessly orchestrating between Flow Matching engines (Matcha-TTS, F5-TTS), deterministic neural models (VITS), local studio neural models (Kokoro), zero-shot multilingual diffusion cloning (OmniVoice), compact INT8 CPU models (Pocket TTS), offline ONNX models (Piper), multi-speaker GGUF dialogue (Dia2), native OS voices (Windows SAPI), and cloud APIs (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI).
 
 2. **Deterministic Lifecycle & Zero Resource Leaks**  
    All backends adhere to explicit lifecycle semantics via `AutoCloseable`, supporting pre-warming (`prepare()`) to pull model weights into the OS page cache for sub-millisecond dispatch, timeout handling, and leak-proof file and process destruction.

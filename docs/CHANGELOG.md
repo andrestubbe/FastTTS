@@ -4,6 +4,17 @@ All notable changes to `FastTTS` are documented in this file.
 
 ---
 
+## [0.1.5] - 2026-10-17
+
+### Added
+- **Matcha-TTS Flow Matching Engine**: Integrated `MatchaBackend` featuring Optimal-Transport Flow Matching neural speech via `sherpa-onnx` and Vocos neural vocoder at 22.05 kHz (**~0.09x RTF**, > 10× real-time speed).
+- **VITS Deterministic Low-Latency Engine**: Integrated `VITSBackend` featuring variational inference neural speech via Piper ONNX (`amy-low`, **~0.09x RTF**).
+- **F5-TTS Flow Matching Zero-Shot Cloning**: Integrated `F5TTSBackend` supporting non-autoregressive flow matching voice cloning via `audiocpp_cli.exe`.
+- **Engine & Model Manager CLI Installer**: Added `FastTTSInstaller` (`run-installer.bat`) for interactive management, integrity verification, auto-extraction (`.tar.bz2`, `.zip`), and clean uninstallation (`--install <engine>`, `--deinstall <engine>`, `--status`).
+- **Benchmark Expansion**: Expanded benchmark suite with Matcha-TTS, VITS, and F5-TTS metrics.
+
+---
+
 ## [0.1.4] - 2026-10-17
 
 ### Added
