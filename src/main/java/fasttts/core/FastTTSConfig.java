@@ -10,6 +10,10 @@ public class FastTTSConfig {
         properties.put(key, value);
     }
 
+    public String getProperty(String key) {
+        return properties.get(key);
+    }
+
     public String getProperty(String key, String defaultValue) {
         return properties.getOrDefault(key, defaultValue);
     }

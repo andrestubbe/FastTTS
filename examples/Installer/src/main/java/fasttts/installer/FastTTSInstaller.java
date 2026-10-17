@@ -36,6 +36,16 @@ public class FastTTSInstaller {
             "https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/thorsten/medium/de_DE-thorsten-medium.onnx";
     private static final String PIPER_THORSTEN_JSON =
             "https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/thorsten/medium/de_DE-thorsten-medium.onnx.json";
+    private static final String MATCHA_MODEL_URL =
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/matcha-icefall-en_US-ljspeech.tar.bz2";
+    private static final String VOCOS_VOCODER_URL =
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vocos-22khz-univ.onnx";
+    private static final String VITS_MODEL_URL =
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-en_US-amy-low.tar.bz2";
+    private static final String F5TTS_MODEL_URL =
+            "https://huggingface.co/cstr/f5-tts-GGUF/resolve/main/f5-tts-v1-base-f16.gguf";
+    private static final String F5TTS_VOCAB_URL =
+            "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_v1_Base/vocab.txt";
 
     public FastTTSInstaller() {
         this.rootDir = findProjectRoot();
@@ -74,15 +84,18 @@ public class FastTTSInstaller {
             printDashboard();
 
             System.out.println("Actions:");
-            System.out.println("  1.  [Install All]   Install all standard offline engines & models (Kokoro, Pocket, Piper)");
+            System.out.println("  1.  [Install All]   Install all standard offline engines & models (Kokoro, Pocket, Piper, Matcha, VITS)");
             System.out.println("  2.  [Deinstall All] Deinstall/Delete all local models & binaries (clean reset)");
             System.out.println("  3.  [Kokoro]        Manage Kokoro Studio (Sherpa-ONNX)");
             System.out.println("  4.  [Pocket TTS]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
             System.out.println("  5.  [Piper]         Manage Piper Neural (ONNX)");
-            System.out.println("  6.  [OmniVoice]     Manage OmniVoice (Diffusion Zero-Shot)");
-            System.out.println("  7.  [Dia2]          Manage Dia2 Scripted Dialogue (GGUF)");
-            System.out.println("  8.  [Audio Test]    Test Native Audio Playback (WASAPI)");
-            System.out.println("  9.  [Benchmark]     Run Multi-Engine Benchmark Suite");
+            System.out.println("  6.  [Matcha-TTS]    Manage Matcha-TTS (Flow Matching)");
+            System.out.println("  7.  [VITS]          Manage VITS (Deterministic Neural)");
+            System.out.println("  8.  [F5-TTS]        Manage F5-TTS (Flow Matching Voice Clone)");
+            System.out.println("  9.  [OmniVoice]     Manage OmniVoice (Diffusion Zero-Shot)");
+            System.out.println("  10. [Dia2]          Manage Dia2 Scripted Dialogue (GGUF)");
+            System.out.println("  11. [Audio Test]    Test Native Audio Playback (WASAPI)");
+            System.out.println("  12. [Benchmark]     Run Multi-Engine Benchmark Suite");
             System.out.println("  q.  Quit");
             System.out.println();
             System.out.print("Choose an option: ");
@@ -94,10 +107,13 @@ public class FastTTSInstaller {
                 case "3" -> manageKokoro();
                 case "4" -> managePocket();
                 case "5" -> managePiper();
-                case "6" -> manageOmniVoice();
-                case "7" -> manageDia2();
-                case "8" -> testAudio();
-                case "9" -> runBenchmark();
+                case "6" -> manageMatcha();
+                case "7" -> manageVITS();
+                case "8" -> manageF5TTS();
+                case "9" -> manageOmniVoice();
+                case "10" -> manageDia2();
+                case "11" -> testAudio();
+                case "12" -> runBenchmark();
                 case "q" -> {
                     System.out.println("Exiting FastTTS Installer. Good bye!");
                     return;
@@ -117,6 +133,9 @@ public class FastTTSInstaller {
                     case "kokoro" -> installKokoro();
                     case "pocket", "pockettts" -> installPocket();
                     case "piper" -> installPiper();
+                    case "matcha", "matchatts" -> installMatcha();
+                    case "vits" -> installVITS();
+                    case "f5tts", "f5" -> installF5TTS();
                     case "omnivoice" -> installOmniVoice();
                     case "dia2" -> installDia2();
                     default -> System.err.println("Unknown install target: " + target);
@@ -129,6 +148,9 @@ public class FastTTSInstaller {
                     case "kokoro" -> deinstallKokoro();
                     case "pocket", "pockettts" -> deinstallPocket();
                     case "piper" -> deinstallPiper();
+                    case "matcha", "matchatts" -> deinstallMatcha();
+                    case "vits" -> deinstallVITS();
+                    case "f5tts", "f5" -> deinstallF5TTS();
                     case "omnivoice" -> deinstallOmniVoice();
                     case "dia2" -> deinstallDia2();
                     default -> System.err.println("Unknown deinstall target: " + target);
@@ -140,9 +162,9 @@ public class FastTTSInstaller {
             }
             default -> {
                 System.err.println("Usage:");
-                System.err.println("  --status                              Print current installation status");
-                System.err.println("  --install [all|kokoro|pocket|piper]   Install local engines & models");
-                System.err.println("  --deinstall [all|kokoro|pocket|piper] Remove local engines & models");
+                System.err.println("  --status                                              Print current installation status");
+                System.err.println("  --install [all|kokoro|pocket|piper|matcha|vits|f5tts] Install local engines & models");
+                System.err.println("  --deinstall [all|kokoro|pocket|piper|matcha|vits|f5]  Remove local engines & models");
             }
         }
     }
@@ -177,6 +199,39 @@ public class FastTTSInstaller {
         int piperCount = (piperModels != null) ? piperModels.length : 0;
         String piperStatus = (piperBin && piperCount > 0) ? "[INSTALLED: " + piperCount + "]" : (piperBin ? "[NO VOICES]" : "[MISSING]");
         System.out.printf("  %-22s | %-12s | bin/piper + " + piperCount + " voices in models/piper/%n", "Piper Neural (ONNX)", piperStatus);
+
+        // Matcha-TTS
+        boolean matchaBin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists()
+                || new File(rootDir, "bin/pocket/sherpa-onnx-offline-tts.exe").exists()
+                || new File(rootDir, "bin/matcha/sherpa-onnx-offline-tts.exe").exists();
+        boolean matchaAcoustic = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx").exists();
+        boolean matchaVocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx").exists();
+        String matchaStatus = (matchaBin && matchaAcoustic && matchaVocoder) ? "[INSTALLED]" : (matchaAcoustic ? "[NO VOCODER/BIN]" : "[MISSING]");
+        System.out.printf("  %-22s | %-12s | models/matcha (Flow Matching)%n", "Matcha-TTS", matchaStatus);
+
+        // VITS
+        boolean vitsBin = matchaBin;
+        File vitsDir = new File(rootDir, "models/vits");
+        boolean vitsModel = false;
+        if (vitsDir.exists()) {
+            File[] sub = vitsDir.listFiles(File::isDirectory);
+            if (sub != null && sub.length > 0) vitsModel = true;
+        }
+        String vitsStatus = (vitsBin && vitsModel) ? "[INSTALLED]" : "[MISSING]";
+        System.out.printf("  %-22s | %-12s | models/vits (Deterministic Neural)%n", "VITS (Piper ONNX)", vitsStatus);
+
+        // F5-TTS
+        boolean f5Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
+        File f5Weights = new File(rootDir, "models/f5tts/f5-tts-v1-base-f16.gguf");
+        String f5Status;
+        if (f5Weights.exists() && f5Weights.length() > 900_000_000L) {
+            f5Status = "[INSTALLED]";
+        } else if (f5Weights.exists()) {
+            f5Status = "[" + (f5Weights.length() / (1024 * 1024)) + " MB / 999 MB]";
+        } else {
+            f5Status = "[MISSING]";
+        }
+        System.out.printf("  %-22s | %-12s | models/f5tts (Flow Matching Voice Clone)%n", "F5-TTS", f5Status);
 
         // OmniVoice
         File omniDir = new File(rootDir, "models/omnivoice");
@@ -213,6 +268,8 @@ public class FastTTSInstaller {
         installKokoro();
         installPocket();
         installPiper();
+        installMatcha();
+        installVITS();
         System.out.println("\n>>> [FastTTS] Installation of standard offline engines complete!\n");
         printDashboard();
     }
@@ -222,6 +279,9 @@ public class FastTTSInstaller {
         deinstallKokoro();
         deinstallPocket();
         deinstallPiper();
+        deinstallMatcha();
+        deinstallVITS();
+        deinstallF5TTS();
         deinstallOmniVoice();
         deinstallDia2();
         System.out.println("\n>>> [FastTTS] Clean deinstallation complete!\n");
@@ -619,6 +679,252 @@ public class FastTTSInstaller {
             }
         } catch (Exception e) {
             System.err.println("Dia2 test failed: " + e.getMessage());
+        }
+        pause();
+    }
+
+    // =========================================================================
+    // 6. Matcha-TTS (Flow Matching)
+    // =========================================================================
+
+    public void installMatcha() {
+        System.out.println("\n--- [Matcha-TTS] Installing Binaries & Model Weights ---");
+        ensureSherpaBinaries(new File(rootDir, "bin/kokoro"));
+
+        File matchaDir = new File(rootDir, "models/matcha");
+        File acousticDir = new File(matchaDir, "matcha-icefall-en_US-ljspeech");
+        File acousticModel = new File(acousticDir, "model-steps-3.onnx");
+        File vocoderFile = new File(matchaDir, "vocos-22khz-univ.onnx");
+
+        matchaDir.mkdirs();
+
+        if (acousticModel.exists() && acousticModel.length() > 50_000_000L) {
+            System.out.println("[Matcha-TTS] Acoustic model present: " + acousticModel.getAbsolutePath());
+        } else {
+            File tarBz2 = new File(matchaDir, "matcha-icefall-en_US-ljspeech.tar.bz2");
+            System.out.println("[Matcha-TTS] Downloading matcha-icefall-en_US-ljspeech.tar.bz2 (~74 MB)...");
+            downloadWithCurl(MATCHA_MODEL_URL, tarBz2);
+            if (tarBz2.exists() && tarBz2.length() > 0) {
+                System.out.println("[Matcha-TTS] Extracting acoustic model...");
+                extractTarBz2(tarBz2, matchaDir);
+                tarBz2.delete();
+            }
+        }
+
+        if (vocoderFile.exists() && vocoderFile.length() > 40_000_000L) {
+            System.out.println("[Matcha-TTS] Vocoder present: " + vocoderFile.getAbsolutePath());
+        } else {
+            System.out.println("[Matcha-TTS] Downloading vocos-22khz-univ.onnx (~51 MB)...");
+            downloadWithCurl(VOCOS_VOCODER_URL, vocoderFile);
+        }
+
+        System.out.println("[SUCCESS] Matcha-TTS installed.");
+    }
+
+    public void deinstallMatcha() {
+        System.out.println("[Deinstall] Removing Matcha-TTS models...");
+        deleteDirectory(new File(rootDir, "models/matcha"));
+        System.out.println("[SUCCESS] Matcha-TTS deinstalled.");
+    }
+
+    private void manageMatcha() {
+        while (true) {
+            clearConsole();
+            System.out.println("--- Matcha-TTS Management (Flow Matching) ---");
+            File bin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe");
+            File acousticModel = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx");
+            File vocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx");
+            System.out.println("Binary:   " + (bin.exists() ? "✓ Installed (Sherpa-ONNX)" : "✗ Missing"));
+            System.out.println("Acoustic: " + (acousticModel.exists() ? "✓ Installed (" + (acousticModel.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
+            System.out.println("Vocoder:  " + (vocoder.exists() ? "✓ Installed (" + (vocoder.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
+            System.out.println();
+            System.out.println("Options:");
+            System.out.println("  1. Install Matcha-TTS (LJSpeech + Vocos)");
+            System.out.println("  2. Deinstall Matcha-TTS");
+            System.out.println("  3. Test Matcha Voice Output");
+            System.out.println("  b. Back");
+            System.out.println();
+            System.out.print("Command: ");
+
+            String cmd = scanner.nextLine().trim().toLowerCase();
+            if (cmd.equals("b") || cmd.equals("back")) return;
+
+            switch (cmd) {
+                case "1" -> { installMatcha(); pause(); }
+                case "2" -> { deinstallMatcha(); pause(); }
+                case "3" -> testMatchaVoice();
+            }
+        }
+    }
+
+    private void testMatchaVoice() {
+        System.out.println("\nSynthesizing test speech with Matcha-TTS (Flow Matching)...");
+        try {
+            FastTTS tts = FastTTS.standard();
+            FastTTSAudio audio = tts.speak("matcha", "Hello! Matcha Flow Matching speech synthesis is running at ultra high speed.", null, null);
+            if (audio != null) {
+                playAudio(audio.getData());
+                System.out.println("[SUCCESS] Playback complete.");
+            }
+        } catch (Exception e) {
+            System.err.println("Matcha test failed: " + e.getMessage());
+        }
+        pause();
+    }
+
+    // =========================================================================
+    // 7. VITS (Deterministic Neural TTS)
+    // =========================================================================
+
+    public void installVITS() {
+        System.out.println("\n--- [VITS] Installing Binaries & Model Weights ---");
+        ensureSherpaBinaries(new File(rootDir, "bin/kokoro"));
+
+        File vitsDir = new File(rootDir, "models/vits");
+        File targetDir = new File(vitsDir, "vits-piper-en_US-amy-low");
+        File modelFile = new File(targetDir, "en_US-amy-low.onnx");
+
+        if (modelFile.exists() && modelFile.length() > 50_000_000L) {
+            System.out.println("[VITS] Model present: " + modelFile.getAbsolutePath());
+        } else {
+            vitsDir.mkdirs();
+            File tarBz2 = new File(vitsDir, "vits-piper-en_US-amy-low.tar.bz2");
+            System.out.println("[VITS] Downloading vits-piper-en_US-amy-low.tar.bz2 (~64 MB)...");
+            downloadWithCurl(VITS_MODEL_URL, tarBz2);
+            if (tarBz2.exists() && tarBz2.length() > 0) {
+                System.out.println("[VITS] Extracting VITS model...");
+                extractTarBz2(tarBz2, vitsDir);
+                tarBz2.delete();
+            }
+        }
+        System.out.println("[SUCCESS] VITS installed.");
+    }
+
+    public void deinstallVITS() {
+        System.out.println("[Deinstall] Removing VITS models...");
+        deleteDirectory(new File(rootDir, "models/vits"));
+        System.out.println("[SUCCESS] VITS deinstalled.");
+    }
+
+    private void manageVITS() {
+        while (true) {
+            clearConsole();
+            System.out.println("--- VITS Management (Deterministic Neural) ---");
+            File bin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe");
+            File vitsDir = new File(rootDir, "models/vits");
+            boolean hasModel = false;
+            if (vitsDir.exists()) {
+                File[] sub = vitsDir.listFiles(File::isDirectory);
+                if (sub != null && sub.length > 0) hasModel = true;
+            }
+            System.out.println("Binary:  " + (bin.exists() ? "✓ Installed (Sherpa-ONNX)" : "✗ Missing"));
+            System.out.println("Model:   " + (hasModel ? "✓ Installed (models/vits)" : "✗ Missing"));
+            System.out.println();
+            System.out.println("Options:");
+            System.out.println("  1. Install VITS (Amy Low / Piper ONNX)");
+            System.out.println("  2. Deinstall VITS");
+            System.out.println("  3. Test VITS Voice Output");
+            System.out.println("  b. Back");
+            System.out.println();
+            System.out.print("Command: ");
+
+            String cmd = scanner.nextLine().trim().toLowerCase();
+            if (cmd.equals("b") || cmd.equals("back")) return;
+
+            switch (cmd) {
+                case "1" -> { installVITS(); pause(); }
+                case "2" -> { deinstallVITS(); pause(); }
+                case "3" -> testVITSVoice();
+            }
+        }
+    }
+
+    private void testVITSVoice() {
+        System.out.println("\nSynthesizing test speech with VITS (Deterministic low latency)...");
+        try {
+            FastTTS tts = FastTTS.standard();
+            FastTTSAudio audio = tts.speak("vits", "Hello! VITS deterministic speech synthesis is online.", null, null);
+            if (audio != null) {
+                playAudio(audio.getData());
+                System.out.println("[SUCCESS] Playback complete.");
+            }
+        } catch (Exception e) {
+            System.err.println("VITS test failed: " + e.getMessage());
+        }
+        pause();
+    }
+
+    // =========================================================================
+    // 8. F5-TTS (Flow Matching Voice Clone)
+    // =========================================================================
+
+    public void installF5TTS() {
+        System.out.println("\n--- [F5-TTS] Installing Binaries & Model Weights ---");
+        File f5Dir = new File(rootDir, "models/f5tts");
+        f5Dir.mkdirs();
+
+        File vocab = new File(f5Dir, "vocab.txt");
+        if (!vocab.exists()) {
+            System.out.println("[F5-TTS] Downloading vocab.txt...");
+            downloadWithCurl(F5TTS_VOCAB_URL, vocab);
+        }
+
+        File model = new File(f5Dir, "f5-tts-v1-base-f16.gguf");
+        if (model.exists() && model.length() > 900_000_000L) {
+            System.out.println("[F5-TTS] Model weights present: " + model.getAbsolutePath());
+        } else {
+            System.out.println("[F5-TTS] Downloading f5-tts-v1-base-f16.gguf (~999 MB)...");
+            downloadWithCurl(F5TTS_MODEL_URL, model);
+        }
+
+        System.out.println("[SUCCESS] F5-TTS installed.");
+    }
+
+    public void deinstallF5TTS() {
+        System.out.println("[Deinstall] Removing F5-TTS models...");
+        deleteDirectory(new File(rootDir, "models/f5tts"));
+        System.out.println("[SUCCESS] F5-TTS deinstalled.");
+    }
+
+    private void manageF5TTS() {
+        while (true) {
+            clearConsole();
+            System.out.println("--- F5-TTS Management (Voice Cloning Flow Matching) ---");
+            File bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe");
+            File model = new File(rootDir, "models/f5tts/f5-tts-v1-base-f16.gguf");
+            System.out.println("Runner:  " + (bin.exists() ? "✓ Installed (bin/dia2/audiocpp_cli.exe)" : "✗ Missing"));
+            System.out.println("Model:   " + (model.exists() && model.length() > 900_000_000L ? "✓ Installed (" + (model.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
+            System.out.println();
+            System.out.println("Options:");
+            System.out.println("  1. Install F5-TTS (GGUF Base + Vocab)");
+            System.out.println("  2. Deinstall F5-TTS");
+            System.out.println("  3. Test F5-TTS Voice Output");
+            System.out.println("  b. Back");
+            System.out.println();
+            System.out.print("Command: ");
+
+            String cmd = scanner.nextLine().trim().toLowerCase();
+            if (cmd.equals("b") || cmd.equals("back")) return;
+
+            switch (cmd) {
+                case "1" -> { installF5TTS(); pause(); }
+                case "2" -> { deinstallF5TTS(); pause(); }
+                case "3" -> testF5TTSVoice();
+            }
+        }
+    }
+
+    private void testF5TTSVoice() {
+        System.out.println("\nSynthesizing test speech with F5-TTS...");
+        try {
+            FastTTS tts = FastTTS.standard();
+            FastTTSAudio audio = tts.speak("f5tts", "Hello from F5-TTS Flow Matching voice synthesis.", null, null);
+            if (audio != null) {
+                playAudio(audio.getData());
+                System.out.println("[SUCCESS] Playback complete.");
+            }
+        } catch (Exception e) {
+            System.err.println("F5-TTS test failed: " + e.getMessage());
         }
         pause();
     }

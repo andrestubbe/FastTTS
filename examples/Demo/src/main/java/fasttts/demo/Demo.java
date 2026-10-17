@@ -4,13 +4,16 @@ import fasttts.FastTTS;
 import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.backends.dia2.Dia2Backend;
 import fasttts.backends.elevenlabs.ElevenLabsBackend;
+import fasttts.backends.f5tts.F5TTSBackend;
 import fasttts.backends.huggingface.HuggingFaceBackend;
 import fasttts.backends.kokoro.KokoroBackend;
 import fasttts.backends.kokoro.KokoroVoice;
+import fasttts.backends.matcha.MatchaBackend;
 import fasttts.backends.openai.OpenAIBackend;
 import fasttts.backends.omnivoice.OmniVoiceBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.pockettts.PocketTTSBackend;
+import fasttts.backends.vits.VITSBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
 import fasttts.core.FastTTSAudio;
 import fasttts.core.FastTTSVoice;
@@ -87,6 +90,35 @@ public class Demo {
                     tSynth0 = System.currentTimeMillis();
                     FastTTSVoice pVoice = new FastTTSVoice(piperModel, piperModel, "de-DE", "Neural", "piper");
                     audio = piperBackend.synthesize(text, pVoice, null);
+                    tSynth = System.currentTimeMillis() - tSynth0;
+                    break;
+
+                case "matcha":
+                case "matchatts":
+                    MatchaBackend matchaBackend = new MatchaBackend();
+                    tLoad = System.currentTimeMillis() - tLoad0;
+                    tSynth0 = System.currentTimeMillis();
+                    FastTTSVoice mVoice = (voiceId != null) ? new FastTTSVoice(voiceId, voiceId, "en-US", "Flow Matching", "matcha") : null;
+                    audio = matchaBackend.synthesize(text, mVoice, null);
+                    tSynth = System.currentTimeMillis() - tSynth0;
+                    break;
+
+                case "vits":
+                    VITSBackend vitsBackend = new VITSBackend();
+                    tLoad = System.currentTimeMillis() - tLoad0;
+                    tSynth0 = System.currentTimeMillis();
+                    FastTTSVoice vVoice = (voiceId != null) ? new FastTTSVoice(voiceId, voiceId, "en-US", "Deterministic Neural", "vits") : null;
+                    audio = vitsBackend.synthesize(text, vVoice, null);
+                    tSynth = System.currentTimeMillis() - tSynth0;
+                    break;
+
+                case "f5tts":
+                case "f5":
+                    F5TTSBackend f5Backend = new F5TTSBackend();
+                    tLoad = System.currentTimeMillis() - tLoad0;
+                    tSynth0 = System.currentTimeMillis();
+                    FastTTSVoice f5Voice = (voiceId != null) ? new FastTTSVoice(voiceId, voiceId, "en-US", "Flow Matching Voice Clone", "f5tts") : null;
+                    audio = f5Backend.synthesize(text, f5Voice, null);
                     tSynth = System.currentTimeMillis() - tSynth0;
                     break;
 
@@ -251,11 +283,14 @@ public class Demo {
         System.out.println("Supported Backends:");
         System.out.println("  windows      - Windows OneCore / SAPI (Native)");
         System.out.println("  kokoro       - Studio-Grade Offline Neural TTS (Sherpa-ONNX)");
+        System.out.println("  matcha       - Flow-Matching High-Quality Neural TTS (Sherpa-ONNX)");
+        System.out.println("  vits         - Low-Latency Deterministic Neural TTS (Sherpa-ONNX)");
         System.out.println("  piper        - Ultra-Fast Offline Neural TTS (ONNX)");
+        System.out.println("  f5tts        - Flow-Matching Voice Cloning TTS (audio.cpp)");
         System.out.println("  omnivoice    - Zero-Shot Voice Cloning (Diffusion, 600+ Languages)");
         System.out.println("  dia2         - Multi-Speaker Scripted Dialogue (GGUF 2B)");
-        System.out.println("  huggingface  - Hugging Face Spaces / Inference API");
         System.out.println("  pocket       - Pocket TTS Lightweight Sherpa-ONNX");
+        System.out.println("  huggingface  - Hugging Face Spaces / Inference API");
         System.out.println("  elevenlabs   - ElevenLabs Cloud Voice API (ELEVENLABS_API_KEY)");
         System.out.println("  deepgram     - Deepgram Aura Cloud Voice API (DEEPGRAM_API_KEY)");
         System.out.println();
@@ -420,7 +455,53 @@ public class Demo {
             results.add(new BenchResult("Piper Neural (ONNX)", "thorsten-medium", "de-DE", 0, 0, 0, 0, "[FAILED: " + e.getMessage() + "]"));
         }
 
-        // 4. Pocket TTS (Sherpa-ONNX)
+        // 4. Matcha-TTS (Flow Matching)
+        try {
+            System.out.print("[Benchmarking] Matcha-TTS (Flow Matching)... ");
+            MatchaBackend matcha = new MatchaBackend();
+            if (matcha.isAvailable()) {
+                long t0 = System.currentTimeMillis();
+                FastTTSAudio audio = matcha.synthesize(enText, null, null);
+                long synthMs = System.currentTimeMillis() - t0;
+                long audioMs = (long) ((audio.getData().length / (double) (audio.getSampleRate() * 2)) * 1000.0);
+                double rtf = (audioMs > 0) ? (synthMs / (double) audioMs) : 0;
+                double kb = audio.getData().length / 1024.0;
+                results.add(new BenchResult("Matcha-TTS (FlowMatch)", "matcha-ljspeech", "en-US", synthMs, audioMs, rtf, kb, "[SUCCESS]"));
+                System.out.println(synthMs + " ms -> [Playing audio]");
+                playAudio(audio.getData());
+            } else {
+                System.out.println("Skipped");
+                results.add(new BenchResult("Matcha-TTS (FlowMatch)", "matcha-ljspeech", "en-US", 0, 0, 0, 0, "[SKIPPED: Model missing]"));
+            }
+        } catch (Exception e) {
+            System.out.println("Failed: " + e.getMessage());
+            results.add(new BenchResult("Matcha-TTS (FlowMatch)", "matcha-ljspeech", "en-US", 0, 0, 0, 0, "[FAILED: " + e.getMessage() + "]"));
+        }
+
+        // 5. VITS (Deterministic Low-Latency)
+        try {
+            System.out.print("[Benchmarking] VITS (Deterministic)... ");
+            VITSBackend vits = new VITSBackend();
+            if (vits.isAvailable()) {
+                long t0 = System.currentTimeMillis();
+                FastTTSAudio audio = vits.synthesize(enText, null, null);
+                long synthMs = System.currentTimeMillis() - t0;
+                long audioMs = (long) ((audio.getData().length / (double) (audio.getSampleRate() * 2)) * 1000.0);
+                double rtf = (audioMs > 0) ? (synthMs / (double) audioMs) : 0;
+                double kb = audio.getData().length / 1024.0;
+                results.add(new BenchResult("VITS Neural (ONNX)", "amy-low", "en-US", synthMs, audioMs, rtf, kb, "[SUCCESS]"));
+                System.out.println(synthMs + " ms -> [Playing audio]");
+                playAudio(audio.getData());
+            } else {
+                System.out.println("Skipped");
+                results.add(new BenchResult("VITS Neural (ONNX)", "amy-low", "en-US", 0, 0, 0, 0, "[SKIPPED: Model missing]"));
+            }
+        } catch (Exception e) {
+            System.out.println("Failed: " + e.getMessage());
+            results.add(new BenchResult("VITS Neural (ONNX)", "amy-low", "en-US", 0, 0, 0, 0, "[FAILED: " + e.getMessage() + "]"));
+        }
+
+        // 6. Pocket TTS (Sherpa-ONNX)
         try {
             System.out.print("[Benchmarking] Pocket TTS (Sherpa-ONNX)... ");
             PocketTTSBackend pocket = new PocketTTSBackend();
@@ -516,6 +597,32 @@ public class Demo {
         } catch (Exception e) {
             String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             results.add(new BenchResult("OmniVoice (Diffusion)", "bria (Zero-Shot)", "multilingual", 0, 0, 0, 0, "[FAILED: " + msg + "]"));
+        }
+
+        // 9. F5-TTS (Flow Matching Voice Clone)
+        try {
+            F5TTSBackend f5 = new F5TTSBackend();
+            File f5Weights = new File("models/f5tts/f5-tts-v1-base-f16.gguf");
+            if (f5.isAvailable()) {
+                System.out.print("[Benchmarking] F5-TTS (Flow Matching)... ");
+                long t0 = System.currentTimeMillis();
+                FastTTSAudio audio = f5.synthesize(enText, null, null);
+                long synthMs = System.currentTimeMillis() - t0;
+                long audioMs = (long) ((audio.getData().length / (double) (audio.getSampleRate() * 2)) * 1000.0);
+                double rtf = (audioMs > 0) ? (synthMs / (double) audioMs) : 0;
+                double kb = audio.getData().length / 1024.0;
+                results.add(new BenchResult("F5-TTS (FlowMatch)", "f5-v1-base", "en-US", synthMs, audioMs, rtf, kb, "[SUCCESS]"));
+                System.out.println(synthMs + " ms -> [Playing audio]");
+                playAudio(audio.getData());
+            } else if (f5Weights.exists()) {
+                long curMb = f5Weights.length() / (1024 * 1024);
+                results.add(new BenchResult("F5-TTS (FlowMatch)", "f5-v1-base", "en-US", 0, 0, 0, 0, "[DOWNLOADING: " + curMb + "/999 MB]"));
+            } else {
+                results.add(new BenchResult("F5-TTS (FlowMatch)", "f5-v1-base", "en-US", 0, 0, 0, 0, "[NOT INSTALLED]"));
+            }
+        } catch (Exception e) {
+            String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+            results.add(new BenchResult("F5-TTS (FlowMatch)", "f5-v1-base", "en-US", 0, 0, 0, 0, "[FAILED: " + msg + "]"));
         }
 
         System.out.println();
