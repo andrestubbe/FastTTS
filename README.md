@@ -309,56 +309,40 @@ dependencies {
 
 ---
 
-## Backend Setup
+---
 
-### Kokoro Studio (Offline Neural Studio TTS)
-- **Studio-grade offline neural TTS** powered by Sherpa-ONNX v1.13.8 (`sherpa-onnx-offline-tts.exe`).
-- Binary resolution: Auto-discovers binary in `bin/kokoro/` or `%USERPROFILE%/.speak/bin/kokoro/`.
-- Model resolution: Resolves `models/kokoro/kokoro-en-v0_19/` with 10 high-fidelity studio voices (`af_bella`, `am_adam`, `bf_emma`, `bm_george`, etc.) at 24 kHz.
+## Backend Setup & Configuration
 
-### OmniVoice (Multilingual Diffusion Zero-Shot Cloning)
-- **Zero-Shot Voice Cloning**: 600+ languages with 3–15 second audio reference prompt cloning.
-- Fast non-autoregressive diffusion inference with configurable steps (`omnivoice.steps`).
-- Auto-discovers models in `models/omnivoice/` or `%USERPROFILE%/.speak/models/omnivoice/`.
+### 1. Offline Neural & System Backends (Zero Manual Setup)
+All local engines run **100% offline** with zero Python dependencies. FastTTS auto-resolves models and runtimes in `./bin` and `./models` (or `~/.speak/`). Use the bundled CLI installer to fetch everything automatically:
 
-### Pocket TTS (Offline Neural TTS)
-- **High-speed INT8 quantized offline CPU neural TTS** powered by Sherpa-ONNX.
-- Binary resolution: Auto-discovers `sherpa-onnx-offline-tts.exe` in `bin/pocket/`, `bin/`, or `%USERPROFILE%/.speak/bin/pocket/`.
-- Model resolution: Auto-discovers model directories in `models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26`, `models/pocket/`, or `%USERPROFILE%/.speak/models/pocket/`.
-- Zero Python or heavy ML framework dependencies; pure low-latency offline inference.
+```cmd
+# One-command installation for all standard local offline engines:
+run-installer.bat --install all
+```
 
-### Dia2 (Multi-Speaker Scripted Dialogue GGUF)
-- **Quantized GGUF Dialogue Engine**: Dialogue scripts (`[S1]`, `[S2]`) with conversational turn markers.
-- Model resolution: Auto-discovers `dia2-2b-q4_k.gguf` in `models/dia2/` with page cache pre-warming (`prepare()`).
-- High-end video dubbing and multi-speaker podcast generation.
+* **Windows SAPI** — Pre-installed on Windows 10/11 (`fasttts.dll` via JNI, ~138 ms latency). Zero setup required.
+* **Kokoro Studio** — Sherpa-ONNX runtime + 10 studio voices (`af_bella`, `am_adam`, `bf_emma`, etc.) at 24 kHz. Installed via `run-installer.bat --install kokoro`.
+* **Pocket TTS** — High-speed quantized INT8 neural CPU inference (~0.71x RTF). Installed via `run-installer.bat --install pocket`.
+* **Piper Neural** — Lightweight offline ONNX engine with German & English voices. Installed via `run-installer.bat --install piper`.
+* **Dia2 Dialogue** — Multi-speaker scripted dialogue (`[S1]`, `[S2]`) via `audiocpp_cli.exe` and GGUF 2B weights. Installed via `run-installer.bat --install dia2`.
+* **OmniVoice** — Multilingual diffusion zero-shot voice cloning (600+ languages) with reference audio prompts. Installed via `run-installer.bat --install omnivoice`.
 
-### Windows SAPI (System TTS)
-- **No installation required** — uses Windows built-in voices
-- Works immediately after FastTTS installation
-- Multiple voices available (system default)
+### 2. Cloud Backends (API Credentials)
+Cloud backends stream real-time high-fidelity speech over HTTPS/WebSocket. Simply set the corresponding environment variables:
 
-### Piper (Offline TTS)
-- **Download Piper:** https://github.com/rhasspy/piper/releases
-- Extract Piper to a directory (e.g., `C:\Piper\`)
-- Set environment variable: `set PIPER_PATH=C:\Piper\piper.exe`
-- Or place `piper.exe` in your project directory
-- Download voice models (`.onnx` and `.onnx.json`) from: https://huggingface.co/models?search=piper
-- Place model files in the `models/` folder
+| Cloud Backend | Environment Variable | Dashboard / Token Registration |
+|:---|:---|:---|
+| **Hugging Face** | `HF_TOKEN` | [Hugging Face Access Tokens](https://huggingface.co/settings/tokens) |
+| **ElevenLabs** | `ELEVENLABS_API_KEY` | [ElevenLabs Dashboard](https://elevenlabs.io) |
+| **Deepgram** | `DEEPGRAM_API_KEY` | [Deepgram Console](https://deepgram.com) |
+| **OpenAI** | `OPENAI_API_KEY` | [OpenAI Platform](https://platform.openai.com) |
 
-### ElevenLabs (Cloud TTS)
-- Requires API key from: https://elevenlabs.io
-- High-quality voices
-- Cloud-based (requires internet)
-
-### Deepgram (Cloud TTS)
-- Requires API key from: https://deepgram.com
-- Fast cloud-based synthesis
-- Multiple voice options
-
-### OpenAI (Cloud TTS)
-- Requires API key from: https://platform.openai.com
-- Models: `tts-1`, `tts-1-hd`
-- Voices: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`
+```bash
+# Example (Windows CMD):
+set HF_TOKEN=hf_your_token_here
+set ELEVENLABS_API_KEY=your_key_here
+```
 
 ---
 
