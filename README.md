@@ -60,6 +60,7 @@ public class Demo {
 - [Architecture Overview](#architecture-overview)
 - [Performance Benchmarks](#performance-benchmarks)
 - [API Quick Reference](#api-quick-reference)
+- [Engine & Model Manager (CLI Installer)](#engine--model-manager-cli-installer)
 - [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
 - [Backend Setup](#backend-setup)
@@ -191,10 +192,40 @@ Directly benchmarked across all engines via `run-demo.bat benchmark` with audio 
 
 ---
 
+## Engine & Model Manager (CLI Installer)
+
+`FastTTS` bundles a self-contained local engine and model manager with interactive dashboard and automated CLI installation/deinstallation:
+
+```cmd
+# Launch interactive console dashboard:
+run-installer.bat
+
+# Check engine and model status:
+run-installer.bat --status
+
+# Install all standard offline engines & models (Kokoro, Pocket TTS, Piper, Dia2):
+run-installer.bat --install all
+
+# Install or deinstall specific engines:
+run-installer.bat --install kokoro
+run-installer.bat --install pocket
+run-installer.bat --install piper
+run-installer.bat --install dia2
+run-installer.bat --deinstall piper
+```
+
+### Supported Installer Actions:
+* **`--status`** — Displays live tabular matrix of all offline model weights and binaries.
+* **`--install <all|kokoro|pocket|piper|omnivoice|dia2>`** — Automatically fetches official releases, verifies sha/integrity, extracts archives (`.tar.bz2`, `.zip`), and registers model weights locally.
+* **`--deinstall <all|kokoro|pocket|piper|omnivoice|dia2>`** — Cleanly purges local models and binaries for reproducible resets.
+
+---
+
 ## Technical Demos & Benchmarks
 
 | Case | Java Example | Launcher | Description |
 |:---|:---|:---|:---|
+| **Engine & Model Installer** | [FastTTSInstaller.java](examples/Installer/src/main/java/fasttts/installer/FastTTSInstaller.java) | `run-installer.bat` | Interactive engine installer & model manager with `--install` and `--deinstall`. |
 | **Multi-Backend CLI Demo** | [Demo.java](examples/Demo/src/main/java/fasttts/demo/Demo.java) | `run-demo.bat` | Command-line speech synthesis across Windows SAPI, Piper, ElevenLabs, and Deepgram. |
 | **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fasttts/benchmark/Benchmark.java) | `run-benchmark.bat` | Formal OpenJDK JMH throughput and latency benchmarks for TTS synthesis. |
 

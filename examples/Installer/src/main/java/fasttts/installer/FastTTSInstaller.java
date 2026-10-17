@@ -539,15 +539,36 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installDia2() {
-        System.out.println("\n--- [Dia2 Dialogue] Verifying Model Weights ---");
+        System.out.println("\n--- [Dia2 Dialogue] Installing Runner & Model Weights ---");
+        File binDir = new File(rootDir, "bin/dia2");
+        File runner = new File(binDir, "audiocpp_cli.exe");
+
+        if (runner.exists()) {
+            System.out.println("[Dia2] audio.cpp runner already present: " + runner.getAbsolutePath());
+        } else {
+            binDir.mkdirs();
+            File tempZip = new File(binDir, "audiocpp_bin.zip");
+            String url = "https://github.com/0xShug0/audio.cpp/releases/download/v0.9.2/audio-v0.9.2-bin-windows-x64-cpu.zip";
+            System.out.println("[Dia2] Downloading audio.cpp Windows x64 runner (~27 MB)...");
+            downloadWithCurl(url, tempZip);
+            if (tempZip.exists() && tempZip.length() > 0) {
+                System.out.println("[Dia2] Extracting binaries...");
+                extractZipPowerShell(tempZip, binDir);
+                tempZip.delete();
+            }
+        }
+
         File dia2Dir = new File(rootDir, "models/dia2");
         dia2Dir.mkdirs();
         File target = new File(dia2Dir, "dia2-2b-q4_k.gguf");
         if (target.exists() && target.length() > 1_000_000_000L) {
-            System.out.println("[Dia2] GGUF Model weights already present: " + target.getAbsolutePath());
+            System.out.println("[Dia2] GGUF Model weights already present (" + (target.length() / (1024 * 1024)) + " MB)");
         } else {
-            System.out.println("[Dia2] Download requires HuggingFace access to Dia2 GGUF repository.");
+            System.out.println("[Dia2] Downloading Dia2 GGUF weights (1.1 GB)...");
+            String dia2Url = "https://huggingface.co/markldn/Dia2-2B-GGUF/resolve/main/dia2-q4_0.gguf";
+            downloadWithCurl(dia2Url, target);
         }
+        System.out.println("[SUCCESS] Dia2 installed.");
     }
 
     public void deinstallDia2() {
@@ -558,27 +579,48 @@ public class FastTTSInstaller {
     }
 
     private void manageDia2() {
-        clearConsole();
-        System.out.println("--- Dia2 Multi-Speaker Dialogue (GGUF) ---");
-        File dia2Dir = new File(rootDir, "models/dia2");
-        File weights = new File(dia2Dir, "dia2-2b-q4_k.gguf");
-        File runner = new File(rootDir, "bin/dia2/audiocpp_cli.exe");
+        while (true) {
+            clearConsole();
+            System.out.println("--- Dia2 Multi-Speaker Dialogue (GGUF) ---");
+            File dia2Dir = new File(rootDir, "models/dia2");
+            File weights = new File(dia2Dir, "dia2-2b-q4_k.gguf");
+            File runner = new File(rootDir, "bin/dia2/audiocpp_cli.exe");
 
-        System.out.println("GGUF Weights: " + (weights.exists() ? "✓ Installed (" + (weights.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
-        System.out.println("CLI Runner:   " + (runner.exists() ? "✓ Installed (bin/dia2/audiocpp_cli.exe)" : "✗ Pending build"));
-        System.out.println();
-        System.out.println("Options:");
-        System.out.println("  1. Verify / Install Dia2");
-        System.out.println("  2. Deinstall Dia2");
-        System.out.println("  b. Back");
-        System.out.println();
-        System.out.print("Command: ");
+            System.out.println("GGUF Weights: " + (weights.exists() ? "✓ Installed (" + (weights.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
+            System.out.println("CLI Runner:   " + (runner.exists() ? "✓ Installed (bin/dia2/audiocpp_cli.exe)" : "✗ Missing"));
+            System.out.println();
+            System.out.println("Options:");
+            System.out.println("  1. Install Dia2 Runner & GGUF Model");
+            System.out.println("  2. Deinstall Dia2");
+            System.out.println("  3. Test Dia2 Dialogue Synthesis");
+            System.out.println("  b. Back");
+            System.out.println();
+            System.out.print("Command: ");
 
-        String cmd = scanner.nextLine().trim().toLowerCase();
-        switch (cmd) {
-            case "1" -> { installDia2(); pause(); }
-            case "2" -> { deinstallDia2(); pause(); }
+            String cmd = scanner.nextLine().trim().toLowerCase();
+            if (cmd.equals("b") || cmd.equals("back")) return;
+
+            switch (cmd) {
+                case "1" -> { installDia2(); pause(); }
+                case "2" -> { deinstallDia2(); pause(); }
+                case "3" -> testDia2Voice();
+            }
         }
+    }
+
+    private void testDia2Voice() {
+        System.out.println("\nSynthesizing dialogue speech with Dia2...");
+        try {
+            FastTTS tts = FastTTS.standard();
+            FastTTSAudio audio = tts.speak("dia2", "[S1] Welcome to FastTTS! [S2] Dia2 multi-speaker dialogue is active.", null, null);
+            if (audio != null) {
+                playAudio(audio.getData());
+                System.out.println("[SUCCESS] Playback complete.");
+            }
+        } catch (Exception e) {
+            System.err.println("Dia2 test failed: " + e.getMessage());
+        }
+        pause();
     }
 
     // =========================================================================
