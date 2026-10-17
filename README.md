@@ -208,7 +208,7 @@ Directly benchmarked across all engines via un-demo.bat benchmark with audio pl
 | Case | Java Example | Launcher | Description |
 |:---|:---|:---|:---|
 | **Multi-Backend CLI Demo** | [Demo.java](examples/Demo/src/main/java/fasttts/demo/Demo.java) | `run-demo.bat` | Command-line speech synthesis across Windows SAPI, Piper, ElevenLabs, and Deepgram. |
-| **Engine & Model Installer** | [FastTTSInstaller.java](examples/Installer/src/main/java/fasttts/installer/FastTTSInstaller.java) | `run-installer.bat` | Interactive engine installer & model manager with `--install` and `--deinstall`. |
+| **Engine & Model Installer** | [FastTTSInstaller.java](src/main/java/fasttts/installer/FastTTSInstaller.java) | `run-installer.bat` | Interactive engine installer & model manager with `--install` and `--deinstall`. |
 | **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fasttts/benchmark/Benchmark.java) | `run-benchmark.bat` | Formal OpenJDK JMH throughput and latency benchmarks for TTS synthesis. |
 
 ---
