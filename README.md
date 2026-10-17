@@ -1,16 +1,16 @@
-# FastTTS 0.1.3 [ALPHA-2026-10-10] — Unified, Zero-Bloat TTS Backend Orchestration for Java
+# FastTTS 0.1.4 [ALPHA-2026-10-17] — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.3-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.3)
+[![Status](https://img.shields.io/badge/status-0.1.4-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.3-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.4-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
 
-**⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline neural engines, system voices, and cloud providers.**
+**⚡ Connect multiple TTS backends with a unified interface — Minimalist text-to-speech orchestration supporting offline neural engines, system voices, zero-shot voice cloning, and cloud providers.**
 
-FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Pocket TTS (offline Sherpa-ONNX)**, **Piper (offline)**, **Windows SAPI (system)**, **ElevenLabs (cloud)**, and **Deepgram (cloud)** through a single clean API.
+FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide unified access to multiple text-to-speech backends with zero framework bloat. It supports **Kokoro Studio (Sherpa-ONNX)**, **OmniVoice (Diffusion Zero-Shot Cloning)**, **Pocket TTS (Sherpa-ONNX INT8)**, **Piper (offline ONNX)**, **Dia2 (GGUF Dialogue)**, **Windows SAPI (system)**, **Hugging Face Spaces**, **ElevenLabs**, and **Deepgram** through a single clean API.
 
 [**Watch Demo (YouTube)**](https://youtu.be/PyTXlm9bfxc) | Watch JMH Benchmark (YouTube)
 
@@ -22,36 +22,30 @@ FastTTS is a **lightweight, framework-agnostic TTS engine** designed to provide 
 
 ```java
 import fasttts.FastTTS;
+import fasttts.backends.kokoro.KokoroBackend;
+import fasttts.backends.kokoro.KokoroVoice;
 import fasttts.backends.pockettts.PocketTTSBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
-import fasttts.backends.elevenlabs.ElevenLabsBackend;
-import fasttts.backends.deepgram.DeepgramBackend;
 import fasttts.core.FastTTSAudio;
 
 public class Demo {
     public static void main(String[] args) throws Exception {
-        FastTTS tts = new FastTTS();
-        
-        // 1. Pocket TTS (ultra-compact, offline CPU neural TTS via Sherpa-ONNX)
-        tts.registerBackend(new PocketTTSBackend());
-        FastTTSAudio pocketAudio = tts.speak("Hello from Pocket TTS neural synthesis!");
+        // FastTTS with pre-registered auto-discovered engines
+        try (FastTTS tts = FastTTS.standard()) {
+            
+            // 1. Windows Native (ultra-fast 150ms fallback, 0.03x RTF)
+            FastTTSAudio winAudio = tts.speak("windows", "Windows SAPI native speech is online.", null, null);
 
-        // 2. Windows SAPI (no external setup required)
-        tts.registerBackend(new WindowsTTSBackend());
-        FastTTSAudio audio = tts.speak("windows", "Hello World", null, null);
-        
-        // 3. Piper (offline, requires piper.exe and models)
-        tts.registerBackend(new PiperBackend("piper.exe", "models/de_DE-thorsten-medium.onnx"));
-        FastTTSAudio germanAudio = tts.speak("piper", "Hallo Welt", null, null);
-        
-        // 4. ElevenLabs (cloud, requires API key)
-        tts.registerBackend(new ElevenLabsBackend("your-api-key"));
-        FastTTSAudio cloudAudio = tts.speak("elevenlabs", "Hello World", null, null);
-        
-        // 5. Deepgram (cloud, requires API key)
-        tts.registerBackend(new DeepgramBackend("your-api-key"));
-        FastTTSAudio deepgramAudio = tts.speak("deepgram", "Hello World", null, null);
+            // 2. Kokoro Studio (studio-grade neural voice)
+            FastTTSAudio kokoroAudio = tts.speak("kokoro", "Kokoro studio neural speech is active.", KokoroVoice.AF_BELLA, null);
+            
+            // 3. Piper (offline German/English neural speech)
+            FastTTSAudio piperAudio = tts.speak("piper", "Piper offline neural speech is active.", null, null);
+            
+            // 4. Pocket TTS (ultra-compact INT8 CPU neural engine)
+            FastTTSAudio pocketAudio = tts.speak("pocket", "Pocket TTS compact neural voice is ready.", null, null);
+        }
     }
 }
 ```
@@ -89,22 +83,23 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 | Feature | MaryTTS (Legacy Java) | Python Coqui/Piper Subprocess | FastTTS |
 |:---|:---|:---|:---|
-| **Synthesis Backends** | Obsolete Java voices only | Single CLI wrapper | **Unified (Pocket TTS, Piper, SAPI, Cloud)** |
-| **Offline Privacy** | Yes (Robotic sound) | Yes (Heavy Python runtime) | **100% Offline (Pocket TTS Sherpa / Piper / SAPI)** |
-| **Startup / Synthesis** | 800–2500 ms (Heap heavy) | 2000–5000 ms (Process spawn) | **~255 ms (Windows SAPI) / Instant Pocket TTS** |
-| **Voice Quality** | Synthetic 2000s robotic | Neural quality | **State-of-the-Art Neural & System** |
-| **Barge-In Ready** | Difficult to interrupt | Stalled CLI process | **Instant Cancellation via FastVAD** |
+| **Synthesis Backends** | Obsolete Java voices only | Single CLI wrapper | **Unified (Kokoro, OmniVoice, Pocket TTS, Piper, Dia2, SAPI, Cloud)** |
+| **Offline Privacy** | Yes (Robotic sound) | Yes (Heavy Python runtime) | **100% Offline (Kokoro, Pocket TTS, Piper, Dia2, Windows SAPI)** |
+| **Startup / Synthesis** | 800–2500 ms (Heap heavy) | 2000–5000 ms (Process spawn) | **~152 ms (Windows SAPI) / ~848 ms (Piper) / ~3.4s (Pocket TTS)** |
+| **Voice Quality** | Synthetic 2000s robotic | Neural quality | **Studio-Grade Neural (Kokoro, OmniVoice Zero-Shot)** |
+| **Barge-In Ready** | Difficult to interrupt | Stalled CLI process | **Instant Cancellation via FastVAD & WASAPI** |
 | **Dependencies** | Massive legacy JARs | Python 3 + Pip dependencies | **Pure Java 17+ backed by FastCore** |
 
 ---
 
 ## Key Features
 
-* **🎭 Multiple Backend Support** — Unified interface for Pocket TTS (offline CPU neural), Piper (offline), Windows SAPI (system), ElevenLabs (cloud), Deepgram (cloud), and OpenAI (cloud).
-* **📱 Offline Capable** — Run local CPU neural TTS with Pocket TTS (Sherpa-ONNX) or Piper without internet connection.
-* **☁️ Cloud Integration** — Access high-quality cloud voices from ElevenLabs, Deepgram, and OpenAI.
-* **⚡ Performance Focused** — Built for low-latency synthesis with detailed timing metrics.
-* **🔌 Simple API** — Clean, intuitive interface for text-to-speech synthesis.
+* **🎭 Multiple Backend Support** — Unified interface for Kokoro Studio (ONNX), OmniVoice (Zero-Shot Diffusion), Pocket TTS (Sherpa-ONNX INT8), Piper (offline ONNX), Dia2 (GGUF Dialogue), Windows SAPI (system), and Cloud APIs.
+* **📱 100% Offline Capable** — High-fidelity local speech synthesis without internet connections or cloud subscription costs.
+* **🎙️ Zero-Shot Voice Cloning** — Clone custom voices on the fly from reference WAV audio with OmniVoice.
+* **💬 Multi-Speaker Dialogue** — Native support for scripted dialogue (`[S1]`, `[S2]`) via Dia2 GGUF models.
+* **⚡ Real-Time Factor (RTF) Acceleration** — Hardware AVX2 SIMD acceleration with 0.03x RTF on native SAPI and 0.25x RTF on Piper.
+* **🧵 Complete Lifecycle Control** — `AutoCloseable` orchestration with pre-warming (`prepare()`) and deterministic process teardown.
 
 ---
 
@@ -113,46 +108,58 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 - 🗣️ **Conversational Voice AI Assistants**: Low-latency neural speech synthesis for AI chatbots and desktop voice assistants.
 - 📖 **Audiobook & Content Reader**: High-speed offline speech synthesis for document reading and accessibility tools.
 - 📢 **In-App & Game Audio Notifications**: Real-time voice announcements with zero Garbage Collection latency impact.
-- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices and cloud APIs (ElevenLabs, Deepgram).
+- 🌐 **Multi-Language Accessibility Engines**: Seamlessly switch between local Piper voices, Kokoro studio voices, and cloud APIs.
 
 ---
 
-## Performance Benchmarks
+## Multi-Engine Benchmark Suite
 
-`FastTTS` is built for high-performance text-to-speech synthesis. Based on the built-in demo timing metrics:
+Directly benchmarked across all engines via `run-demo.bat benchmark` with audio playback through `FastAudioPlayer` (WASAPI):
 
 ```text
-Backend          Load Time    Synth Time    Total Time
-Windows SAPI     104 ms       151 ms        255 ms
-Piper (offline)  0 ms         1761 ms       1761 ms
+ENGINE                  | VOICE / MODEL            | LANG   | SYNTH (ms) | AUDIO (ms) |       RTF |  SIZE (KB) | STATUS
+--------------------------------------------------------------------------------------------------------------------------------
+Windows SAPI            | OneCore/Default          | en-US  |     152 ms |    5044 ms |    0,030x |   434,5 KB | [SUCCESS]
+Kokoro Studio (ONNX)    | af_bella                 | en-US  |    4479 ms |    4363 ms |    1,027x |   204,6 KB | [SUCCESS]
+Kokoro Studio (ONNX)    | am_adam                  | en-US  |    4053 ms |    4187 ms |    0,968x |   196,3 KB | [SUCCESS]
+Kokoro Studio (ONNX)    | bf_emma                  | en-GB  |    4281 ms |    4843 ms |    0,884x |   227,0 KB | [SUCCESS]
+Kokoro Studio (ONNX)    | bm_george                | en-GB  |    3935 ms |    4373 ms |    0,900x |   205,0 KB | [SUCCESS]
+Piper Neural (ONNX)     | thorsten-medium          | de-DE  |     848 ms |    3405 ms |    0,249x |   146,7 KB | [SUCCESS]
+Pocket TTS (ONNX)       | int8-bria                | en-US  |    3473 ms |    3600 ms |    0,965x |   168,8 KB | [SUCCESS]
+OmniVoice (Diffusion)   | bria (Zero-Shot)         | en-US  |   54413 ms |    4040 ms |   13,469x |   189,4 KB | [SUCCESS]
+Dia2 Dialogue (GGUF)    | dia2-2b-q4_k             | en-US  |          - |          - |         - |          - | [MODEL READY: GGUF 1.2GB]
+HuggingFace API         | mms-tts-eng              | en-US  |          - |          - |         - |          - | [Requires HF_TOKEN]
+--------------------------------------------------------------------------------------------------------------------------------
+RTF (Real-Time Factor): values < 1.0x indicate faster than real-time synthesis! (e.g., 0.25x = 4x real-time speed)
 ```
-
-> **Windows SAPI** provides the fastest synthesis (255ms total) for quick feedback, while **Piper** offers higher quality offline synthesis (1761ms total) with no internet dependency.
 
 ---
 
 ## Architecture Overview
 
+**Kokoro Studio Backend**  
+High-fidelity studio-grade offline neural TTS powered by Sherpa-ONNX (`models/kokoro/kokoro-en-v0_19`).
+
+**OmniVoice Backend**  
+Massively multilingual zero-shot voice cloning diffusion model supporting 600+ languages and custom voice cloning.
+
 **Pocket TTS Backend**  
-Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX. Runs quantized INT8 models with no heavy Python or ML runtime dependencies.
+Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX with quantized INT8 models (~0.96x RTF).
 
 **Windows SAPI Backend**  
-System-native text-to-speech using Windows Speech API (SAPI). No external dependencies required.
+System-native text-to-speech using Windows Speech API (SAPI) via AVX2-optimized `fasttts.dll` (~152 ms latency, 0.03x RTF).
 
 **Piper Backend**  
-Offline TTS using the Piper neural TTS engine. Requires `piper.exe` and ONNX model files for local synthesis.
+Ultra-fast offline neural TTS using the Piper ONNX engine (`piper.exe`) with multi-directory auto-discovery (~848 ms latency, 0.25x RTF).
 
-**ElevenLabs Backend**  
-Cloud-based TTS accessing ElevenLabs high-quality voices. Requires API key and internet connection.
+**Dia2 Dialogue Backend**  
+Quantized GGUF dialogue model (`dia2-2b-q4_k.gguf`) with multi-speaker turn parsing and memory page cache warming.
 
-**Deepgram Backend**  
-Cloud-based TTS using Deepgram's fast synthesis API. Requires API key and internet connection.
+**Cloud Backends (HuggingFace, ElevenLabs, Deepgram, OpenAI)**  
+Cloud APIs with hardened JSON escaping and automatic authorization token resolution.
 
-**OpenAI Backend**  
-Cloud-based speech synthesis using OpenAI's TTS API (`tts-1`, `tts-1-hd`). Requires API key and internet connection.
-
-**FastTTS (This Library — The Orchestration Layer)**  
-Higher-level TTS framework that provides a unified interface for all backends, allowing seamless switching between offline and cloud providers.
+**FastTTS (Orchestration & Lifecycle Layer)**  
+Unified `AutoCloseable` registry supporting pre-warming (`prepare()`), fallback chaining, and streaming.
 
 ---
 
@@ -160,13 +167,15 @@ Higher-level TTS framework that provides a unified interface for all backends, a
 
 | Method / Signature | Return Type | Description | Docs |
 |:---|:---|:---|:---|
-| `registerBackend(FastTTSBackend backend)` | `void` | Registers a TTS backend with the orchestrator. | [Wiki](docs/REFERENCE.md) |
-| `speak(String text)` | `FastTTSAudio` | Synthesizes text to audio using the active backend. | [Wiki](docs/REFERENCE.md) |
-| `speak(String backend, String text, FastTTSVoice voice, FastTTSConfig config)` | `FastTTSAudio` | Synthesizes text with specific backend and configuration. | [Wiki](docs/REFERENCE.md) |
-| `stream(String backend, String text, FastTTSVoice voice, FastTTSConfig config, Consumer<byte[]> consumer)` | `void` | Streams audio chunks directly to a byte consumer callback. | [Wiki](docs/REFERENCE.md) |
-| `use(String backendName)` | `void` | Sets the active backend by name. | [Wiki](docs/REFERENCE.md) |
-| `getAllVoices()` | `List<FastTTSVoice>` | Returns available voices across all registered backends. | [Wiki](docs/REFERENCE.md) |
-| `getBackend(String name)` | `FastTTSBackend` | Retrieves a registered backend by name. | [Wiki](docs/REFERENCE.md) |
+| `FastTTS.standard()` | `FastTTS` | Constructs orchestrator with all auto-discovered local and cloud engines pre-registered. | [Reference](docs/REFERENCE.md) |
+| `registerBackend(FastTTSBackend backend)` | `void` | Registers a custom TTS backend with the orchestrator. | [Reference](docs/REFERENCE.md) |
+| `speak(String text)` | `FastTTSAudio` | Synthesizes text to audio using the active backend. | [Reference](docs/REFERENCE.md) |
+| `speak(String backend, String text, FastTTSVoice voice, FastTTSConfig config)` | `FastTTSAudio` | Synthesizes text with specific backend and configuration. | [Reference](docs/REFERENCE.md) |
+| `prepare()` / `prepareAll()` | `void` | Pre-warms model weights and runtimes into OS page cache. | [Reference](docs/REFERENCE.md) |
+| `close()` | `void` | Closes and releases all held native subprocesses, threads, and handles. | [Reference](docs/REFERENCE.md) |
+| `stream(backend, text, voice, config, consumer)` | `void` | Streams audio chunks directly to a byte consumer callback. | [Reference](docs/REFERENCE.md) |
+| `use(String backendName)` | `void` | Sets the active backend by name. | [Reference](docs/REFERENCE.md) |
+| `getAllVoices()` | `List<FastTTSVoice>` | Returns available voices across all registered backends. | [Reference](docs/REFERENCE.md) |
 
 ---
 
@@ -198,7 +207,7 @@ Add the JitPack repository and the complete dependency stack to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.4</version>
     </dependency>
 
     <!-- FastSIMD Hardware Vector Acceleration Engine -->
@@ -246,7 +255,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastTTS:0.1.3'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.4'
     implementation 'com.github.andrestubbe:FastSIMD:0.1.3'
     implementation 'com.github.andrestubbe:FastMemory:0.1.1'
     implementation 'com.github.andrestubbe:FastPointer:0.1.1'
@@ -259,11 +268,26 @@ dependencies {
 
 ## Backend Setup
 
+### Kokoro Studio (Offline Neural Studio TTS)
+- **Studio-grade offline neural TTS** powered by Sherpa-ONNX v1.13.8 (`sherpa-onnx-offline-tts.exe`).
+- Binary resolution: Auto-discovers binary in `bin/kokoro/` or `%USERPROFILE%/.speak/bin/kokoro/`.
+- Model resolution: Resolves `models/kokoro/kokoro-en-v0_19/` with 10 high-fidelity studio voices (`af_bella`, `am_adam`, `bf_emma`, `bm_george`, etc.) at 24 kHz.
+
+### OmniVoice (Multilingual Diffusion Zero-Shot Cloning)
+- **Zero-Shot Voice Cloning**: 600+ languages with 3–15 second audio reference prompt cloning.
+- Fast non-autoregressive diffusion inference with configurable steps (`omnivoice.steps`).
+- Auto-discovers models in `models/omnivoice/` or `%USERPROFILE%/.speak/models/omnivoice/`.
+
 ### Pocket TTS (Offline Neural TTS)
 - **High-speed INT8 quantized offline CPU neural TTS** powered by Sherpa-ONNX.
 - Binary resolution: Auto-discovers `sherpa-onnx-offline-tts.exe` in `bin/pocket/`, `bin/`, or `%USERPROFILE%/.speak/bin/pocket/`.
 - Model resolution: Auto-discovers model directories in `models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26`, `models/pocket/`, or `%USERPROFILE%/.speak/models/pocket/`.
 - Zero Python or heavy ML framework dependencies; pure low-latency offline inference.
+
+### Dia2 (Multi-Speaker Scripted Dialogue GGUF)
+- **Quantized GGUF Dialogue Engine**: Dialogue scripts (`[S1]`, `[S2]`) with conversational turn markers.
+- Model resolution: Auto-discovers `dia2-2b-q4_k.gguf` in `models/dia2/` with page cache pre-warming (`prepare()`).
+- High-end video dubbing and multi-speaker podcast generation.
 
 ### Windows SAPI (System TTS)
 - **No installation required** — uses Windows built-in voices

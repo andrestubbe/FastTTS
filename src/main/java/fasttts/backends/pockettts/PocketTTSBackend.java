@@ -140,15 +140,28 @@ public final class PocketTTSBackend implements FastTTSBackend {
         pb.redirectError(ProcessBuilder.Redirect.DISCARD);
 
         Process p = pb.start();
-        if (p.waitFor() != 0) {
-            Files.deleteIfExists(tempOutput);
-            throw new RuntimeException("Pocket TTS synthesis process failed.");
+        try {
+            boolean finished = p.waitFor(60, java.util.concurrent.TimeUnit.SECONDS);
+            if (!finished) {
+                p.destroyForcibly();
+                throw new java.util.concurrent.TimeoutException("Pocket TTS synthesis timed out after 60 seconds");
+            }
+            if (p.exitValue() != 0) {
+                throw new RuntimeException("Pocket TTS synthesis process failed with exit code " + p.exitValue());
+            }
+
+            byte[] wavData = Files.readAllBytes(tempOutput);
+            return new FastTTSAudio(wavData, 24000);
+        } finally {
+            try {
+                Files.deleteIfExists(tempOutput);
+            } catch (Exception ignored) {}
         }
+    }
 
-        byte[] wavData = Files.readAllBytes(tempOutput);
-        Files.deleteIfExists(tempOutput);
-
-        return new FastTTSAudio(wavData, 24000);
+    @Override
+    public boolean isAvailable() {
+        return new File(binaryPath).exists() && new File(modelDir, "lm_main.int8.onnx").exists();
     }
 
     @Override

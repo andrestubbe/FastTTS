@@ -1,12 +1,25 @@
+[x] OMNIVOICE (k2-fsa/OmniVoice) TTS Backend Integration: [ERLEDIGT 2026-10-17]
+    - 646 Sprachen & Dialekte, Multilingual Zero-Shot Voice Cloning (3-15s Audio-Referenz)
+    - Non-Autoregressive (NAR) Architektur mit High-Speed Inference (via sherpa-onnx / ONNX Runtime)
+    - Cross-Lingual Cloning: Eigene Stimme klonen und in 646 Sprachen sprechen lassen
+    - Integriert in OmniVoiceBackend.java & Demo.java
+
+[x] KOKORO (Kokoro ONNX via sherpa-onnx) TTS Backend Integration: [ERLEDIGT 2026-10-16]
+    - Subfolder-Struktur ordentlich isoliert: bin/kokoro/, models/kokoro/, backends/kokoro/
+    - sherpa-onnx Runtime v1.13.8 (Win-x64) + ONNX Runtime DLLs in bin/kokoro/
+    - Kokoro Model v0.19 (model.onnx, voices.bin, tokens.txt, espeak-ng-data) in models/kokoro/kokoro-en-v0_19/
+    - KokoroVoice.java (10 Stimmen, SID Mapping) & KokoroBackend.java (CLI & Fallback Pipeline)
+    - Demo.java Integration verifiziert: Studio-Qualität bei 24 kHz WAV
+
+[x] Pocket TTS (Sherpa-ONNX INT8 CPU Neural Engine) [ERLEDIGT 2026-10-10]
+    - Kompaktes INT8-Modell für CPU-Inferenz ohne Python-Bloat
+    - Integriert in PocketTTSBackend.java & Demo.java (~0.96x RTF)
+
 [ ] Dia2 (nari-labs/dia2) TTS Backend Integration:
     - Primärer Einsatzzweck: High-End Video Dubbing & Synchronisation für Clip+ (Qualität vor Latenz)
     - Voice-Cloning via Audio-Prefix (5-15s Referenzclip des Originalsprechers auf der Video-Timeline)
-    - GGUF-Modell (dia2-2b) über FastAIModel mit GPU-Beschleunigung einbinden
-    - Audio-Decoder / Vocoder Pipeline für Audio-Tokens integrieren
-    - Dia2Backend in FastTTS vollenden und für Clip+ & Speak+ bereitstellen
-
-KYUTAI
-Pocket TTS
+    - GGUF-Modell (dia2-2b-q4_k.gguf) bereitgestellt und Backend-Gerüst implementiert
+    - Ausstehend: C++ CLI Runner (bin/dia2/audiocpp_cli.exe) kompilieren
 
 🎛️ A. Klassische DSP‑Synthese (regelbasiert, keine Modelle)
 Formant‑Synthese

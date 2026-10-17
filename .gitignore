@@ -29,4 +29,7 @@ fasttts.properties
 *.bin
 *.gguf
 models/
+bin/
+*.exe
+*.dll
 

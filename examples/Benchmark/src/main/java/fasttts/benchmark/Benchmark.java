@@ -18,7 +18,7 @@ public class Benchmark {
         tts.registerBackend(new WindowsTTSBackend());
     }
 
-    @Benchmark
+    @org.openjdk.jmh.annotations.Benchmark
     public FastTTSAudio benchmarkSynthesize() throws Exception {
         return tts.speak("FastJava SIMD Text to Speech");
     }
