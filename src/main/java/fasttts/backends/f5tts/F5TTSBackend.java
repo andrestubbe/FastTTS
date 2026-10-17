@@ -117,6 +117,23 @@ public final class F5TTSBackend implements FastTTSBackend {
             cmd.add(new File(modelPath).getAbsolutePath());
             cmd.add("--backend");
             cmd.add("cpu");
+
+            // Look for Vocos vocoder checkpoint
+            File vocosTorch = new File("models/f5tts/vocos_mel_24khz/pytorch_model.bin");
+            if (vocosTorch.exists()) {
+                cmd.add("--session-option");
+                cmd.add("f5_tts.vocos_path=" + vocosTorch.getAbsolutePath());
+            }
+
+            // Reference audio fallback
+            File refSample = new File("models/omnivoice/sample_reference.wav");
+            if (refSample.exists()) {
+                cmd.add("--voice-ref");
+                cmd.add(refSample.getAbsolutePath());
+                cmd.add("--reference-text");
+                cmd.add("Hello, this is a reference audio prompt.");
+            }
+
             cmd.add("--text");
             cmd.add(text);
             cmd.add("--out");
