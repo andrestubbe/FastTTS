@@ -4,6 +4,14 @@ All notable changes to `FastTTS` are documented in this file.
 
 ---
 
+## [0.1.6] - 2026-10-17
+
+### Added
+- **Core Library Voice & Model Installer**: Promoted `FastTTSInstaller` into the core library (`fasttts.installer.FastTTSInstaller`) for universal programmatic and CLI invocation without depending on example modules.
+- **Standalone Engine Management**: Provides headless CLI options (`--install <engine>`, `--deinstall <engine>`, `--status`) for automated deployment pipelines.
+
+---
+
 ## [0.1.5] - 2026-10-17
 
 ### Added

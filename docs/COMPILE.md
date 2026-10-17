@@ -31,4 +31,4 @@ Package the Java uber-JAR with pre-compiled native binaries:
 mvn clean package -DskipTests
 ```
 
-The resulting artifact `FastTTS-0.1.5.jar` will be generated in `target/`.
+The resulting artifact `FastTTS-0.1.6.jar` will be generated in `target/`.

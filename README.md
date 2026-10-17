@@ -232,7 +232,7 @@ Add the JitPack repository and the complete dependency stack to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
-        <version>0.1.5</version>
+        <version>0.1.6</version>
     </dependency>
 
     <!-- FastSIMD Hardware Vector Acceleration Engine -->

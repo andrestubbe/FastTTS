@@ -4,7 +4,7 @@ The long-term development milestones for `FastTTS`.
 
 ---
 
-## Phase 1: Core Engine & Multi-Backend (Completed - v0.1.5)
+## Phase 1: Core Engine & Multi-Backend (Completed - v0.1.6)
 - [x] Native Windows SAPI text-to-speech JNI integration (0.03x RTF).
 - [x] Matcha-TTS Flow-Matching neural speech (0.09x RTF, > 10× real-time).
 - [x] VITS deterministic low-latency variational inference (0.09x RTF).
