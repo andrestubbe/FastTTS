@@ -206,19 +206,19 @@ public class FastTTSInstaller {
         try {
             sapiVoices = FastTTS.standard().getBackend("windows").getVoices().size();
         } catch (Exception ignored) {}
-        printDashboardRow("Windows SAPI/OneCore", "[INSTALLED]", Math.max(1, sapiVoices), "Built-in Windows native engine");
+        printDashboardRow("Windows SAPI/OneCore", "INSTALLED", Math.max(1, sapiVoices), "Built-in Windows native engine");
 
         // Kokoro Studio
         boolean kokoroBin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists();
         boolean kokoroWeights = new File(rootDir, "models/kokoro/kokoro-en-v0_19/model.onnx").exists();
-        String kokoroStatus = kokoroBin ? "[INSTALLED]" : "[MISSING]";
+        String kokoroStatus = kokoroBin ? "INSTALLED" : "MISSING";
         int kokoroVoices = kokoroWeights ? 1 : 0;
         printDashboardRow("Kokoro Studio (ONNX)", kokoroStatus, kokoroVoices, "bin/kokoro + models/kokoro/kokoro-en-v0_19");
 
         // Pocket TTS
         boolean pocketBin = new File(rootDir, "bin/pocket/sherpa-onnx-offline-tts.exe").exists();
         boolean pocketWeights = new File(rootDir, "models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26/lm_main.int8.onnx").exists();
-        String pocketStatus = pocketBin ? "[INSTALLED]" : "[MISSING]";
+        String pocketStatus = pocketBin ? "INSTALLED" : "MISSING";
         int pocketVoices = pocketWeights ? 1 : 0;
         printDashboardRow("Pocket TTS (INT8)", pocketStatus, pocketVoices, "bin/pocket + models/pocket/sherpa-onnx-pocket-tts-int8");
 
@@ -227,7 +227,7 @@ public class FastTTSInstaller {
         File piperDir = new File(rootDir, "models/piper");
         File[] piperModels = piperDir.listFiles((d, n) -> n.endsWith(".onnx"));
         int piperCount = (piperModels != null) ? piperModels.length : 0;
-        String piperStatus = piperBin ? "[INSTALLED]" : "[MISSING]";
+        String piperStatus = piperBin ? "INSTALLED" : "MISSING";
         printDashboardRow("Piper Neural (ONNX)", piperStatus, piperCount, "bin/piper + " + piperCount + " voices in models/piper/");
 
         // Matcha-TTS
@@ -236,7 +236,7 @@ public class FastTTSInstaller {
                 || new File(rootDir, "bin/matcha/sherpa-onnx-offline-tts.exe").exists();
         boolean matchaAcoustic = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx").exists();
         boolean matchaVocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx").exists();
-        String matchaStatus = matchaBin ? "[INSTALLED]" : "[MISSING]";
+        String matchaStatus = matchaBin ? "INSTALLED" : "MISSING";
         int matchaVoices = (matchaAcoustic && matchaVocoder) ? 1 : 0;
         printDashboardRow("Matcha-TTS", matchaStatus, matchaVoices, "bin/kokoro (Sherpa) + models/matcha");
 
@@ -248,14 +248,14 @@ public class FastTTSInstaller {
             File[] sub = vitsDir.listFiles(File::isDirectory);
             if (sub != null && sub.length > 0) vitsModel = true;
         }
-        String vitsStatus = vitsBin ? "[INSTALLED]" : "[MISSING]";
+        String vitsStatus = vitsBin ? "INSTALLED" : "MISSING";
         int vitsVoices = vitsModel ? 1 : 0;
         printDashboardRow("VITS (Piper ONNX)", vitsStatus, vitsVoices, "bin/kokoro (Sherpa) + models/vits");
 
         // F5-TTS
         boolean f5Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
         File f5Weights = new File(rootDir, "models/f5tts/f5-tts-v1-base-f16.gguf");
-        String f5Status = f5Bin ? "[INSTALLED]" : "[MISSING]";
+        String f5Status = f5Bin ? "INSTALLED" : "MISSING";
         int f5Voices = (f5Weights.exists() && f5Weights.length() > 900_000_000L) ? 1 : 0;
         printDashboardRow("F5-TTS", f5Status, f5Voices, "bin/dia2 (audio.cpp) + models/f5tts");
 
@@ -264,35 +264,35 @@ public class FastTTSInstaller {
         boolean omniInstalled = omniBin.exists();
         File omniDir = new File(rootDir, "models/omnivoice");
         File omniWeights = new File(omniDir, "model.safetensors");
-        String omniStatus = omniInstalled ? "[INSTALLED]" : "[MISSING]";
+        String omniStatus = omniInstalled ? "INSTALLED" : "MISSING";
         int omniVoices = (omniWeights.exists() && omniWeights.length() > 2_400_000_000L) ? 1 : 0;
         printDashboardRow("OmniVoice", omniStatus, omniVoices, "bin/omnivoice + models/omnivoice");
 
         // Dia2 Dialogue
         boolean dia2Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
         boolean dia2Weights = new File(rootDir, "models/dia2/dia2-2b-q4_k.gguf").exists();
-        String dia2Status = dia2Bin ? "[INSTALLED]" : "[MISSING]";
+        String dia2Status = dia2Bin ? "INSTALLED" : "MISSING";
         int dia2Voices = dia2Weights ? 2 : 0;
         printDashboardRow("Dia2 Dialogue", dia2Status, dia2Voices, "bin/dia2 + models/dia2 (GGUF 2B)");
 
         // FastAudioPlayer
         boolean fap = new File(rootDir, "bin/fastaudioplayer.dll").exists();
-        printDashboardRow("FastAudioPlayer", fap ? "[INSTALLED]" : "[MISSING]", 0, "bin/fastaudioplayer.dll (WASAPI Native)");
+        printDashboardRow("FastAudioPlayer", fap ? "INSTALLED" : "MISSING", 0, "bin/fastaudioplayer.dll (WASAPI Native)");
 
         System.out.println();
     }
 
     private void printDashboardRow(String name, String status, int voiceCount, String details) {
         String statusFormatted;
-        if (status.startsWith("[INSTALLED")) {
-            statusFormatted = G + "[" + W + "INSTALLED" + G + "]" + R;
+        if (status.equalsIgnoreCase("INSTALLED")) {
+            statusFormatted = W + String.format("%-11s", "INSTALLED") + R;
         } else {
             statusFormatted = G + String.format("%-11s", status) + R;
         }
-        System.out.println("  " + W + String.format("%-22s", name) + " " +
-                G + "| " + statusFormatted + " " +
-                G + "| " + W + String.format("%-8s", voiceCount + " voices") + " " +
-                G + "| " + details + R);
+        System.out.println("  " + W + String.format("%-24s", name) + " " +
+                statusFormatted + " " +
+                W + String.format("%-10s", voiceCount + " voices") + " " +
+                G + details + R);
     }
 
     // =========================================================================
