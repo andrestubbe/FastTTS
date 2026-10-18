@@ -26,6 +26,7 @@ public class FastTTSInstaller {
 
     private final Scanner scanner = new Scanner(System.in);
     private final File rootDir;
+    private FastTTSInstallListener installListener;
 
     // Direct download endpoints
     private static final String SHERPA_RELEASE_URL =
@@ -52,11 +53,24 @@ public class FastTTSInstaller {
             "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_v1_Base/vocab.txt";
 
     public FastTTSInstaller() {
-        this(null);
+        this(null, null);
     }
 
     public FastTTSInstaller(File rootDir) {
+        this(rootDir, null);
+    }
+
+    public FastTTSInstaller(File rootDir, FastTTSInstallListener installListener) {
         this.rootDir = (rootDir != null) ? rootDir : findProjectRoot();
+        this.installListener = installListener;
+    }
+
+    public void setInstallListener(FastTTSInstallListener listener) {
+        this.installListener = listener;
+    }
+
+    public FastTTSInstallListener getInstallListener() {
+        return this.installListener;
     }
 
     public static void main(String[] args) {
@@ -1153,9 +1167,20 @@ public class FastTTSInstaller {
                                 : String.format(" %s%.1f MB%s", white, mbDownloaded, gray);
 
                         System.out.print("\r" + gray + "Downloading " + white + fileName + gray + ": " + bar + stat + reset);
+
+                        if (installListener != null) {
+                            try {
+                                installListener.onProgress("Downloading " + fileName, percent, downloaded, totalBytes);
+                            } catch (Exception ignored) {}
+                        }
                     }
                 }
                 out.flush();
+            }
+            if (installListener != null) {
+                try {
+                    installListener.onProgress("Downloaded " + fileName, 100.0, downloaded, totalBytes);
+                } catch (Exception ignored) {}
             }
             System.out.println();
             Files.move(tempFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
