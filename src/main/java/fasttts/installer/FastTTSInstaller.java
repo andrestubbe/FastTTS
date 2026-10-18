@@ -136,6 +136,7 @@ public class FastTTSInstaller {
                     case "kokoro" -> installKokoro();
                     case "pocket", "pockettts" -> installPocket();
                     case "piper" -> installPiper();
+                    case "piper-thorsten", "thorsten" -> installPiperThorsten();
                     case "matcha", "matchatts" -> installMatcha();
                     case "vits" -> installVITS();
                     case "f5tts", "f5" -> installF5TTS();
@@ -210,7 +211,7 @@ public class FastTTSInstaller {
         boolean matchaAcoustic = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx").exists();
         boolean matchaVocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx").exists();
         String matchaStatus = (matchaBin && matchaAcoustic && matchaVocoder) ? "[INSTALLED]" : (matchaAcoustic ? "[NO VOCODER/BIN]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | models/matcha (Flow Matching)%n", "Matcha-TTS", matchaStatus);
+        System.out.printf("  %-22s | %-12s | bin/kokoro (Sherpa) + models/matcha%n", "Matcha-TTS", matchaStatus);
 
         // VITS
         boolean vitsBin = matchaBin;
@@ -221,7 +222,7 @@ public class FastTTSInstaller {
             if (sub != null && sub.length > 0) vitsModel = true;
         }
         String vitsStatus = (vitsBin && vitsModel) ? "[INSTALLED]" : "[MISSING]";
-        System.out.printf("  %-22s | %-12s | models/vits (Deterministic Neural)%n", "VITS (Piper ONNX)", vitsStatus);
+        System.out.printf("  %-22s | %-12s | bin/kokoro (Sherpa) + models/vits%n", "VITS (Piper ONNX)", vitsStatus);
 
         // F5-TTS
         boolean f5Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
@@ -234,7 +235,7 @@ public class FastTTSInstaller {
         } else {
             f5Status = "[MISSING]";
         }
-        System.out.printf("  %-22s | %-12s | models/f5tts (Flow Matching Voice Clone)%n", "F5-TTS", f5Status);
+        System.out.printf("  %-22s | %-12s | bin/dia2 (audio.cpp) + models/f5tts%n", "F5-TTS", f5Status);
 
         // OmniVoice
         File omniDir = new File(rootDir, "models/omnivoice");
@@ -247,7 +248,7 @@ public class FastTTSInstaller {
         } else {
             omniStatus = "[MISSING]";
         }
-        System.out.printf("  %-22s | %-12s | models/omnivoice (Zero-Shot Diffusion)%n", "OmniVoice", omniStatus);
+        System.out.printf("  %-22s | %-12s | bin/omnivoice + models/omnivoice%n", "OmniVoice", omniStatus);
 
         // Dia2 Dialogue
         boolean dia2Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
@@ -452,7 +453,7 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installPiper() {
-        System.out.println("\n--- [Piper Neural] Installing Binaries & Thorsten Model ---");
+        System.out.println("\n--- [Piper Neural] Installing Binaries ---");
         File binDir = new File(rootDir, "bin/piper");
         File piperExe = new File(binDir, "piper.exe");
 
@@ -474,6 +475,15 @@ public class FastTTSInstaller {
 
         File modelsDir = new File(rootDir, "models/piper");
         modelsDir.mkdirs();
+
+        System.out.println("[SUCCESS] Piper Neural runtime installed.");
+    }
+
+    public void installPiperThorsten() {
+        installPiper();
+        System.out.println("\n--- [Piper Neural] Installing Thorsten German Model ---");
+        File modelsDir = new File(rootDir, "models/piper");
+        modelsDir.mkdirs();
         File onnxFile = new File(modelsDir, "de_DE-thorsten-medium.onnx");
         File jsonFile = new File(modelsDir, "de_DE-thorsten-medium.onnx.json");
 
@@ -485,8 +495,7 @@ public class FastTTSInstaller {
             System.out.println("[Piper] Downloading de_DE-thorsten-medium.onnx.json...");
             downloadWithCurl(PIPER_THORSTEN_JSON, jsonFile);
         }
-
-        System.out.println("[SUCCESS] Piper Neural installed.");
+        System.out.println("[SUCCESS] Thorsten German model installed.");
     }
 
     public void deinstallPiper() {
@@ -516,9 +525,10 @@ public class FastTTSInstaller {
 
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install Piper & Thorsten German Voice");
-            System.out.println("  2. Deinstall Piper");
-            System.out.println("  3. Test Piper Voice");
+            System.out.println("  1. Install Piper Binary Runtime");
+            System.out.println("  2. Install Thorsten German Voice");
+            System.out.println("  3. Deinstall Piper (Binaries & Voices)");
+            System.out.println("  4. Test Piper Voice");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -528,8 +538,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installPiper(); pause(); }
-                case "2" -> { deinstallPiper(); pause(); }
-                case "3" -> testPiperVoice();
+                case "2" -> { installPiperThorsten(); pause(); }
+                case "3" -> { deinstallPiper(); pause(); }
+                case "4" -> testPiperVoice();
             }
         }
     }
