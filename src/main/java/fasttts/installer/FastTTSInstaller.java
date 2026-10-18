@@ -180,12 +180,12 @@ public class FastTTSInstaller {
     }
 
     public void printDashboard() {
-        System.out.println(G + "=".repeat(80) + R);
-        System.out.println(W + "                       FastTTS Engine & Model Manager" + R);
-        System.out.println(G + "=".repeat(80) + R);
-        System.out.println(G + "Root Directory: " + W + rootDir.getAbsolutePath() + R);
-        System.out.println(G + "Local Storage:  " + W + "All models & binaries strictly contained in ./models and ./bin" + R);
-        System.out.println(G + "-".repeat(80) + R);
+        System.out.println();
+        System.out.println(W + "  FastTTS Engine & Model Manager" + R);
+        System.out.println();
+        System.out.println(G + "  Root Directory: " + W + rootDir.getAbsolutePath() + R);
+        System.out.println(G + "  Local Storage:  " + W + "All models & binaries strictly contained in ./models and ./bin" + R);
+        System.out.println();
 
         // Windows SAPI
         printDashboardRow("Windows SAPI/OneCore", "[INSTALLED]", "Built-in Windows native engine");
@@ -266,7 +266,7 @@ public class FastTTSInstaller {
         boolean fap = new File(rootDir, "bin/fastaudioplayer.dll").exists();
         printDashboardRow("FastAudioPlayer", fap ? "[INSTALLED]" : "[MISSING]", "bin/fastaudioplayer.dll (WASAPI Native)");
 
-        System.out.println(G + "-".repeat(80) + R + "\n");
+        System.out.println();
     }
 
     private void printDashboardRow(String name, String status, String details) {
