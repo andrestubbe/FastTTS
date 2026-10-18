@@ -106,7 +106,7 @@ public class FastTTSInstaller {
             printDashboard();
 
             System.out.println(W + "Actions:" + R);
-            System.out.println("  " + W + "1." + R + "  [" + W + "Install All" + R + "]   Install all 10 local offline engines & models");
+            System.out.println("  " + W + "1." + R + "  [" + W + "Install All" + R + "]   Install all 10 local offline engine runners");
             System.out.println("  " + W + "2." + R + "  [" + W + "Deinstall All" + R + "] Deinstall/Delete all local models & binaries (clean reset)");
             System.out.println("  " + W + "3." + R + "  [" + W + "Kokoro" + R + "]        Manage Kokoro Studio (Sherpa-ONNX)");
             System.out.println("  " + W + "4." + R + "  [" + W + "Pocket TTS" + R + "]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
@@ -211,15 +211,15 @@ public class FastTTSInstaller {
         // Kokoro Studio
         boolean kokoroBin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists();
         boolean kokoroWeights = new File(rootDir, "models/kokoro/kokoro-en-v0_19/model.onnx").exists();
-        String kokoroStatus = (kokoroBin && kokoroWeights) ? "[INSTALLED]" : (kokoroBin ? "[NO WEIGHTS]" : "[MISSING]");
-        int kokoroVoices = (kokoroBin && kokoroWeights) ? 1 : 0;
+        String kokoroStatus = kokoroBin ? "[INSTALLED]" : "[MISSING]";
+        int kokoroVoices = kokoroWeights ? 1 : 0;
         printDashboardRow("Kokoro Studio (ONNX)", kokoroStatus, kokoroVoices, "bin/kokoro + models/kokoro/kokoro-en-v0_19");
 
         // Pocket TTS
         boolean pocketBin = new File(rootDir, "bin/pocket/sherpa-onnx-offline-tts.exe").exists();
         boolean pocketWeights = new File(rootDir, "models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26/lm_main.int8.onnx").exists();
-        String pocketStatus = (pocketBin && pocketWeights) ? "[INSTALLED]" : (pocketBin ? "[NO WEIGHTS]" : "[MISSING]");
-        int pocketVoices = (pocketBin && pocketWeights) ? 1 : 0;
+        String pocketStatus = pocketBin ? "[INSTALLED]" : "[MISSING]";
+        int pocketVoices = pocketWeights ? 1 : 0;
         printDashboardRow("Pocket TTS (INT8)", pocketStatus, pocketVoices, "bin/pocket + models/pocket/sherpa-onnx-pocket-tts-int8");
 
         // Piper Neural
@@ -227,7 +227,7 @@ public class FastTTSInstaller {
         File piperDir = new File(rootDir, "models/piper");
         File[] piperModels = piperDir.listFiles((d, n) -> n.endsWith(".onnx"));
         int piperCount = (piperModels != null) ? piperModels.length : 0;
-        String piperStatus = (piperBin && piperCount > 0) ? "[INSTALLED]" : (piperBin ? "[NO VOICES]" : "[MISSING]");
+        String piperStatus = piperBin ? "[INSTALLED]" : "[MISSING]";
         printDashboardRow("Piper Neural (ONNX)", piperStatus, piperCount, "bin/piper + " + piperCount + " voices in models/piper/");
 
         // Matcha-TTS
@@ -236,8 +236,8 @@ public class FastTTSInstaller {
                 || new File(rootDir, "bin/matcha/sherpa-onnx-offline-tts.exe").exists();
         boolean matchaAcoustic = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx").exists();
         boolean matchaVocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx").exists();
-        String matchaStatus = (matchaBin && matchaAcoustic && matchaVocoder) ? "[INSTALLED]" : (matchaAcoustic ? "[NO VOCODER/BIN]" : "[MISSING]");
-        int matchaVoices = (matchaBin && matchaAcoustic && matchaVocoder) ? 1 : 0;
+        String matchaStatus = matchaBin ? "[INSTALLED]" : "[MISSING]";
+        int matchaVoices = (matchaAcoustic && matchaVocoder) ? 1 : 0;
         printDashboardRow("Matcha-TTS", matchaStatus, matchaVoices, "bin/kokoro (Sherpa) + models/matcha");
 
         // VITS
@@ -248,43 +248,31 @@ public class FastTTSInstaller {
             File[] sub = vitsDir.listFiles(File::isDirectory);
             if (sub != null && sub.length > 0) vitsModel = true;
         }
-        String vitsStatus = (vitsBin && vitsModel) ? "[INSTALLED]" : "[MISSING]";
-        int vitsVoices = (vitsBin && vitsModel) ? 1 : 0;
+        String vitsStatus = vitsBin ? "[INSTALLED]" : "[MISSING]";
+        int vitsVoices = vitsModel ? 1 : 0;
         printDashboardRow("VITS (Piper ONNX)", vitsStatus, vitsVoices, "bin/kokoro (Sherpa) + models/vits");
 
         // F5-TTS
         boolean f5Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
         File f5Weights = new File(rootDir, "models/f5tts/f5-tts-v1-base-f16.gguf");
-        String f5Status;
-        if (f5Weights.exists() && f5Weights.length() > 900_000_000L) {
-            f5Status = "[INSTALLED]";
-        } else if (f5Weights.exists()) {
-            f5Status = "[" + (f5Weights.length() / (1024 * 1024)) + " MB / 999 MB]";
-        } else {
-            f5Status = "[MISSING]";
-        }
+        String f5Status = f5Bin ? "[INSTALLED]" : "[MISSING]";
         int f5Voices = (f5Weights.exists() && f5Weights.length() > 900_000_000L) ? 1 : 0;
         printDashboardRow("F5-TTS", f5Status, f5Voices, "bin/dia2 (audio.cpp) + models/f5tts");
 
         // OmniVoice
+        File omniBin = new File(rootDir, "bin/omnivoice");
+        boolean omniInstalled = omniBin.exists();
         File omniDir = new File(rootDir, "models/omnivoice");
         File omniWeights = new File(omniDir, "model.safetensors");
-        String omniStatus;
-        if (omniWeights.exists() && omniWeights.length() > 2_400_000_000L) {
-            omniStatus = "[INSTALLED]";
-        } else if (omniWeights.exists()) {
-            omniStatus = "[" + (omniWeights.length() / (1024 * 1024)) + " MB / 2450 MB]";
-        } else {
-            omniStatus = "[MISSING]";
-        }
+        String omniStatus = omniInstalled ? "[INSTALLED]" : "[MISSING]";
         int omniVoices = (omniWeights.exists() && omniWeights.length() > 2_400_000_000L) ? 1 : 0;
         printDashboardRow("OmniVoice", omniStatus, omniVoices, "bin/omnivoice + models/omnivoice");
 
         // Dia2 Dialogue
         boolean dia2Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
         boolean dia2Weights = new File(rootDir, "models/dia2/dia2-2b-q4_k.gguf").exists();
-        String dia2Status = (dia2Bin && dia2Weights) ? "[INSTALLED]" : (dia2Weights ? "[NO RUNNER]" : "[MISSING]");
-        int dia2Voices = (dia2Bin && dia2Weights) ? 2 : 0;
+        String dia2Status = dia2Bin ? "[INSTALLED]" : "[MISSING]";
+        int dia2Voices = dia2Weights ? 2 : 0;
         printDashboardRow("Dia2 Dialogue", dia2Status, dia2Voices, "bin/dia2 + models/dia2 (GGUF 2B)");
 
         // FastAudioPlayer
@@ -358,9 +346,13 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installKokoro() {
-        System.out.println("\n--- [Kokoro Studio] Installing Binaries & Model Weights ---");
+        System.out.println("\n--- [Kokoro Studio] Installing Binaries ---");
         ensureSherpaBinaries(new File(rootDir, "bin/kokoro"));
+        System.out.println("[SUCCESS] Kokoro Studio binary runner installed (0 models downloaded).");
+    }
 
+    public void installKokoroModel() {
+        System.out.println("\n--- [Kokoro Studio] Downloading Default English Model Weights ---");
         File kokoroDir = new File(rootDir, "models/kokoro");
         File targetDir = new File(kokoroDir, "kokoro-en-v0_19");
         File modelFile = new File(targetDir, "model.onnx");
@@ -378,7 +370,7 @@ public class FastTTSInstaller {
                 tarBz2.delete();
             }
         }
-        System.out.println("[SUCCESS] Kokoro Studio installed.");
+        System.out.println("[SUCCESS] Kokoro model weights installed.");
     }
 
     public void deinstallKokoro() {
@@ -398,9 +390,10 @@ public class FastTTSInstaller {
             System.out.println("Model:   " + (new File(modelDir, "model.onnx").exists() ? "✓ Installed (" + (new File(modelDir, "model.onnx").length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install Kokoro Studio");
-            System.out.println("  2. Deinstall Kokoro Studio");
-            System.out.println("  3. Test Kokoro Voice Output");
+            System.out.println("  1. Install Kokoro Runner Binary");
+            System.out.println("  2. Download Kokoro Default Model (English ~345 MB)");
+            System.out.println("  3. Deinstall Kokoro Studio (Runner & All Models)");
+            System.out.println("  4. Test Kokoro Voice Output");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -410,8 +403,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installKokoro(); pause(); }
-                case "2" -> { deinstallKokoro(); pause(); }
-                case "3" -> testKokoroVoice();
+                case "2" -> { installKokoroModel(); pause(); }
+                case "3" -> { deinstallKokoro(); pause(); }
+                case "4" -> testKokoroVoice();
             }
         }
     }
@@ -436,9 +430,13 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installPocket() {
-        System.out.println("\n--- [Pocket TTS] Installing Binaries & INT8 Weights ---");
+        System.out.println("\n--- [Pocket TTS] Installing Binaries ---");
         ensureSherpaBinaries(new File(rootDir, "bin/pocket"));
+        System.out.println("[SUCCESS] Pocket TTS binary runner installed (0 models downloaded).");
+    }
 
+    public void installPocketModel() {
+        System.out.println("\n--- [Pocket TTS] Downloading INT8 Weights (~98 MB) ---");
         File pocketDir = new File(rootDir, "models/pocket");
         File targetDir = new File(pocketDir, "sherpa-onnx-pocket-tts-int8-2026-01-26");
         File lmMain = new File(targetDir, "lm_main.int8.onnx");
@@ -456,7 +454,7 @@ public class FastTTSInstaller {
                 tarBz2.delete();
             }
         }
-        System.out.println("[SUCCESS] Pocket TTS installed.");
+        System.out.println("[SUCCESS] Pocket TTS model weights installed.");
     }
 
     public void deinstallPocket() {
@@ -476,9 +474,10 @@ public class FastTTSInstaller {
             System.out.println("Model:   " + (new File(modelDir, "lm_main.int8.onnx").exists() ? "✓ Installed" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install Pocket TTS");
-            System.out.println("  2. Deinstall Pocket TTS");
-            System.out.println("  3. Test Pocket TTS Output");
+            System.out.println("  1. Install Pocket TTS Runner Binary");
+            System.out.println("  2. Download Pocket INT8 Weights (~98 MB)");
+            System.out.println("  3. Deinstall Pocket TTS (Runner & All Models)");
+            System.out.println("  4. Test Pocket TTS Output");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -488,8 +487,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installPocket(); pause(); }
-                case "2" -> { deinstallPocket(); pause(); }
-                case "3" -> testPocketVoice();
+                case "2" -> { installPocketModel(); pause(); }
+                case "3" -> { deinstallPocket(); pause(); }
+                case "4" -> testPocketVoice();
             }
         }
     }
@@ -625,8 +625,20 @@ public class FastTTSInstaller {
     // 4. OmniVoice
     // =========================================================================
 
+    // 4. OmniVoice
+    // =========================================================================
+
     public void installOmniVoice() {
-        System.out.println("\n--- [OmniVoice] Installing Model Weights (2.45 GB) ---");
+        System.out.println("\n--- [OmniVoice] Installing Runner Environment ---");
+        File binDir = new File(rootDir, "bin/omnivoice");
+        binDir.mkdirs();
+        File modelsDir = new File(rootDir, "models/omnivoice");
+        modelsDir.mkdirs();
+        System.out.println("[SUCCESS] OmniVoice runner environment initialized (0 models downloaded).");
+    }
+
+    public void installOmniVoiceModel() {
+        System.out.println("\n--- [OmniVoice] Downloading Model Weights (2.45 GB) ---");
         File omniDir = new File(rootDir, "models/omnivoice");
         omniDir.mkdirs();
         File target = new File(omniDir, "model.safetensors");
@@ -637,7 +649,7 @@ public class FastTTSInstaller {
             String url = "https://huggingface.co/k2-fsa/OmniVoice/resolve/main/model.safetensors";
             downloadWithCurl(url, target);
         }
-        System.out.println("[SUCCESS] OmniVoice installed.");
+        System.out.println("[SUCCESS] OmniVoice model weights installed.");
     }
 
     public void deinstallOmniVoice() {
@@ -657,8 +669,9 @@ public class FastTTSInstaller {
         System.out.println("Model Weights: " + (weights.exists() ? (weights.length() > 2_400_000_000L ? "✓ Complete (" + (weights.length() / (1024 * 1024)) + " MB)" : "⏳ Incomplete (" + (weights.length() / (1024 * 1024)) + " / 2450 MB)") : "✗ Missing"));
         System.out.println();
         System.out.println("Options:");
-        System.out.println("  1. Install / Resume OmniVoice Weights (model.safetensors)");
-        System.out.println("  2. Deinstall OmniVoice");
+        System.out.println("  1. Initialize OmniVoice Environment");
+        System.out.println("  2. Download / Resume OmniVoice Weights (2.45 GB)");
+        System.out.println("  3. Deinstall OmniVoice (Environment & Models)");
         System.out.println("  b. Back");
         System.out.println();
         System.out.print("Command: ");
@@ -666,7 +679,8 @@ public class FastTTSInstaller {
         String cmd = scanner.nextLine().trim().toLowerCase();
         switch (cmd) {
             case "1" -> { installOmniVoice(); pause(); }
-            case "2" -> { deinstallOmniVoice(); pause(); }
+            case "2" -> { installOmniVoiceModel(); pause(); }
+            case "3" -> { deinstallOmniVoice(); pause(); }
         }
     }
 
@@ -675,7 +689,7 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installDia2() {
-        System.out.println("\n--- [Dia2 Dialogue] Installing Runner & Model Weights ---");
+        System.out.println("\n--- [Dia2 Dialogue] Installing Runner Binaries ---");
         File binDir = new File(rootDir, "bin/dia2");
         File runner = new File(binDir, "audiocpp_cli.exe");
 
@@ -696,6 +710,13 @@ public class FastTTSInstaller {
 
         File dia2Dir = new File(rootDir, "models/dia2");
         dia2Dir.mkdirs();
+        System.out.println("[SUCCESS] Dia2 runner installed (0 models downloaded).");
+    }
+
+    public void installDia2Model() {
+        System.out.println("\n--- [Dia2 Dialogue] Downloading GGUF Model Weights ---");
+        File dia2Dir = new File(rootDir, "models/dia2");
+        dia2Dir.mkdirs();
         File target = new File(dia2Dir, "dia2-2b-q4_k.gguf");
         if (target.exists() && target.length() > 1_000_000_000L) {
             System.out.println("[Dia2] GGUF Model weights already present (" + (target.length() / (1024 * 1024)) + " MB)");
@@ -704,7 +725,7 @@ public class FastTTSInstaller {
             String dia2Url = "https://huggingface.co/markldn/Dia2-2B-GGUF/resolve/main/dia2-q4_0.gguf";
             downloadWithCurl(dia2Url, target);
         }
-        System.out.println("[SUCCESS] Dia2 installed.");
+        System.out.println("[SUCCESS] Dia2 GGUF model installed.");
     }
 
     public void deinstallDia2() {
@@ -726,9 +747,10 @@ public class FastTTSInstaller {
             System.out.println("CLI Runner:   " + (runner.exists() ? "✓ Installed (bin/dia2/audiocpp_cli.exe)" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install Dia2 Runner & GGUF Model");
-            System.out.println("  2. Deinstall Dia2");
-            System.out.println("  3. Test Dia2 Dialogue Synthesis");
+            System.out.println("  1. Install Dia2 Runner Binary");
+            System.out.println("  2. Download Dia2 GGUF Model (1.1 GB)");
+            System.out.println("  3. Deinstall Dia2 (Runner & All Models)");
+            System.out.println("  4. Test Dia2 Dialogue Synthesis");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -738,8 +760,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installDia2(); pause(); }
-                case "2" -> { deinstallDia2(); pause(); }
-                case "3" -> testDia2Voice();
+                case "2" -> { installDia2Model(); pause(); }
+                case "3" -> { deinstallDia2(); pause(); }
+                case "4" -> testDia2Voice();
             }
         }
     }
@@ -764,9 +787,15 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installMatcha() {
-        System.out.println("\n--- [Matcha-TTS] Installing Binaries & Model Weights ---");
+        System.out.println("\n--- [Matcha-TTS] Installing Runner Binaries ---");
         ensureSherpaBinaries(new File(rootDir, "bin/kokoro"));
+        File matchaDir = new File(rootDir, "models/matcha");
+        matchaDir.mkdirs();
+        System.out.println("[SUCCESS] Matcha-TTS runner installed (0 models downloaded).");
+    }
 
+    public void installMatchaModel() {
+        System.out.println("\n--- [Matcha-TTS] Downloading Acoustic & Vocoder Models ---");
         File matchaDir = new File(rootDir, "models/matcha");
         File acousticDir = new File(matchaDir, "matcha-icefall-en_US-ljspeech");
         File acousticModel = new File(acousticDir, "model-steps-3.onnx");
@@ -794,11 +823,11 @@ public class FastTTSInstaller {
             downloadWithCurl(VOCOS_VOCODER_URL, vocoderFile);
         }
 
-        System.out.println("[SUCCESS] Matcha-TTS installed.");
+        System.out.println("[SUCCESS] Matcha-TTS model weights installed.");
     }
 
     public void deinstallMatcha() {
-        System.out.println("[Deinstall] Removing Matcha-TTS models...");
+        System.out.println("[Deinstall] Removing Matcha-TTS models and binaries...");
         deleteDirectory(new File(rootDir, "models/matcha"));
         System.out.println("[SUCCESS] Matcha-TTS deinstalled.");
     }
@@ -815,9 +844,10 @@ public class FastTTSInstaller {
             System.out.println("Vocoder:  " + (vocoder.exists() ? "✓ Installed (" + (vocoder.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install Matcha-TTS (LJSpeech + Vocos)");
-            System.out.println("  2. Deinstall Matcha-TTS");
-            System.out.println("  3. Test Matcha Voice Output");
+            System.out.println("  1. Install Matcha-TTS Runner Binary");
+            System.out.println("  2. Download Matcha-TTS Models (LJSpeech + Vocos ~125 MB)");
+            System.out.println("  3. Deinstall Matcha-TTS (Models)");
+            System.out.println("  4. Test Matcha Voice Output");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -827,8 +857,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installMatcha(); pause(); }
-                case "2" -> { deinstallMatcha(); pause(); }
-                case "3" -> testMatchaVoice();
+                case "2" -> { installMatchaModel(); pause(); }
+                case "3" -> { deinstallMatcha(); pause(); }
+                case "4" -> testMatchaVoice();
             }
         }
     }
@@ -853,9 +884,15 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installVITS() {
-        System.out.println("\n--- [VITS] Installing Binaries & Model Weights ---");
+        System.out.println("\n--- [VITS] Installing Runner Binaries ---");
         ensureSherpaBinaries(new File(rootDir, "bin/kokoro"));
+        File vitsDir = new File(rootDir, "models/vits");
+        vitsDir.mkdirs();
+        System.out.println("[SUCCESS] VITS runner installed (0 models downloaded).");
+    }
 
+    public void installVITSModel() {
+        System.out.println("\n--- [VITS] Downloading Amy Low Piper Model (~64 MB) ---");
         File vitsDir = new File(rootDir, "models/vits");
         File targetDir = new File(vitsDir, "vits-piper-en_US-amy-low");
         File modelFile = new File(targetDir, "en_US-amy-low.onnx");
@@ -873,7 +910,7 @@ public class FastTTSInstaller {
                 tarBz2.delete();
             }
         }
-        System.out.println("[SUCCESS] VITS installed.");
+        System.out.println("[SUCCESS] VITS model installed.");
     }
 
     public void deinstallVITS() {
@@ -897,9 +934,10 @@ public class FastTTSInstaller {
             System.out.println("Model:   " + (hasModel ? "✓ Installed (models/vits)" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install VITS (Amy Low / Piper ONNX)");
-            System.out.println("  2. Deinstall VITS");
-            System.out.println("  3. Test VITS Voice Output");
+            System.out.println("  1. Install VITS Runner Binary");
+            System.out.println("  2. Download VITS Amy Low Model (~64 MB)");
+            System.out.println("  3. Deinstall VITS (Models)");
+            System.out.println("  4. Test VITS Voice Output");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -909,8 +947,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installVITS(); pause(); }
-                case "2" -> { deinstallVITS(); pause(); }
-                case "3" -> testVITSVoice();
+                case "2" -> { installVITSModel(); pause(); }
+                case "3" -> { deinstallVITS(); pause(); }
+                case "4" -> testVITSVoice();
             }
         }
     }
@@ -935,7 +974,19 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installF5TTS() {
-        System.out.println("\n--- [F5-TTS] Installing Binaries & Model Weights ---");
+        System.out.println("\n--- [F5-TTS] Installing Runner Binaries ---");
+        File binDir = new File(rootDir, "bin/dia2");
+        File runner = new File(binDir, "audiocpp_cli.exe");
+        if (!runner.exists()) {
+            installDia2();
+        }
+        File f5Dir = new File(rootDir, "models/f5tts");
+        f5Dir.mkdirs();
+        System.out.println("[SUCCESS] F5-TTS runner installed (0 models downloaded).");
+    }
+
+    public void installF5TTSModel() {
+        System.out.println("\n--- [F5-TTS] Downloading Vocab & GGUF Model (999 MB) ---");
         File f5Dir = new File(rootDir, "models/f5tts");
         f5Dir.mkdirs();
 
@@ -953,7 +1004,7 @@ public class FastTTSInstaller {
             downloadWithCurl(F5TTS_MODEL_URL, model);
         }
 
-        System.out.println("[SUCCESS] F5-TTS installed.");
+        System.out.println("[SUCCESS] F5-TTS model weights installed.");
     }
 
     public void deinstallF5TTS() {
@@ -972,9 +1023,10 @@ public class FastTTSInstaller {
             System.out.println("Model:   " + (model.exists() && model.length() > 900_000_000L ? "✓ Installed (" + (model.length() / (1024 * 1024)) + " MB)" : "✗ Missing"));
             System.out.println();
             System.out.println("Options:");
-            System.out.println("  1. Install F5-TTS (GGUF Base + Vocab)");
-            System.out.println("  2. Deinstall F5-TTS");
-            System.out.println("  3. Test F5-TTS Voice Output");
+            System.out.println("  1. Install F5-TTS Runner Binary");
+            System.out.println("  2. Download F5-TTS Model (GGUF Base + Vocab ~999 MB)");
+            System.out.println("  3. Deinstall F5-TTS (Models)");
+            System.out.println("  4. Test F5-TTS Voice Output");
             System.out.println("  b. Back");
             System.out.println();
             System.out.print("Command: ");
@@ -984,8 +1036,9 @@ public class FastTTSInstaller {
 
             switch (cmd) {
                 case "1" -> { installF5TTS(); pause(); }
-                case "2" -> { deinstallF5TTS(); pause(); }
-                case "3" -> testF5TTSVoice();
+                case "2" -> { installF5TTSModel(); pause(); }
+                case "3" -> { deinstallF5TTS(); pause(); }
+                case "4" -> testF5TTSVoice();
             }
         }
     }
