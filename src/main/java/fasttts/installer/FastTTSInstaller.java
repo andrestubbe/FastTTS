@@ -138,7 +138,6 @@ public class FastTTSInstaller {
                 case "11" -> testAudio();
                 case "12" -> runBenchmark();
                 case "q" -> {
-                    System.out.println(G + "Exiting FastTTS Installer. Good bye!" + R);
                     return;
                 }
             }
