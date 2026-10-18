@@ -87,7 +87,7 @@ public class FastTTSInstaller {
             printDashboard();
 
             System.out.println("Actions:");
-            System.out.println("  1.  [Install All]   Install all standard offline engines & models (Kokoro, Pocket, Piper, Matcha, VITS)");
+            System.out.println("  1.  [Install All]   Install all 10 local offline engines & models");
             System.out.println("  2.  [Deinstall All] Deinstall/Delete all local models & binaries (clean reset)");
             System.out.println("  3.  [Kokoro]        Manage Kokoro Studio (Sherpa-ONNX)");
             System.out.println("  4.  [Pocket TTS]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
@@ -268,14 +268,31 @@ public class FastTTSInstaller {
     // =========================================================================
 
     public void installAll() {
-        System.out.println("\n>>> [FastTTS] Installing all standard offline engines locally...");
+        System.out.println("\n>>> [FastTTS] Installing all 10 local offline engines & models...");
         installKokoro();
         installPocket();
         installPiper();
         installMatcha();
         installVITS();
-        System.out.println("\n>>> [FastTTS] Installation of standard offline engines complete!\n");
+        installF5TTS();
+        installOmniVoice();
+        installDia2();
+        ensureFastAudioPlayer();
+        System.out.println("\n>>> [FastTTS] Complete installation of all offline engines finished!\n");
         printDashboard();
+    }
+
+    private void ensureFastAudioPlayer() {
+        File binDir = new File(rootDir, "bin");
+        binDir.mkdirs();
+        File dll = new File(binDir, "fastaudioplayer.dll");
+        if (!dll.exists()) {
+            try (InputStream in = getClass().getResourceAsStream("/native/fastaudioplayer.dll")) {
+                if (in != null) {
+                    Files.copy(in, dll.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (Exception ignored) {}
+        }
     }
 
     public void deinstallAll() {
