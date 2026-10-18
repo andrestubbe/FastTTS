@@ -569,8 +569,9 @@ public class FastTTSInstaller {
     }
 
     public void deinstallOmniVoice() {
-        System.out.println("[Deinstall] Removing OmniVoice models...");
+        System.out.println("[Deinstall] Removing OmniVoice models and environment...");
         deleteDirectory(new File(rootDir, "models/omnivoice"));
+        deleteDirectory(new File(rootDir, "bin/omnivoice"));
         System.out.println("[SUCCESS] OmniVoice deinstalled.");
     }
 
