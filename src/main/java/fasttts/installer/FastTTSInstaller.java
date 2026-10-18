@@ -106,19 +106,19 @@ public class FastTTSInstaller {
             printDashboard();
 
             System.out.println(W + "Actions:" + R);
-            System.out.println("  " + W + "1." + R + "  [" + W + "Install All" + R + "]   Install all 10 local offline engine runners");
-            System.out.println("  " + W + "2." + R + "  [" + W + "Deinstall All" + R + "] Deinstall/Delete all local models & binaries (clean reset)");
-            System.out.println("  " + W + "3." + R + "  [" + W + "Kokoro" + R + "]        Manage Kokoro Studio (Sherpa-ONNX)");
-            System.out.println("  " + W + "4." + R + "  [" + W + "Pocket TTS" + R + "]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
-            System.out.println("  " + W + "5." + R + "  [" + W + "Piper" + R + "]         Manage Piper Neural (ONNX)");
-            System.out.println("  " + W + "6." + R + "  [" + W + "Matcha-TTS" + R + "]    Manage Matcha-TTS (Flow Matching)");
-            System.out.println("  " + W + "7." + R + "  [" + W + "VITS" + R + "]          Manage VITS (Deterministic Neural)");
-            System.out.println("  " + W + "8." + R + "  [" + W + "F5-TTS" + R + "]        Manage F5-TTS (Flow Matching Voice Clone)");
-            System.out.println("  " + W + "9." + R + "  [" + W + "OmniVoice" + R + "]     Manage OmniVoice (Diffusion Zero-Shot)");
-            System.out.println("  " + W + "10." + R + " [" + W + "Dia2" + R + "]          Manage Dia2 Scripted Dialogue (GGUF)");
-            System.out.println("  " + W + "11." + R + " [" + W + "Audio Test" + R + "]    Test Native Audio Playback (WASAPI)");
-            System.out.println("  " + W + "12." + R + " [" + W + "Benchmark" + R + "]     Run Multi-Engine Benchmark Suite");
-            System.out.println("  " + W + "q." + R + "  Quit");
+            System.out.println("  " + W + String.format("%-4s", "1") + W + String.format("%-16s", "Install All") + G + "Install all 10 local offline engine runners" + R);
+            System.out.println("  " + W + String.format("%-4s", "2") + W + String.format("%-16s", "Deinstall All") + G + "Deinstall/Delete all local models & binaries (clean reset)" + R);
+            System.out.println("  " + W + String.format("%-4s", "3") + W + String.format("%-16s", "Kokoro") + G + "Manage Kokoro Studio (Sherpa-ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "4") + W + String.format("%-16s", "Pocket TTS") + G + "Manage Pocket TTS INT8 (Sherpa-ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "5") + W + String.format("%-16s", "Piper") + G + "Manage Piper Neural (ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "6") + W + String.format("%-16s", "Matcha-TTS") + G + "Manage Matcha-TTS (Flow Matching)" + R);
+            System.out.println("  " + W + String.format("%-4s", "7") + W + String.format("%-16s", "VITS") + G + "Manage VITS (Deterministic Neural)" + R);
+            System.out.println("  " + W + String.format("%-4s", "8") + W + String.format("%-16s", "F5-TTS") + G + "Manage F5-TTS (Flow Matching Voice Clone)" + R);
+            System.out.println("  " + W + String.format("%-4s", "9") + W + String.format("%-16s", "OmniVoice") + G + "Manage OmniVoice (Diffusion Zero-Shot)" + R);
+            System.out.println("  " + W + String.format("%-4s", "10") + W + String.format("%-16s", "Dia2") + G + "Manage Dia2 Scripted Dialogue (GGUF)" + R);
+            System.out.println("  " + W + String.format("%-4s", "11") + W + String.format("%-16s", "Audio Test") + G + "Test Native Audio Playback (WASAPI)" + R);
+            System.out.println("  " + W + String.format("%-4s", "12") + W + String.format("%-16s", "Benchmark") + G + "Run Multi-Engine Benchmark Suite" + R);
+            System.out.println("  " + W + String.format("%-4s", "q") + W + String.format("%-16s", "Quit") + R);
             System.out.println();
             System.out.print(G + "Choose an option: " + W);
 
