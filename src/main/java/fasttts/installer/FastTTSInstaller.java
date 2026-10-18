@@ -27,6 +27,7 @@ public class FastTTSInstaller {
     private final Scanner scanner = new Scanner(System.in);
     private final File rootDir;
     private FastTTSInstallListener installListener;
+    private String title;
 
     // Direct download endpoints
     private static final String SHERPA_RELEASE_URL =
@@ -71,6 +72,18 @@ public class FastTTSInstaller {
 
     public FastTTSInstallListener getInstallListener() {
         return this.installListener;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        if (title != null && !title.isBlank()) return title;
+        if (rootDir != null && rootDir.getName().toLowerCase().contains("speak")) {
+            return "Speak+ Engine & Model Manager";
+        }
+        return "FastTTS Engine & Model Manager";
     }
 
     public static void main(String[] args) {
@@ -203,7 +216,7 @@ public class FastTTSInstaller {
 
     public void printDashboard() {
         System.out.println();
-        System.out.println(W + "  FastTTS Engine & Model Manager" + R);
+        System.out.println(W + "  " + getTitle() + R);
         System.out.println();
         System.out.println(G + "  Root Directory: " + W + rootDir.getAbsolutePath() + R);
         System.out.println(G + "  Local Storage:  " + W + "All models & binaries strictly contained in ./models and ./bin" + R);
