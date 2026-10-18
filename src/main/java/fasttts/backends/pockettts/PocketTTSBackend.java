@@ -31,7 +31,9 @@ public final class PocketTTSBackend implements FastTTSBackend {
 
     private static String resolveBinaryPath() {
         String[] candidates = new String[]{
+                "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 "bin/pocket/sherpa-onnx-offline-tts.exe",
+                "bin/kokoro/sherpa-onnx-offline-tts.exe",
                 "bin/sherpa-onnx-offline-tts.exe",
                 "sherpa-onnx-offline-tts.exe"
         };
@@ -39,9 +41,11 @@ public final class PocketTTSBackend implements FastTTSBackend {
             if (new File(c).exists()) return new File(c).getAbsolutePath();
         }
         String userHome = System.getProperty("user.home", ".");
+        File homeSherpa = new File(userHome, ".speak/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe");
+        if (homeSherpa.exists()) return homeSherpa.getAbsolutePath();
         File homeBin = new File(userHome, ".speak/bin/pocket/sherpa-onnx-offline-tts.exe");
         if (homeBin.exists()) return homeBin.getAbsolutePath();
-        return "bin/pocket/sherpa-onnx-offline-tts.exe";
+        return "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe";
     }
 
     private static String resolveModelDir() {

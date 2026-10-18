@@ -39,6 +39,7 @@ public final class MatchaBackend implements FastTTSBackend {
 
     private static String resolveBinaryPath() {
         String[] candidates = {
+                "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 "bin/kokoro/sherpa-onnx-offline-tts.exe",
                 "bin/pocket/sherpa-onnx-offline-tts.exe",
                 "bin/matcha/sherpa-onnx-offline-tts.exe",
@@ -50,9 +51,11 @@ public final class MatchaBackend implements FastTTSBackend {
             if (f.exists()) return f.getAbsolutePath();
         }
         String userHome = System.getProperty("user.home", ".");
-        File homeBin = new File(userHome, ".speak/bin/sherpa-onnx-offline-tts.exe");
+        File homeBin = new File(userHome, ".speak/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe");
         if (homeBin.exists()) return homeBin.getAbsolutePath();
-        return "bin/kokoro/sherpa-onnx-offline-tts.exe";
+        File homeBinLegacy = new File(userHome, ".speak/bin/sherpa-onnx-offline-tts.exe");
+        if (homeBinLegacy.exists()) return homeBinLegacy.getAbsolutePath();
+        return "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe";
     }
 
     private static String resolveAcousticModel() {

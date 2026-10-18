@@ -36,6 +36,7 @@ public final class VITSBackend implements FastTTSBackend {
 
     private static String resolveBinaryPath() {
         String[] candidates = {
+                "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 "bin/kokoro/sherpa-onnx-offline-tts.exe",
                 "bin/pocket/sherpa-onnx-offline-tts.exe",
                 "bin/vits/sherpa-onnx-offline-tts.exe",
@@ -46,7 +47,10 @@ public final class VITSBackend implements FastTTSBackend {
             File f = new File(c);
             if (f.exists()) return f.getAbsolutePath();
         }
-        return "bin/kokoro/sherpa-onnx-offline-tts.exe";
+        String userHome = System.getProperty("user.home", ".");
+        File homeBin = new File(userHome, ".speak/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe");
+        if (homeBin.exists()) return homeBin.getAbsolutePath();
+        return "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe";
     }
 
     private static String resolveModelPath() {

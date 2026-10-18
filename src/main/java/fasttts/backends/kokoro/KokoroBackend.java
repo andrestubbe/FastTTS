@@ -32,12 +32,17 @@ public final class KokoroBackend implements FastTTSBackend {
     private static String resolveBinaryPath() {
         String userHome = System.getProperty("user.home", ".");
         String[] candidates = new String[]{
+                "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 "bin/kokoro/sherpa-onnx-offline-tts.exe",
+                "bin/pocket/sherpa-onnx-offline-tts.exe",
                 "bin/sherpa-onnx-offline-tts.exe",
                 "sherpa-onnx-offline-tts.exe",
+                userHome + "/Documents/2026-08-17-Work-FastJava/FastTTS/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 userHome + "/Documents/2026-08-17-Work-FastJava/FastTTS/bin/kokoro/sherpa-onnx-offline-tts.exe",
+                "../2026-08-17-Work-FastJava/FastTTS/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 "../2026-08-17-Work-FastJava/FastTTS/bin/kokoro/sherpa-onnx-offline-tts.exe",
-                userHome + "/.fasttts/kokoro/sherpa-onnx-offline-tts.exe",
+                userHome + "/.fasttts/sherpa-onnx/sherpa-onnx-offline-tts.exe",
+                userHome + "/.speak/bin/sherpa-onnx/sherpa-onnx-offline-tts.exe",
                 userHome + "/.speak/bin/kokoro/sherpa-onnx-offline-tts.exe"
         };
         for (String c : candidates) {
@@ -45,7 +50,7 @@ public final class KokoroBackend implements FastTTSBackend {
             if (f.exists()) return f.getAbsolutePath();
         }
 
-        return "bin/kokoro/sherpa-onnx-offline-tts.exe";
+        return "bin/sherpa-onnx/sherpa-onnx-offline-tts.exe";
     }
 
     private static String resolveModelDir() {

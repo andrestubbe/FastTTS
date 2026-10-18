@@ -34,6 +34,7 @@ public final class F5TTSBackend implements FastTTSBackend {
 
     private static String resolveRunnerPath() {
         String[] candidates = {
+                "bin/audio.cpp/audiocpp_cli.exe",
                 "bin/dia2/audiocpp_cli.exe",
                 "bin/audiocpp_cli.exe",
                 "audiocpp_cli.exe"
@@ -42,7 +43,7 @@ public final class F5TTSBackend implements FastTTSBackend {
             File f = new File(c);
             if (f.exists()) return f.getAbsolutePath();
         }
-        return "bin/dia2/audiocpp_cli.exe";
+        return "bin/audio.cpp/audiocpp_cli.exe";
     }
 
     private static String resolveModelPath() {

@@ -50,16 +50,19 @@ public final class Dia2Backend implements FastTTSBackend {
 
     private static String resolveRunnerPath() {
         String[] candidates = {
+                "bin/audio.cpp/audiocpp_cli.exe",
                 "bin/dia2/audiocpp_cli.exe",
                 "bin/dia2/dia2_cli.exe",
+                "../2026-08-17-Work-FastJava/FastTTS/bin/audio.cpp/audiocpp_cli.exe",
                 "../2026-08-17-Work-FastJava/FastTTS/bin/dia2/audiocpp_cli.exe",
+                System.getProperty("user.home", ".") + "/Documents/2026-08-17-Work-FastJava/FastTTS/bin/audio.cpp/audiocpp_cli.exe",
                 System.getProperty("user.home", ".") + "/Documents/2026-08-17-Work-FastJava/FastTTS/bin/dia2/audiocpp_cli.exe"
         };
         for (String c : candidates) {
             File f = new File(c);
             if (f.exists()) return f.getAbsolutePath();
         }
-        return "bin/dia2/audiocpp_cli.exe";
+        return "bin/audio.cpp/audiocpp_cli.exe";
     }
 
     @Override
