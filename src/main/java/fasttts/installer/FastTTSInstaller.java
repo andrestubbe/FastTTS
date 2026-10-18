@@ -105,20 +105,29 @@ public class FastTTSInstaller {
             clearConsole();
             printDashboard();
 
+            boolean kokoroInstalled = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists();
+            boolean pocketInstalled = new File(rootDir, "bin/pocket/sherpa-onnx-offline-tts.exe").exists();
+            boolean piperInstalled = new File(rootDir, "bin/piper/piper.exe").exists();
+            boolean matchaInstalled = new File(rootDir, "models/matcha").exists() && (new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists() || new File(rootDir, "bin/matcha").exists());
+            boolean vitsInstalled = new File(rootDir, "models/vits").exists() && (new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists() || new File(rootDir, "bin/vits").exists());
+            boolean f5Installed = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists() && new File(rootDir, "models/f5tts").exists();
+            boolean omniInstalled = new File(rootDir, "bin/omnivoice").exists();
+            boolean dia2Installed = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
+
             System.out.println(W + "Actions:" + R);
-            System.out.println("  " + W + String.format("%-4s", "1") + W + String.format("%-16s", "Install All") + G + "Install all 10 local offline engine runners" + R);
-            System.out.println("  " + W + String.format("%-4s", "2") + W + String.format("%-16s", "Deinstall All") + G + "Deinstall/Delete all local models & binaries (clean reset)" + R);
-            System.out.println("  " + W + String.format("%-4s", "3") + W + String.format("%-16s", "Kokoro") + G + "Manage Kokoro Studio (Sherpa-ONNX)" + R);
-            System.out.println("  " + W + String.format("%-4s", "4") + W + String.format("%-16s", "Pocket TTS") + G + "Manage Pocket TTS INT8 (Sherpa-ONNX)" + R);
-            System.out.println("  " + W + String.format("%-4s", "5") + W + String.format("%-16s", "Piper") + G + "Manage Piper Neural (ONNX)" + R);
-            System.out.println("  " + W + String.format("%-4s", "6") + W + String.format("%-16s", "Matcha-TTS") + G + "Manage Matcha-TTS (Flow Matching)" + R);
-            System.out.println("  " + W + String.format("%-4s", "7") + W + String.format("%-16s", "VITS") + G + "Manage VITS (Deterministic Neural)" + R);
-            System.out.println("  " + W + String.format("%-4s", "8") + W + String.format("%-16s", "F5-TTS") + G + "Manage F5-TTS (Flow Matching Voice Clone)" + R);
-            System.out.println("  " + W + String.format("%-4s", "9") + W + String.format("%-16s", "OmniVoice") + G + "Manage OmniVoice (Diffusion Zero-Shot)" + R);
-            System.out.println("  " + W + String.format("%-4s", "10") + W + String.format("%-16s", "Dia2") + G + "Manage Dia2 Scripted Dialogue (GGUF)" + R);
-            System.out.println("  " + W + String.format("%-4s", "11") + W + String.format("%-16s", "Audio Test") + G + "Test Native Audio Playback (WASAPI)" + R);
-            System.out.println("  " + W + String.format("%-4s", "12") + W + String.format("%-16s", "Benchmark") + G + "Run Multi-Engine Benchmark Suite" + R);
-            System.out.println("  " + W + String.format("%-4s", "q") + W + String.format("%-16s", "Quit") + R);
+            System.out.println("  " + W + String.format("%-4s", "1") + W + String.format("%-24s", "Install All") + G + "Install all 10 local offline engine runners" + R);
+            System.out.println("  " + W + String.format("%-4s", "2") + W + String.format("%-24s", "Deinstall All") + G + "Deinstall/Delete all local models & binaries (clean reset)" + R);
+            System.out.println("  " + W + String.format("%-4s", "3") + W + String.format("%-24s", (kokoroInstalled ? "Deinstall Kokoro" : "Install Kokoro")) + G + "Manage Kokoro Studio (Sherpa-ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "4") + W + String.format("%-24s", (pocketInstalled ? "Deinstall Pocket TTS" : "Install Pocket TTS")) + G + "Manage Pocket TTS INT8 (Sherpa-ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "5") + W + String.format("%-24s", (piperInstalled ? "Deinstall Piper" : "Install Piper")) + G + "Manage Piper Neural (ONNX)" + R);
+            System.out.println("  " + W + String.format("%-4s", "6") + W + String.format("%-24s", (matchaInstalled ? "Deinstall Matcha-TTS" : "Install Matcha-TTS")) + G + "Manage Matcha-TTS (Flow Matching)" + R);
+            System.out.println("  " + W + String.format("%-4s", "7") + W + String.format("%-24s", (vitsInstalled ? "Deinstall VITS" : "Install VITS")) + G + "Manage VITS (Deterministic Neural)" + R);
+            System.out.println("  " + W + String.format("%-4s", "8") + W + String.format("%-24s", (f5Installed ? "Deinstall F5-TTS" : "Install F5-TTS")) + G + "Manage F5-TTS (Flow Matching Voice Clone)" + R);
+            System.out.println("  " + W + String.format("%-4s", "9") + W + String.format("%-24s", (omniInstalled ? "Deinstall OmniVoice" : "Install OmniVoice")) + G + "Manage OmniVoice (Diffusion Zero-Shot)" + R);
+            System.out.println("  " + W + String.format("%-4s", "10") + W + String.format("%-24s", (dia2Installed ? "Deinstall Dia2" : "Install Dia2")) + G + "Manage Dia2 Scripted Dialogue (GGUF)" + R);
+            System.out.println("  " + W + String.format("%-4s", "11") + W + String.format("%-24s", "Audio Test") + G + "Test Native Audio Playback (WASAPI)" + R);
+            System.out.println("  " + W + String.format("%-4s", "12") + W + String.format("%-24s", "Benchmark") + G + "Run Multi-Engine Benchmark Suite" + R);
+            System.out.println("  " + W + String.format("%-4s", "q") + W + String.format("%-24s", "Quit") + R);
             System.out.println();
             System.out.print(G + "Choose an option: " + W);
 
@@ -127,14 +136,14 @@ public class FastTTSInstaller {
             switch (choice) {
                 case "1" -> installAll();
                 case "2" -> deinstallAll();
-                case "3" -> manageKokoro();
-                case "4" -> managePocket();
-                case "5" -> managePiper();
-                case "6" -> manageMatcha();
-                case "7" -> manageVITS();
-                case "8" -> manageF5TTS();
-                case "9" -> manageOmniVoice();
-                case "10" -> manageDia2();
+                case "3" -> { if (kokoroInstalled) deinstallKokoro(); else installKokoro(); pause(); }
+                case "4" -> { if (pocketInstalled) deinstallPocket(); else installPocket(); pause(); }
+                case "5" -> { if (piperInstalled) deinstallPiper(); else installPiper(); pause(); }
+                case "6" -> { if (matchaInstalled) deinstallMatcha(); else installMatcha(); pause(); }
+                case "7" -> { if (vitsInstalled) deinstallVITS(); else installVITS(); pause(); }
+                case "8" -> { if (f5Installed) deinstallF5TTS(); else installF5TTS(); pause(); }
+                case "9" -> { if (omniInstalled) deinstallOmniVoice(); else installOmniVoice(); pause(); }
+                case "10" -> { if (dia2Installed) deinstallDia2(); else installDia2(); pause(); }
                 case "11" -> testAudio();
                 case "12" -> runBenchmark();
                 case "q" -> {
