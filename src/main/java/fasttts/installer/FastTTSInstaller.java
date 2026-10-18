@@ -1044,16 +1044,77 @@ public class FastTTSInstaller {
     // =========================================================================
 
     private void downloadWithCurl(String url, File targetFile) {
+        downloadWithProgress(url, targetFile);
+    }
+
+    private void downloadWithProgress(String urlString, File targetFile) {
+        String gray = "\u001B[38;5;240m";
+        String white = "\u001B[97m";
+        String reset = "\u001B[0m";
+
+        File tempFile = new File(targetFile.getParentFile(), targetFile.getName() + ".part");
         try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "curl.exe", "-L", "-C", "-", "--retry", "5", "--progress-bar",
-                    "-o", targetFile.getAbsolutePath(), url
-            );
-            pb.inheritIO();
-            Process p = pb.start();
-            p.waitFor();
+            if (targetFile.getParentFile() != null) {
+                targetFile.getParentFile().mkdirs();
+            }
+
+            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+                    .connectTimeout(java.time.Duration.ofSeconds(15))
+                    .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
+                    .build();
+
+            java.net.http.HttpRequest req = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(urlString))
+                    .timeout(java.time.Duration.ofMinutes(10))
+                    .header("User-Agent", "FastTTS-Installer/0.1.6")
+                    .GET()
+                    .build();
+
+            java.net.http.HttpResponse<java.io.InputStream> resp = client.send(req, java.net.http.HttpResponse.BodyHandlers.ofInputStream());
+            if (resp.statusCode() >= 400) {
+                System.err.println("[Download Error] HTTP " + resp.statusCode() + " for " + urlString);
+                return;
+            }
+
+            long totalBytes = resp.headers().firstValueAsLong("Content-Length").orElse(-1L);
+            long downloaded = 0;
+            long lastNotify = 0;
+            String fileName = targetFile.getName();
+
+            try (java.io.InputStream in = resp.body();
+                 java.io.OutputStream out = new java.io.FileOutputStream(tempFile)) {
+                byte[] buffer = new byte[65536];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                    downloaded += read;
+
+                    long now = System.currentTimeMillis();
+                    boolean isComplete = (totalBytes > 0 && downloaded >= totalBytes);
+                    if (now - lastNotify >= 60 || isComplete) {
+                        lastNotify = now;
+                        double percent = (totalBytes > 0) ? (downloaded * 100.0 / totalBytes) : -1.0;
+                        int width = 30;
+                        int filled = (percent >= 0) ? (int) Math.round((percent / 100.0) * width) : 0;
+                        filled = Math.max(0, Math.min(width, filled));
+
+                        String bar = white + "█".repeat(filled) + gray + "░".repeat(width - filled) + reset;
+                        double mbDownloaded = downloaded / (1024.0 * 1024.0);
+                        double mbTotal = (totalBytes > 0) ? totalBytes / (1024.0 * 1024.0) : 0;
+                        String stat = (totalBytes > 0)
+                                ? String.format(" %s%.1f%%%s (%s%.1f%s / %s%.1f MB%s)", white, percent, gray, white, mbDownloaded, gray, white, mbTotal, gray)
+                                : String.format(" %s%.1f MB%s", white, mbDownloaded, gray);
+
+                        System.out.print("\r" + gray + "Downloading " + white + fileName + gray + ": " + bar + stat + reset);
+                    }
+                }
+                out.flush();
+            }
+            System.out.println();
+            Files.move(tempFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            System.err.println("[Curl Error]: " + e.getMessage());
+            System.err.println("\n[Download Error]: " + e.getMessage());
+            tempFile.delete();
         }
     }
 
