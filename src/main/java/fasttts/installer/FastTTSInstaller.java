@@ -1,5 +1,6 @@
 package fasttts.installer;
 
+import fastansi.FastANSI;
 import fasttts.FastTTS;
 import fasttts.core.FastTTSAudio;
 
@@ -18,6 +19,10 @@ import java.util.*;
  *   --status
  */
 public class FastTTSInstaller {
+
+    private static final String G = FastANSI.fg(240);
+    private static final String W = FastANSI.FG_BRIGHT_WHITE;
+    private static final String R = FastANSI.RESET;
 
     private final Scanner scanner = new Scanner(System.in);
     private final File rootDir;
@@ -86,24 +91,25 @@ public class FastTTSInstaller {
             clearConsole();
             printDashboard();
 
-            System.out.println("Actions:");
-            System.out.println("  1.  [Install All]   Install all 10 local offline engines & models");
-            System.out.println("  2.  [Deinstall All] Deinstall/Delete all local models & binaries (clean reset)");
-            System.out.println("  3.  [Kokoro]        Manage Kokoro Studio (Sherpa-ONNX)");
-            System.out.println("  4.  [Pocket TTS]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
-            System.out.println("  5.  [Piper]         Manage Piper Neural (ONNX)");
-            System.out.println("  6.  [Matcha-TTS]    Manage Matcha-TTS (Flow Matching)");
-            System.out.println("  7.  [VITS]          Manage VITS (Deterministic Neural)");
-            System.out.println("  8.  [F5-TTS]        Manage F5-TTS (Flow Matching Voice Clone)");
-            System.out.println("  9.  [OmniVoice]     Manage OmniVoice (Diffusion Zero-Shot)");
-            System.out.println("  10. [Dia2]          Manage Dia2 Scripted Dialogue (GGUF)");
-            System.out.println("  11. [Audio Test]    Test Native Audio Playback (WASAPI)");
-            System.out.println("  12. [Benchmark]     Run Multi-Engine Benchmark Suite");
-            System.out.println("  q.  Quit");
+            System.out.println(W + "Actions:" + R);
+            System.out.println("  " + W + "1." + R + "  [" + W + "Install All" + R + "]   Install all 10 local offline engines & models");
+            System.out.println("  " + W + "2." + R + "  [" + W + "Deinstall All" + R + "] Deinstall/Delete all local models & binaries (clean reset)");
+            System.out.println("  " + W + "3." + R + "  [" + W + "Kokoro" + R + "]        Manage Kokoro Studio (Sherpa-ONNX)");
+            System.out.println("  " + W + "4." + R + "  [" + W + "Pocket TTS" + R + "]    Manage Pocket TTS INT8 (Sherpa-ONNX)");
+            System.out.println("  " + W + "5." + R + "  [" + W + "Piper" + R + "]         Manage Piper Neural (ONNX)");
+            System.out.println("  " + W + "6." + R + "  [" + W + "Matcha-TTS" + R + "]    Manage Matcha-TTS (Flow Matching)");
+            System.out.println("  " + W + "7." + R + "  [" + W + "VITS" + R + "]          Manage VITS (Deterministic Neural)");
+            System.out.println("  " + W + "8." + R + "  [" + W + "F5-TTS" + R + "]        Manage F5-TTS (Flow Matching Voice Clone)");
+            System.out.println("  " + W + "9." + R + "  [" + W + "OmniVoice" + R + "]     Manage OmniVoice (Diffusion Zero-Shot)");
+            System.out.println("  " + W + "10." + R + " [" + W + "Dia2" + R + "]          Manage Dia2 Scripted Dialogue (GGUF)");
+            System.out.println("  " + W + "11." + R + " [" + W + "Audio Test" + R + "]    Test Native Audio Playback (WASAPI)");
+            System.out.println("  " + W + "12." + R + " [" + W + "Benchmark" + R + "]     Run Multi-Engine Benchmark Suite");
+            System.out.println("  " + W + "q." + R + "  Quit");
             System.out.println();
-            System.out.print("Choose an option: ");
+            System.out.print(G + "Choose an option: " + W);
 
             String choice = scanner.nextLine().trim().toLowerCase();
+            System.out.print(R);
             switch (choice) {
                 case "1" -> installAll();
                 case "2" -> deinstallAll();
@@ -118,7 +124,7 @@ public class FastTTSInstaller {
                 case "11" -> testAudio();
                 case "12" -> runBenchmark();
                 case "q" -> {
-                    System.out.println("Exiting FastTTS Installer. Good bye!");
+                    System.out.println(G + "Exiting FastTTS Installer. Good bye!" + R);
                     return;
                 }
             }
@@ -174,27 +180,27 @@ public class FastTTSInstaller {
     }
 
     public void printDashboard() {
-        System.out.println("================================================================================");
-        System.out.println("                       FastTTS Engine & Model Manager");
-        System.out.println("================================================================================");
-        System.out.println("Root Directory: " + rootDir.getAbsolutePath());
-        System.out.println("Local Storage:  All models & binaries strictly contained in ./models and ./bin");
-        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println(G + "=".repeat(80) + R);
+        System.out.println(W + "                       FastTTS Engine & Model Manager" + R);
+        System.out.println(G + "=".repeat(80) + R);
+        System.out.println(G + "Root Directory: " + W + rootDir.getAbsolutePath() + R);
+        System.out.println(G + "Local Storage:  " + W + "All models & binaries strictly contained in ./models and ./bin" + R);
+        System.out.println(G + "-".repeat(80) + R);
 
         // Windows SAPI
-        System.out.printf("  %-22s | %-12s | %s%n", "Windows SAPI/OneCore", "[INSTALLED]", "Built-in Windows native engine");
+        printDashboardRow("Windows SAPI/OneCore", "[INSTALLED]", "Built-in Windows native engine");
 
         // Kokoro Studio
         boolean kokoroBin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists();
         boolean kokoroWeights = new File(rootDir, "models/kokoro/kokoro-en-v0_19/model.onnx").exists();
         String kokoroStatus = (kokoroBin && kokoroWeights) ? "[INSTALLED]" : (kokoroBin ? "[NO WEIGHTS]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | bin/kokoro + models/kokoro/kokoro-en-v0_19%n", "Kokoro Studio (ONNX)", kokoroStatus);
+        printDashboardRow("Kokoro Studio (ONNX)", kokoroStatus, "bin/kokoro + models/kokoro/kokoro-en-v0_19");
 
         // Pocket TTS
         boolean pocketBin = new File(rootDir, "bin/pocket/sherpa-onnx-offline-tts.exe").exists();
         boolean pocketWeights = new File(rootDir, "models/pocket/sherpa-onnx-pocket-tts-int8-2026-01-26/lm_main.int8.onnx").exists();
         String pocketStatus = (pocketBin && pocketWeights) ? "[INSTALLED]" : (pocketBin ? "[NO WEIGHTS]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | bin/pocket + models/pocket/sherpa-onnx-pocket-tts-int8%n", "Pocket TTS (INT8)", pocketStatus);
+        printDashboardRow("Pocket TTS (INT8)", pocketStatus, "bin/pocket + models/pocket/sherpa-onnx-pocket-tts-int8");
 
         // Piper Neural
         boolean piperBin = new File(rootDir, "bin/piper/piper.exe").exists();
@@ -202,7 +208,7 @@ public class FastTTSInstaller {
         File[] piperModels = piperDir.listFiles((d, n) -> n.endsWith(".onnx"));
         int piperCount = (piperModels != null) ? piperModels.length : 0;
         String piperStatus = (piperBin && piperCount > 0) ? "[INSTALLED: " + piperCount + "]" : (piperBin ? "[NO VOICES]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | bin/piper + " + piperCount + " voices in models/piper/%n", "Piper Neural (ONNX)", piperStatus);
+        printDashboardRow("Piper Neural (ONNX)", piperStatus, "bin/piper + " + piperCount + " voices in models/piper/");
 
         // Matcha-TTS
         boolean matchaBin = new File(rootDir, "bin/kokoro/sherpa-onnx-offline-tts.exe").exists()
@@ -211,7 +217,7 @@ public class FastTTSInstaller {
         boolean matchaAcoustic = new File(rootDir, "models/matcha/matcha-icefall-en_US-ljspeech/model-steps-3.onnx").exists();
         boolean matchaVocoder = new File(rootDir, "models/matcha/vocos-22khz-univ.onnx").exists();
         String matchaStatus = (matchaBin && matchaAcoustic && matchaVocoder) ? "[INSTALLED]" : (matchaAcoustic ? "[NO VOCODER/BIN]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | bin/kokoro (Sherpa) + models/matcha%n", "Matcha-TTS", matchaStatus);
+        printDashboardRow("Matcha-TTS", matchaStatus, "bin/kokoro (Sherpa) + models/matcha");
 
         // VITS
         boolean vitsBin = matchaBin;
@@ -222,7 +228,7 @@ public class FastTTSInstaller {
             if (sub != null && sub.length > 0) vitsModel = true;
         }
         String vitsStatus = (vitsBin && vitsModel) ? "[INSTALLED]" : "[MISSING]";
-        System.out.printf("  %-22s | %-12s | bin/kokoro (Sherpa) + models/vits%n", "VITS (Piper ONNX)", vitsStatus);
+        printDashboardRow("VITS (Piper ONNX)", vitsStatus, "bin/kokoro (Sherpa) + models/vits");
 
         // F5-TTS
         boolean f5Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
@@ -235,7 +241,7 @@ public class FastTTSInstaller {
         } else {
             f5Status = "[MISSING]";
         }
-        System.out.printf("  %-22s | %-12s | bin/dia2 (audio.cpp) + models/f5tts%n", "F5-TTS", f5Status);
+        printDashboardRow("F5-TTS", f5Status, "bin/dia2 (audio.cpp) + models/f5tts");
 
         // OmniVoice
         File omniDir = new File(rootDir, "models/omnivoice");
@@ -248,19 +254,30 @@ public class FastTTSInstaller {
         } else {
             omniStatus = "[MISSING]";
         }
-        System.out.printf("  %-22s | %-12s | bin/omnivoice + models/omnivoice%n", "OmniVoice", omniStatus);
+        printDashboardRow("OmniVoice", omniStatus, "bin/omnivoice + models/omnivoice");
 
         // Dia2 Dialogue
         boolean dia2Bin = new File(rootDir, "bin/dia2/audiocpp_cli.exe").exists();
         boolean dia2Weights = new File(rootDir, "models/dia2/dia2-2b-q4_k.gguf").exists();
         String dia2Status = (dia2Bin && dia2Weights) ? "[INSTALLED]" : (dia2Weights ? "[NO RUNNER]" : "[MISSING]");
-        System.out.printf("  %-22s | %-12s | bin/dia2 + models/dia2 (GGUF 2B)%n", "Dia2 Dialogue", dia2Status);
+        printDashboardRow("Dia2 Dialogue", dia2Status, "bin/dia2 + models/dia2 (GGUF 2B)");
 
         // FastAudioPlayer
         boolean fap = new File(rootDir, "bin/fastaudioplayer.dll").exists();
-        System.out.printf("  %-22s | %-12s | bin/fastaudioplayer.dll (WASAPI Native)%n", "FastAudioPlayer", fap ? "[INSTALLED]" : "[MISSING]");
+        printDashboardRow("FastAudioPlayer", fap ? "[INSTALLED]" : "[MISSING]", "bin/fastaudioplayer.dll (WASAPI Native)");
 
-        System.out.println("--------------------------------------------------------------------------------\n");
+        System.out.println(G + "-".repeat(80) + R + "\n");
+    }
+
+    private void printDashboardRow(String name, String status, String details) {
+        String statusFormatted;
+        if (status.startsWith("[INSTALLED")) {
+            statusFormatted = G + "[" + W + status.substring(1, status.length() - 1) + G + "]" + R;
+        } else {
+            statusFormatted = G + status + R;
+        }
+        System.out.println("  " + W + String.format("%-22s", name) + " " + G + "| " +
+                String.format("%-20s", statusFormatted) + " " + G + "| " + details + R);
     }
 
     // =========================================================================
@@ -1065,9 +1082,9 @@ public class FastTTSInstaller {
     }
 
     private void downloadWithProgress(String urlString, File targetFile) {
-        String gray = "\u001B[38;5;240m";
-        String white = "\u001B[97m";
-        String reset = "\u001B[0m";
+        String gray = G;
+        String white = W;
+        String reset = R;
 
         File tempFile = new File(targetFile.getParentFile(), targetFile.getName() + ".part");
         try {
