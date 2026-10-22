@@ -151,38 +151,44 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 
 ### Core Backend Engines
 
-- 🔊 **Windows SAPI Backend**: System-native text-to-speech using Windows Speech API via AVX2-optimized asttts.dll (~152 ms latency, **0.03x RTF**).
+- 🔊 **Windows SAPI Backend**: System-native text-to-speech using Windows Speech API via AVX2-optimized `fasttts.dll` (~152 ms latency, **0.03x RTF**).
 - 🍵 **Matcha-TTS (Flow-Matching)**: High-speed Flow Matching neural speech via sherpa-onnx and Vocos vocoder at 22.05 kHz (**~0.09x RTF**, > 10× real-time).
 - ⚡ **VITS (Piper ONNX)**: Deterministic low-latency variational inference neural speech (**~0.09x RTF**).
-- 🎙️ **Kokoro Studio (ONNX)**: Studio-grade offline neural TTS powered by Sherpa-ONNX (kokoro-en-v0_19) with high-fidelity voices (f_bella, m_adam, f_emma, m_george).
-- ⚡ **Piper Neural (ONNX)**: Ultra-fast offline neural TTS using the Piper ONNX engine (piper.exe) with multi-directory auto-discovery (~848 ms latency, **0.25x RTF**).
+- 🎙️ **Kokoro Studio (ONNX)**: Studio-grade offline neural TTS powered by Sherpa-ONNX (`kokoro-en-v0_19`) with high-fidelity voices (`af_bella`, `am_adam`, `bf_emma`, `bm_george`).
+- ⚡ **Piper Neural (ONNX)**: Ultra-fast offline neural TTS using the Piper ONNX engine (`piper.exe`) with multi-directory auto-discovery (~848 ms latency, **0.25x RTF**).
 - 📱 **Pocket TTS (ONNX)**: Ultra-compact, low-latency offline CPU neural text-to-speech engine powered by Sherpa-ONNX with quantized INT8 models (**0.71x - 0.96x RTF**).
-- 🧬 **F5-TTS (Flow-Matching)**: Advanced non-autoregressive flow-matching zero-shot voice cloning via udiocpp_cli.exe.
+- 🫄 **F5-TTS (Flow-Matching)**: Advanced non-autoregressive flow-matching zero-shot voice cloning via `audiocpp_cli.exe`.
 - 🎭 **OmniVoice (Diffusion)**: Multilingual zero-shot voice cloning diffusion model supporting 600+ languages from short reference audio.
-- 💬 **Dia2 Dialogue (GGUF)**: Quantized GGUF dialogue model (dia2-2b-q4_k.gguf) with multi-speaker turn parsing and memory page cache warming.
+- 💬 **Dia2 Dialogue (GGUF)**: Quantized GGUF dialogue model (`dia2-2b-q4_k.gguf`) with multi-speaker turn parsing and memory page cache warming.
+- 🎭 **Orpheus-3B (Speech-LLM)**: Llama-3B speech-LLM via CrispASR (`crispasr.exe`) with 8 built-in voices (`tara`, `leah`, `jess`, `leo`, `dan`, `mia`, `zac`, `zoe`) and emotion tags.
+- 🌍 **CosyVoice 3 (FunAudioLLM)**: Multilingual zero-shot voice cloning across 9 languages via `cosyvoice-cli.exe` and GGUF quantization.
 - 🌐 **Cloud Backends**: Cloud APIs (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI) with hardened JSON escaping and automatic token resolution.
 
 ---
 
 ## Performance Benchmarks
 
-Directly benchmarked across all engines via un-demo.bat benchmark with audio playback through FastAudioPlayer (WASAPI):
+Directly benchmarked across all engines via `run-demo.bat benchmark` with audio playback through `FastAudioPlayer` (WASAPI):
 
-| Engine / Backend | Voice / Model | Lang | Synth Time | Audio Length | Real-Time Factor (RTF) | Buffer Size | Status |
-|:---|:---|:---:|---:|---:|---:|---:|:---:|
-| **Windows SAPI** | OneCore/Default | en-US | **152 ms** | 5,044 ms | **0.030x** | 434.5 KB | ✅ Active |
-| **Matcha-TTS (FlowMatch)** | matcha-icefall | en-US | **320 ms** | 3,550 ms | **0.090x** | 156.4 KB | ✅ Active |
-| **VITS Neural (ONNX)** | my-low | en-US | **315 ms** | 3,500 ms | **0.090x** | 154.2 KB | ✅ Active |
-| **Piper Neural (ONNX)** | 	horsten-medium | de-DE | **848 ms** | 3,405 ms | **0.249x** | 146.7 KB | ✅ Active |
-| **Pocket TTS (ONNX)** | int8-bria | en-US | **3,473 ms** | 3,600 ms | **0.965x** | 168.8 KB | ✅ Active |
-| **Kokoro Studio (ONNX)** | m_george | en-GB | **3,935 ms** | 4,373 ms | **0.900x** | 205.0 KB | ✅ Active |
-| **Kokoro Studio (ONNX)** | f_emma | en-GB | **4,281 ms** | 4,843 ms | **0.884x** | 227.0 KB | ✅ Active |
-| **Kokoro Studio (ONNX)** | m_adam | en-US | **4,053 ms** | 4,187 ms | **0.968x** | 196.3 KB | ✅ Active |
-| **Kokoro Studio (ONNX)** | f_bella | en-US | **4,479 ms** | 4,363 ms | **1.027x** | 204.6 KB | ✅ Active |
-| **OmniVoice (Diffusion)** | ria (Zero-Shot) | en-US | **54,413 ms** | 4,040 ms | **13.469x** | 189.4 KB | ✅ Active |
-| **F5-TTS (FlowMatch)** | 5-v1-base | en-US | — | — | — | — | 📦 Model Ready (999 MB) |
-| **Dia2 Dialogue (GGUF)** | dia2-2b-q4_k | en-US | — | — | — | — | 📦 Model Ready (1.2 GB) |
-| **Hugging Face API** | mms-tts-eng | en-US | — | — | — | — | 🔑 Cloud (Needs Token) |
+| Engine / Backend | Voice / Model | Lang | Synth Time | Audio Length | Real-Time Factor (RTF) | Buffer Size |
+|:---|:---|:---:|---:|---:|---:|---:|
+| **Windows SAPI** | `OneCore/Default` | `en-US` | **152 ms** | 5,044 ms | **0.030x** | 434.5 KB |
+| **Matcha-TTS (FlowMatch)** | `matcha-icefall` | `en-US` | **320 ms** | 3,550 ms | **0.090x** | 156.4 KB |
+| **VITS Neural (ONNX)** | `amy-low` | `en-US` | **315 ms** | 3,500 ms | **0.090x** | 154.2 KB |
+| **Piper Neural (ONNX)** | `thorsten-medium` | `de-DE` | **848 ms** | 3,405 ms | **0.249x** | 146.7 KB |
+| **Pocket TTS (ONNX)** | `int8-bria` | `en-US` | **3,473 ms** | 3,600 ms | **0.965x** | 168.8 KB |
+| **Kokoro Studio (ONNX)** | `bm_george` | `en-GB` | **3,935 ms** | 4,373 ms | **0.900x** | 205.0 KB |
+| **Kokoro Studio (ONNX)** | `bf_emma` | `en-GB` | **4,281 ms** | 4,843 ms | **0.884x** | 227.0 KB |
+| **Kokoro Studio (ONNX)** | `am_adam` | `en-US` | **4,053 ms** | 4,187 ms | **0.968x** | 196.3 KB |
+| **Kokoro Studio (ONNX)** | `af_bella` | `en-US` | **4,479 ms** | 4,363 ms | **1.027x** | 204.6 KB |
+| **OmniVoice (Diffusion)** | `bria (Zero-Shot)` | `en-US` | **54,413 ms** | 4,040 ms | **13.469x** | 189.4 KB |
+| **F5-TTS (FlowMatch)** | `f5-v1-base` | `en-US` | — | — | — | — |
+| **Dia2 Dialogue (GGUF)** | `dia2-2b-q4_k` | `en-US` | — | — | — | — |
+| **Orpheus-3B (Speech-LLM)** | `orpheus-3b-ft` | `en-US` | — | — | — | — |
+| **CosyVoice 3 (FunAudioLLM)** | `cosyvoice3-llm` | Multilingual | — | — | — | — |
+| **Hugging Face API** | `mms-tts-eng` | `en-US` | — | — | — | — |
+
+> [!NOTE]
 > **Real-Time Factor (RTF)**: Values `< 1.0x` indicate faster than real-time synthesis (e.g. `0.25x` = 4× real-time speed; `0.03x` = 33× real-time speed). System SAPI and Piper achieve immediate sub-second voice response suitable for real-time conversational agents.
 
 ---
@@ -208,7 +214,7 @@ Directly benchmarked across all engines via un-demo.bat benchmark with audio pl
 | Case | Java Example | Launcher | Description |
 |:---|:---|:---|:---|
 | **Multi-Backend CLI Demo** | [Demo.java](examples/Demo/src/main/java/fasttts/demo/Demo.java) | `run-demo.bat` | Command-line speech synthesis across Windows SAPI, Piper, ElevenLabs, and Deepgram. |
-| **Engine & Model Installer** | [FastTTSInstaller.java](src/main/java/fasttts/installer/FastTTSInstaller.java) | `run-installer.bat` | Interactive engine installer & model manager with `--install` and `--deinstall`. |
+| **Engine & Model Installer** | [Installer.java](src/main/java/fasttts/installer/Installer.java) | `run-installer.bat` | Interactive engine installer & model manager with `--install` and `--deinstall`. |
 | **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fasttts/benchmark/Benchmark.java) | `run-benchmark.bat` | Formal OpenJDK JMH throughput and latency benchmarks for TTS synthesis. |
 
 ---
@@ -342,6 +348,8 @@ run-installer.bat --install all
 * **F5-TTS** — Non-autoregressive Flow Matching voice cloning & TTS via `audiocpp_cli.exe`. Installed via `run-installer.bat --install f5tts`.
 * **Dia2 Dialogue** — Multi-speaker scripted dialogue (`[S1]`, `[S2]`) via `audiocpp_cli.exe` and GGUF 2B weights. Installed via `run-installer.bat --install dia2`.
 * **OmniVoice** — Multilingual diffusion zero-shot voice cloning (600+ languages) with reference audio prompts. Installed via `run-installer.bat --install omnivoice`.
+* **Orpheus-3B** — Llama-3B speech-LLM via CrispASR (`crispasr.exe`) with 8 built-in voices and emotion tags.
+* **CosyVoice 3** — Multilingual zero-shot voice cloning across 9 languages via `cosyvoice-cli.exe` and GGUF quantization.
 
 ### 2. Cloud Backends (API Credentials)
 Cloud backends stream real-time high-fidelity speech over HTTPS/WebSocket. Simply set the corresponding environment variables:

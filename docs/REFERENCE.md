@@ -79,6 +79,14 @@ Pre-warms engines into memory / OS page cache for sub-millisecond dispatch, and 
 ### `Dia2Backend`
 - **Multi-Speaker Scripted Dialogue**: GGUF quantized models (`dia2-2b-q4_k.gguf`) with `[S1]`, `[S2]` speaker turn parsing and memory page cache warming.
 
+### `OrpheusBackend`
+- **Llama-3B Speech-LLM**: End-to-end conversational neural speech synthesis via CrispASR (`crispasr.exe`).
+- **Voices & Emotions**: 8 built-in expressive voices (`tara`, `leah`, `jess`, `leo`, `dan`, `mia`, `zac`, `zoe`) with emotion control tokens.
+
+### `CosyVoiceBackend`
+- **Multilingual Zero-Shot Voice Cloning**: FunAudioLLM CosyVoice 3 architecture via `cosyvoice-cli.exe`.
+- **Cross-Lingual Capabilities**: Zero-shot voice cloning across 9 supported languages with GGUF quantization.
+
 ### `HuggingFaceBackend`
 - **Cloud Spaces & Inference API**: Dual fallback between Serverless Inference API and Spaces Gradio endpoints with full control character JSON escaping.
 

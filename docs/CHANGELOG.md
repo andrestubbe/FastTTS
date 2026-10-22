@@ -15,7 +15,7 @@ All notable changes to `FastTTS` are documented in this file.
 ## [0.1.6] - 2026-10-17
 
 ### Added
-- **Core Library Voice & Model Installer**: Promoted `FastTTSInstaller` into the core library (`fasttts.installer.FastTTSInstaller`) for universal programmatic and CLI invocation without depending on example modules.
+- **Core Library Voice & Model Installer**: Promoted `Installer` into the core library (`fasttts.installer.Installer`) for universal programmatic and CLI invocation without depending on example modules.
 - **Standalone Engine Management**: Provides headless CLI options (`--install <engine>`, `--deinstall <engine>`, `--status`) for automated deployment pipelines.
 
 ---
@@ -26,7 +26,7 @@ All notable changes to `FastTTS` are documented in this file.
 - **Matcha-TTS Flow Matching Engine**: Integrated `MatchaBackend` featuring Optimal-Transport Flow Matching neural speech via `sherpa-onnx` and Vocos neural vocoder at 22.05 kHz (**~0.09x RTF**, > 10× real-time speed).
 - **VITS Deterministic Low-Latency Engine**: Integrated `VITSBackend` featuring variational inference neural speech via Piper ONNX (`amy-low`, **~0.09x RTF**).
 - **F5-TTS Flow Matching Zero-Shot Cloning**: Integrated `F5TTSBackend` supporting non-autoregressive flow matching voice cloning via `audiocpp_cli.exe`.
-- **Engine & Model Manager CLI Installer**: Added `FastTTSInstaller` (`run-installer.bat`) for interactive management, integrity verification, auto-extraction (`.tar.bz2`, `.zip`), and clean uninstallation (`--install <engine>`, `--deinstall <engine>`, `--status`).
+- **Engine & Model Manager CLI Installer**: Added `Installer` (`run-installer.bat`) for interactive management, integrity verification, auto-extraction (`.tar.bz2`, `.zip`), and clean uninstallation (`--install <engine>`, `--deinstall <engine>`, `--status`).
 - **Benchmark Expansion**: Expanded benchmark suite with Matcha-TTS, VITS, and F5-TTS metrics.
 
 ---

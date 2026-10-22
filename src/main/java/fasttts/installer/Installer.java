@@ -18,7 +18,7 @@ import java.util.*;
  *   --deinstall [all|kokoro|pocket|piper|omnivoice|dia2]
  *   --status
  */
-public class FastTTSInstaller {
+public class Installer {
 
     private static final String G = FastANSI.fg(240);
     private static final String W = FastANSI.FG_BRIGHT_WHITE;
@@ -53,15 +53,15 @@ public class FastTTSInstaller {
     private static final String F5TTS_VOCAB_URL =
             "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_v1_Base/vocab.txt";
 
-    public FastTTSInstaller() {
+    public Installer() {
         this(null, null);
     }
 
-    public FastTTSInstaller(File rootDir) {
+    public Installer(File rootDir) {
         this(rootDir, null);
     }
 
-    public FastTTSInstaller(File rootDir, FastTTSInstallListener installListener) {
+    public Installer(File rootDir, FastTTSInstallListener installListener) {
         this.rootDir = (rootDir != null) ? rootDir : findProjectRoot();
         this.installListener = installListener;
     }
@@ -83,7 +83,7 @@ public class FastTTSInstaller {
     }
 
     public static void main(String[] args) {
-        FastTTSInstaller installer = new FastTTSInstaller();
+        Installer installer = new Installer();
         if (args.length > 0) {
             installer.handleCommandLine(args);
         } else {
