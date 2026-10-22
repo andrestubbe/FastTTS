@@ -11,6 +11,19 @@ import fasttts.backends.kokoro.KokoroVoice;
 import fasttts.backends.matcha.MatchaBackend;
 import fasttts.backends.openai.OpenAIBackend;
 import fasttts.backends.omnivoice.OmniVoiceBackend;
+import fasttts.backends.orpheus.OrpheusBackend;
+import fasttts.backends.orpheus.OrpheusVoice;
+import fasttts.backends.cosyvoice.CosyVoiceBackend;
+import fasttts.backends.cosyvoice.CosyVoiceVoice;
+import fasttts.backends.piper.PiperBackend;
+import fasttts.backends.pockettts.PocketTTSBackend;
+import fasttts.backends.vits.VITSBackend;
+import fasttts.backends.windows.WindowsTTSBackend;
+import fasttts.backends.kokoro.KokoroBackend;
+import fasttts.backends.kokoro.KokoroVoice;
+import fasttts.backends.matcha.MatchaBackend;
+import fasttts.backends.openai.OpenAIBackend;
+import fasttts.backends.omnivoice.OmniVoiceBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.pockettts.PocketTTSBackend;
 import fasttts.backends.vits.VITSBackend;
@@ -138,6 +151,25 @@ public class Demo {
                     tSynth0 = System.currentTimeMillis();
                     FastTTSVoice dVoice = (voiceId != null) ? new FastTTSVoice(voiceId, voiceId, "en-US", "Dialogue", "dia2") : null;
                     audio = diaBackend.synthesize(text, dVoice, null);
+                    tSynth = System.currentTimeMillis() - tSynth0;
+                    break;
+
+                case "orpheus":
+                    OrpheusBackend orpheusBackend = new OrpheusBackend();
+                    tLoad = System.currentTimeMillis() - tLoad0;
+                    tSynth0 = System.currentTimeMillis();
+                    FastTTSVoice orVoice = (voiceId != null) ? OrpheusVoice.fromName(voiceId) : OrpheusVoice.TARA;
+                    audio = orpheusBackend.synthesize(text, orVoice, null);
+                    tSynth = System.currentTimeMillis() - tSynth0;
+                    break;
+
+                case "cosyvoice":
+                case "cosy":
+                    CosyVoiceBackend cosyBackend = new CosyVoiceBackend();
+                    tLoad = System.currentTimeMillis() - tLoad0;
+                    tSynth0 = System.currentTimeMillis();
+                    FastTTSVoice cvVoice = (voiceId != null) ? CosyVoiceVoice.fromName(voiceId) : CosyVoiceVoice.ZERO_SHOT;
+                    audio = cosyBackend.synthesize(text, cvVoice, null);
                     tSynth = System.currentTimeMillis() - tSynth0;
                     break;
 

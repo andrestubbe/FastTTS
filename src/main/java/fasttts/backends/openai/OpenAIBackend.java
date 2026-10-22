@@ -19,14 +19,29 @@ public final class OpenAIBackend implements FastTTSBackend {
     private String defaultModel = "tts-1";
     private String defaultVoice = "alloy";
 
+    public OpenAIBackend() {
+        this(resolveApiKey(), "tts-1", "alloy");
+    }
+
     public OpenAIBackend(String apiKey) {
-        this.apiKey = apiKey;
+        this(apiKey, "tts-1", "alloy");
     }
 
     public OpenAIBackend(String apiKey, String defaultModel, String defaultVoice) {
-        this.apiKey = apiKey;
+        this.apiKey = apiKey != null ? apiKey : resolveApiKey();
         this.defaultModel = defaultModel;
         this.defaultVoice = defaultVoice;
+    }
+
+    private static String resolveApiKey() {
+        String key = System.getenv("OPENAI_API_KEY");
+        if (key != null && !key.isBlank()) return key.trim();
+        return System.getProperty("openai.api.key", "");
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return apiKey != null && !apiKey.isBlank();
     }
 
     public void setDefaultModel(String model) {

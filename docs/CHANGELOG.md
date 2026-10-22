@@ -4,6 +4,14 @@ All notable changes to `FastTTS` are documented in this file.
 
 ---
 
+## [0.1.7] - 2026-10-22
+
+### Added
+- **Orpheus TTS Backend (CanopyAI Orpheus-3B via CrispASR)**: Added `OrpheusBackend` and `OrpheusVoice` featuring Llama-3B speech-LLM inference with zero-shot voice cloning and embedded emotion control tags (e.g. `[laugh]`, `[cough]`). Built-in support for 8 preset voices (`tara`, `leah`, `jess`, `leo`, `dan`, `mia`, `zac`, `zoe`).
+- **CosyVoice 3 Backend (Alibaba FunAudioLLM via cosyvoice.cpp)**: Added `CosyVoiceBackend` and `CosyVoiceVoice` featuring multilingual zero-shot voice cloning across 9 languages (EN, DE, FR, ES, ZH, JA, KO, IT, RU) via quantized GGUF CPU inference.
+- **OpenAI TTS Backend Auto-Registration & Environment Discovery**: Added zero-arg constructor to `OpenAIBackend` resolving `OPENAI_API_KEY` from environment and system properties, pre-registering it directly in `FastTTS.standard()`.
+- **UTF-8 Payload Hardening**: Hardened JSON serialization across `DeepgramBackend` and `ElevenLabsBackend` with explicit UTF-8 charset encoding.
+
 ## [0.1.6] - 2026-10-17
 
 ### Added
@@ -38,36 +46,3 @@ All notable changes to `FastTTS` are documented in this file.
 - **Zero Resource Leaks**: Guaranteed deletion of temporary `.wav` files via strict `try-finally` blocks.
 - **Control Character JSON Escaping**: Hardened JSON serialization in `HuggingFaceBackend`, `OpenAIBackend`, `ElevenLabsBackend`, and `DeepgramBackend` against raw control characters and quotes.
 - **PocketTTS Availability**: Implemented explicit binary and model existence verification in `PocketTTSBackend.isAvailable()`.
-
----
-
-## [0.1.3] - 2026-10-10
-
-### Added
-- **Pocket TTS Integration**: Added `PocketTTSBackend` powered by Sherpa-ONNX offline CPU neural engine (`sherpa-onnx-offline-tts.exe` with INT8 quantized models).
-- **Auto-Resolution Architecture**: Automated discovery for Pocket TTS binary paths and model directories in workspace `bin/pocket/` / `models/pocket/` as well as user home `.speak/`.
-
-### Removed
-- **EdgeTTS Backend**: Removed `EdgeTTSBackend` in favor of self-contained offline neural Pocket TTS.
-
----
-
-## [0.1.2] - 2026-08-14
-
-### Added
-- **AVX2 Audio Acceleration**: Native SIMD vector scaling for gain, pitch, and sample rate conversion.
-- **Piper Local Binary Auto-Resolution**: Enhanced `PiperBackend` with automatic discovery in `bin/piper/piper.exe` and `~/.speak/models/piper`.
-- **Full Ecosystem Interoperability**: Updated dependency stack to `FastSIMD 0.1.3`, `FastMemory 0.1.1`, `FastPointer 0.1.1`, `FastAudioProcess 0.1.1`, `FastCore 0.1.0`.
-- **Real-World Use Cases**: Added conversational voice AI and audiobook reader production examples.
-
-### Changed
-- Standardized documentation and raw GitHub showcase media embeddings.
-- Zero-copy audio synthesis buffering for native WASAPI pipeline interoperability.
-
----
-
-## [0.1.1] - 2026-06-14
-
-### Added
-- Initial release with unified backend support for Piper (offline), Windows SAPI (system), ElevenLabs (cloud), and Deepgram (cloud).
-- Off-heap audio memory buffer management.

@@ -15,6 +15,22 @@
     - Kompaktes INT8-Modell für CPU-Inferenz ohne Python-Bloat
     - Integriert in PocketTTSBackend.java & Demo.java (~0.96x RTF)
 
+[x] ORPHEUS TTS (CanopyAI Orpheus-3B via CrispASR) [ERLEDIGT 2026-10-22]
+    - Llama-3b-basierte Speech-LLM mit Zero-Shot Voice Cloning, Emotion Control
+    - Apache-2.0 lizenziert, CPU-only inference via GGUF quantized models
+    - CrispASR binary (crispasr.exe) + GGUF Model (orpheus-3b-0.1-ft-q8_0.gguf) + SNAC Codec (snac-24khz.gguf)
+    - 8 vordefinierte Stimmen (tara, leah, jess, leo, dan, mia, zac, zoe)
+    - Emotion Tags (z.B. [laugh], [cough]) in Text einbettbar
+    - Integriert in OrpheusBackend.java, OrpheusVoice.java & Demo.java
+
+[x] COSYVOICE3 (Alibaba FunAudioLLM via cosyvoice.cpp) [ERLEDIGT 2026-10-22]
+    - Multi-lingual Zero-Shot Voice Cloning (9 Sprachen: EN, DE, FR, ES, ZH, JA, KO, IT, RU)
+    - Apache-2.0 lizenziert, CPU-only inference via GGUF quantized models
+    - cosyvoice.cpp binary (cosyvoice-cli.exe) + GGUF Model (cosyvoice3-llm-q4_k.gguf)
+    - 8 vordefinierte Stimmen (zero_shot + fleurs_en/de/zh/ja/fr/es/ko)
+    - Streaming output, cross-lingual voice cloning
+    - Integriert in CosyVoiceBackend.java, CosyVoiceVoice.java & Demo.java
+
 [ ] Dia2 (nari-labs/dia2) TTS Backend Integration:
     - Primärer Einsatzzweck: High-End Video Dubbing & Synchronisation für Clip+ (Qualität vor Latenz)
     - Voice-Cloning via Audio-Prefix (5-15s Referenzclip des Originalsprechers auf der Video-Timeline)

@@ -26,8 +26,8 @@ public final class DeepgramBackend implements FastTTSBackend {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .header("Authorization", "Token " + apiKey)
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString("{\"text\":\"" + text + "\"}"))
+            .header("Content-Type", "application/json; charset=utf-8")
+            .POST(HttpRequest.BodyPublishers.ofString("{\"text\":\"" + text.replace("\"", "\\\"") + "\"}", java.nio.charset.StandardCharsets.UTF_8))
             .build();
  
         HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());

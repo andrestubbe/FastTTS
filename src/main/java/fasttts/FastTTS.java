@@ -1,11 +1,14 @@
 package fasttts;
 
+import fasttts.backends.cosyvoice.CosyVoiceBackend;
 import fasttts.backends.dia2.Dia2Backend;
 import fasttts.backends.f5tts.F5TTSBackend;
 import fasttts.backends.huggingface.HuggingFaceBackend;
 import fasttts.backends.kokoro.KokoroBackend;
 import fasttts.backends.matcha.MatchaBackend;
 import fasttts.backends.omnivoice.OmniVoiceBackend;
+import fasttts.backends.openai.OpenAIBackend;
+import fasttts.backends.orpheus.OrpheusBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.pockettts.PocketTTSBackend;
 import fasttts.backends.vits.VITSBackend;
@@ -38,6 +41,9 @@ public final class FastTTS implements AutoCloseable {
         tts.registerBackend(new OmniVoiceBackend());
         tts.registerBackend(new F5TTSBackend());
         tts.registerBackend(new Dia2Backend());
+        tts.registerBackend(new OrpheusBackend());
+        tts.registerBackend(new CosyVoiceBackend());
+        tts.registerBackend(new OpenAIBackend());
         tts.registerBackend(new HuggingFaceBackend());
         return tts;
     }
