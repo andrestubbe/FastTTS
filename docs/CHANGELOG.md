@@ -4,6 +4,12 @@ All notable changes to `FastTTS` are documented in this file.
 
 ---
 
+## [0.1.8] - 2026-10-22
+
+### Added
+- **Phonon TTS Backend (Gradium 31M Flow-Matching)**: Integrated `PhononBackend` powered by Gradium's ultra-compact, on-device Rust runtime (`ptts.exe`). Features a 31M parameter flow-matching architecture with 24 kHz Mimi audio codec and <30 ms latency. Includes built-in voices across English, German, Spanish, French, and Portuguese (`Zoey`, `Juniper`, `Svea`, `Maeve`, `Alfie`, `Silas`, `Aldric`, `Noa`, `Marcos`, `Ninon`, `Davi`).
+- **Automatic FastTTS.standard() Registration**: Pre-registered `PhononBackend` directly into the orchestrator pipeline with multi-directory binary candidate discovery (`bin/ptts.exe`, `~/.speak/bin/ptts.exe`, `dist/Speak+/bin/ptts.exe`).
+
 ## [0.1.7] - 2026-10-22
 
 ### Added

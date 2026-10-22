@@ -1,10 +1,10 @@
-# FastTTS 0.1.7 [ALPHA-2026-10-17] — Unified, Zero-Bloat TTS Backend Orchestration for Java
+# FastTTS 0.1.8 [ALPHA-2026-10-22] — Unified, Zero-Bloat TTS Backend Orchestration for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.7-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.7)
+[![Status](https://img.shields.io/badge/status-0.1.8-brightgreen.svg)](https://github.com/andrestubbe/FastTTS/releases/tag/0.1.8)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-17+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.7-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.8-green.svg)](https://jitpack.io/#andrestubbe/FastTTS)
 
 ---
 
@@ -162,6 +162,7 @@ FastTTS unifies local neural inference, system voices, and cloud TTS into a sing
 - 💬 **Dia2 Dialogue (GGUF)**: Quantized GGUF dialogue model (`dia2-2b-q4_k.gguf`) with multi-speaker turn parsing and memory page cache warming.
 - 🎭 **Orpheus-3B (Speech-LLM)**: Llama-3B speech-LLM via CrispASR (`crispasr.exe`) with 8 built-in voices (`tara`, `leah`, `jess`, `leo`, `dan`, `mia`, `zac`, `zoe`) and emotion tags.
 - 🌍 **CosyVoice 3 (FunAudioLLM)**: Multilingual zero-shot voice cloning across 9 languages via `cosyvoice-cli.exe` and GGUF quantization.
+- ⚡ **Phonon (Gradium Flow-Matching)**: Ultra-compact 31M on-device Rust runtime (`ptts.exe`) with 24 kHz Mimi codec, <30 ms latency, and multi-lingual voices.
 - 🌐 **Cloud Backends**: Cloud APIs (Hugging Face Spaces, ElevenLabs, Deepgram, OpenAI) with hardened JSON escaping and automatic token resolution.
 
 ---
@@ -186,6 +187,7 @@ Directly benchmarked across all engines via `run-demo.bat benchmark` with audio 
 | **Dia2 Dialogue (GGUF)** | `dia2-2b-q4_k` | `en-US` | — | — | — | — |
 | **Orpheus-3B (Speech-LLM)** | `orpheus-3b-ft` | `en-US` | — | — | — | — |
 | **CosyVoice 3 (FunAudioLLM)** | `cosyvoice3-llm` | Multilingual | — | — | — | — |
+| **Phonon (Flow-Matching)** | `phonon-zoey` | `en-US` | — | — | — | — |
 | **Hugging Face API** | `mms-tts-eng` | `en-US` | — | — | — | — |
 
 > [!NOTE]
@@ -238,7 +240,7 @@ Add the JitPack repository and the complete dependency stack to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastTTS</artifactId>
-        <version>0.1.7</version>
+        <version>0.1.8</version>
     </dependency>
 
     <!-- FastSIMD Hardware Vector Acceleration Engine -->
@@ -286,7 +288,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastTTS:0.1.7'
+    implementation 'com.github.andrestubbe:FastTTS:0.1.8'
     implementation 'com.github.andrestubbe:FastSIMD:0.1.3'
     implementation 'com.github.andrestubbe:FastMemory:0.1.1'
     implementation 'com.github.andrestubbe:FastPointer:0.1.1'
@@ -350,6 +352,7 @@ run-installer.bat --install all
 * **OmniVoice** — Multilingual diffusion zero-shot voice cloning (600+ languages) with reference audio prompts. Installed via `run-installer.bat --install omnivoice`.
 * **Orpheus-3B** — Llama-3B speech-LLM via CrispASR (`crispasr.exe`) with 8 built-in voices and emotion tags.
 * **CosyVoice 3** — Multilingual zero-shot voice cloning across 9 languages via `cosyvoice-cli.exe` and GGUF quantization.
+* **Phonon** — Gradium 31M flow-matching on-device Rust engine (`ptts.exe`) with Mimi audio codec, <30 ms sub-second latency, and built-in voices (`Zoey`, `Juniper`, `Svea`, etc.).
 
 ### 2. Cloud Backends (API Credentials)
 Cloud backends stream real-time high-fidelity speech over HTTPS/WebSocket. Simply set the corresponding environment variables:

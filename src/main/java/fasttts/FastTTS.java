@@ -11,6 +11,7 @@ import fasttts.backends.openai.OpenAIBackend;
 import fasttts.backends.orpheus.OrpheusBackend;
 import fasttts.backends.piper.PiperBackend;
 import fasttts.backends.pockettts.PocketTTSBackend;
+import fasttts.backends.phonon.PhononBackend;
 import fasttts.backends.vits.VITSBackend;
 import fasttts.backends.windows.WindowsTTSBackend;
 import fasttts.core.*;
@@ -38,6 +39,7 @@ public final class FastTTS implements AutoCloseable {
         tts.registerBackend(new VITSBackend());
         tts.registerBackend(new PiperBackend());
         tts.registerBackend(new PocketTTSBackend());
+        tts.registerBackend(new PhononBackend());
         tts.registerBackend(new OmniVoiceBackend());
         tts.registerBackend(new F5TTSBackend());
         tts.registerBackend(new Dia2Backend());

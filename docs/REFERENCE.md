@@ -87,6 +87,11 @@ Pre-warms engines into memory / OS page cache for sub-millisecond dispatch, and 
 - **Multilingual Zero-Shot Voice Cloning**: FunAudioLLM CosyVoice 3 architecture via `cosyvoice-cli.exe`.
 - **Cross-Lingual Capabilities**: Zero-shot voice cloning across 9 supported languages with GGUF quantization.
 
+### `PhononBackend`
+- **Gradium 31M Flow-Matching**: Ultra-compact on-device neural TTS runtime (`ptts.exe`) using 24 kHz Mimi neural audio codec.
+- **Sub-30ms Real-Time Latency**: Extreme responsiveness for conversational voice agents.
+- **Multi-Lingual Voice Presets**: High-fidelity voices for EN, DE, ES, FR, PT (`Zoey`, `Juniper`, `Svea`, etc.).
+
 ### `HuggingFaceBackend`
 - **Cloud Spaces & Inference API**: Dual fallback between Serverless Inference API and Spaces Gradio endpoints with full control character JSON escaping.
 
